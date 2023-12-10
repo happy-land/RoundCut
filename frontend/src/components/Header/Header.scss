@@ -1,0 +1,14 @@
+.header {
+  border: 1px solid red;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+
+  &__wrapper {
+    border: 1px solid blue;
+    display: flex;
+    justify-content: space-between;
+    width: 800px;
+  }
+}

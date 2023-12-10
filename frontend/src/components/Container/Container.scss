@@ -1,0 +1,17 @@
+.Container {
+  max-width: 1360px;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1399) {
+  .Container {
+    padding: 0 32px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .Container {
+    padding: 0 24px;
+  }
+}
