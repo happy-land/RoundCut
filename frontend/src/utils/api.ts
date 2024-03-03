@@ -1,12 +1,18 @@
-import { TResponse, TUser } from '../services/types/data';
+import {
+  TAuthData,
+  TLoginForm,
+  TOwnUserData,
+  TPriceitemsData,
+  TRegisterData,
+  TResponse,
+  TUser,
+} from '../services/types/data';
 import { baseUrl } from './constants';
 import { getCookie } from './cookie';
-import { user1 } from './mockData';
 
 interface CustomResponse extends Response {
   accessToken?: string;
 }
-
 
 // export const checkResponse = <T>(res: Response): Promise<T> => {
 //   if (res.ok) {
@@ -18,37 +24,61 @@ interface CustomResponse extends Response {
 // };
 
 export const checkResponse = <T>(res: Response) => {
-  return res.ok ? res.json().then(data => data as TResponse<T>) : Promise.reject(res.status);
+  console.log('checkResponse: ', res);
+  return res.ok
+    ? res.json().then((data) => data as TResponse<T>)
+    : Promise.reject(res.status);
 };
 
-export const checkSuccess = <T>(response: TResponse<T>) => {
-  return response.success ? response : Promise.reject('Error data');
-}
+// export const checkSuccess = <T>(response: TResponse<T>) => {
+//   console.log(response.success);
+//   return response.success ? response : Promise.reject('Error data');
+// }
 
-export const registerRequest = (user: TUser): Promise<CustomResponse> => {
-  return fetch(`${baseUrl}/signup`, {
+const headersWithAuthorizeFn = () => ({
+  'Content-Type': 'application/json',
+  authorization: `Bearer ${getCookie('accessToken')}`,
+});
+
+export const registerRequest = async (user: TUser) => {
+  const res = await fetch(`${baseUrl}/signup`, {
     method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(user),
   });
+  return checkResponse<TRegisterData>(res);
 };
 
-export const getUserRequest = async (): Promise<CustomResponse> => {
-  return await fetch(`${baseUrl}/auth/user`, {
-    method: 'GET',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
+export const signinRequest = async (form: TLoginForm) => {
+  console.log(form);
+  const res = await fetch(`${baseUrl}/signin`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + getCookie('accessToken'),
     },
-    redirect: 'follow',
-    referrerPolicy: 'no-referrer',
+    body: JSON.stringify(form),
   });
+  // console.log('res', res);
+  return checkResponse<TAuthData>(res);
+};
+
+export const getUserRequest = async () => {
+  const res = await fetch(`${baseUrl}/users/me/`, {
+    method: 'GET',
+    headers: headersWithAuthorizeFn(),
+  });
+  // console.log('res= ', res);
+  return checkResponse<TOwnUserData>(res);
+};
+
+export const getPriceitemsRequest = async () => {
+  const res = await fetch(`${baseUrl}/priceitems`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return checkResponse<TPriceitemsData>(res);
 };

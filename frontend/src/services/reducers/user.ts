@@ -18,7 +18,7 @@ import {
   LOGOUT_USER_FAIL,
 } from '../constants';
 
-import { TUser } from '../types/data';
+import { TOwnUserData } from '../types/data';
 
 type TUserState = {
   isLoading: boolean;
@@ -26,8 +26,7 @@ type TUserState = {
   accessToken: string;
   refreshToken: string;
   isAuth: boolean;
-  user: TUser | null;
-};
+} | TOwnUserData;
 
 const userInitialState: TUserState = {
   isLoading: false,
@@ -35,11 +34,13 @@ const userInitialState: TUserState = {
   accessToken: '',
   refreshToken: '',
   isAuth: false,
-  user: {
-    email: '',
-    name: '',
-    password: '',
-  },
+  id: 0,
+  username: '',
+  about: '',
+  avatar: '',
+  email: '',
+  createdAt: '',
+  updatedAt: '',
 };
 
 export const userReducer = (state = userInitialState, action: TUserActions) => {
@@ -77,26 +78,20 @@ export const userReducer = (state = userInitialState, action: TUserActions) => {
       };
     }
     case AUTH_USER_SUCCESS: {
-      let authToken;
-      const res = action.payload;
-      authToken = res.accessToken.split('Bearer ')[1];
-
+      console.log(action.payload);
       // сохраняем accessToken в куке
-      if (authToken) {
-        setCookie('accessToken', authToken);
-      }
+      setCookie('accessToken', action.payload.accessToken);
 
       // сохраняем refreshToken в localStorage
-      if (res.refreshToken) {
-        localStorage.setItem('refreshToken', res.refreshToken);
-      }
+      // if (res.refreshToken) {
+      //   localStorage.setItem('refreshToken', res.refreshToken);
+      // }
 
       return {
         ...state,
-        accessToken: authToken,
-        refreshToken: res.refreshToken,
+        accessToken: action.payload.accessToken,
+        // refreshToken: res.refreshToken,
         isAuth: true,
-        user: res.user,
         isLoading: false,
         hasError: false,
       };
@@ -117,12 +112,19 @@ export const userReducer = (state = userInitialState, action: TUserActions) => {
     }
     case GET_USER_SUCCESS: {
       const res = action.payload;
+      // console.log();
       return {
         ...state,
         isAuth: true,
-        user: res.user,
         isLoading: false,
         hasError: false,
+        id: res.id,
+        username: res.username,
+        about: res.about,
+        avatar: res.avatar,
+        email: res.email,
+        createdAt: res.createdAt,
+        updatedAt: res.updatedAt,
       };
     }
     case GET_USER_FAIL: {
