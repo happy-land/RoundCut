@@ -1,4 +1,7 @@
-import { checkResponse, checkSuccess, getUserRequest } from '../../utils/api';
+import {
+  getUserRequest,
+  signinRequest,
+} from '../../utils/api';
 
 import {
   // loginRequest,
@@ -26,7 +29,7 @@ import {
   UPDATE_USER_SUCCESS,
 } from '../constants';
 import { AppDispatch, AppThunk } from '../types';
-import { TLoginForm, TRegisterData, TUser } from '../types/data';
+import { TLoginForm, TRegisterData, TUser, TOwnUserData } from '../types/data';
 // import { baseUrl } from '../../utils/constants';
 
 export interface IRegisterUserRequestAction {
@@ -35,7 +38,7 @@ export interface IRegisterUserRequestAction {
 
 export interface IRegisterUserSuccessAction {
   type: typeof REGISTER_USER_SUCCESS;
-  payload: TRegisterData,
+  payload: TRegisterData;
 }
 
 export interface IRegisterUserFailAction {
@@ -51,8 +54,8 @@ export interface IAuthUserSuccessAction {
   type: typeof AUTH_USER_SUCCESS;
   payload: {
     accessToken: string;
-    refreshToken: string;
-    user: TUser;
+    // refreshToken: string;
+    // user: TUser;
   };
 }
 
@@ -66,9 +69,7 @@ export interface IGetUserRequestAction {
 
 export interface IGetUserSuccessAction {
   type: typeof GET_USER_SUCCESS;
-  payload: {
-    user: TUser;
-  };
+  payload: TOwnUserData;
 }
 
 export interface IGetUserFailAction {
@@ -115,23 +116,21 @@ export type TUserActions =
   | ILogoutUserSuccessAction
   | ILogoutUserFailAction;
 
-
-
 // при аутентификации пользователя с сервера приходят данные
 // в том же формате, что и при регистрации нового пользователя
 // type TAuthUserData = TRegisterData;
 
 // используется для типизации ответа сервера при получении
 // данных пользователя
-type TGetUserData = {
-  user: TUser;
-};
+// type TGetUserData = {
+//   user: TUser;
+// };
 
 // используется для типизации ответа сервера
 // при выходе из личного кабинета
-type TUserLogout = {
-  message: string;
-};
+// type TUserLogout = {
+//   message: string;
+// };
 
 export const registerUserThunk: AppThunk =
   (user: TUser) => (dispatch: AppDispatch) => {
@@ -140,8 +139,8 @@ export const registerUserThunk: AppThunk =
     });
 
     registerRequest(user)
-      .then((result: Response) => checkResponse<TRegisterData>(result))
-      .then(checkSuccess)
+      // .then((result: Response) => checkResponse<TRegisterData>(result))
+      // .then(checkSuccess)
       .then((responseBody: TRegisterData) => {
         if (user) {
           dispatch({
@@ -160,19 +159,42 @@ export const registerUserThunk: AppThunk =
       });
   };
 
+export const authUserThunk: AppThunk =
+  (form: TLoginForm) => (dispatch: AppDispatch) => {
+    dispatch({
+      type: AUTH_USER_REQUEST,
+    });
 
+    signinRequest(form)
+      // .then((result) => checkResponse<TAuthData>(result))
+      // .then(checkSuccess)
+      .then((responseBody) => {
+        dispatch({
+          type: AUTH_USER_SUCCESS,
+          payload: {
+            accessToken: responseBody.access_token,
+          },
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: AUTH_USER_FAIL,
+          payload: err,
+          isLoading: false,
+          hasError: true,
+        });
+      });
+  };
 
-  export const getUserDataThunk: AppThunk = () => async (dispatch: AppDispatch) => {
+export const getUserDataThunk: AppThunk =
+  () => async (dispatch: AppDispatch) => {
     dispatch({
       type: GET_USER_REQUEST,
     });
-  
+    // console.log('getUserDataThunk!!!!');
     await getUserRequest()
-      .then((result) =>  {
-        return checkResponse<TGetUserData>(result)
-      })
-      .then(checkSuccess)
       .then((responseBody) => {
+        // console.log('getUserRequest: ', responseBody);
         dispatch({
           type: GET_USER_SUCCESS,
           payload: responseBody,
@@ -180,7 +202,8 @@ export const registerUserThunk: AppThunk =
           hasError: false,
         });
       })
-      .catch((err) => {
+      .catch((err: any) => {
+        console.log('ERRR', err);
         dispatch({
           type: GET_USER_FAIL,
           payload: err,
