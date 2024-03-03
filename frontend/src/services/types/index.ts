@@ -2,10 +2,15 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, ActionCreator } from 'redux';
 import store from '../store';
 import { TUserActions } from '../actions/user';
+import { TPriceitemsActions } from '../actions/priceItems';
+import { TProfileModalActions } from '../actions/profileModal';
 
-type TApplicationActions = TUserActions;
-// | TBurgerActions 
-// | TFeedActions 
+type TApplicationActions =
+  | TUserActions
+  | TPriceitemsActions
+  | TProfileModalActions;
+// | TBurgerActions
+// | TFeedActions
 // | TIngredientDetailsModalActions
 
 export type RootState = ReturnType<typeof store.getState>;

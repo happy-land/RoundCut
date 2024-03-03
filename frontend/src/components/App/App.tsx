@@ -7,29 +7,33 @@ import { useDispatch } from '../../hooks';
 import { getCookie } from '../../utils/cookie';
 import { getUserDataThunk } from '../../services/actions/user';
 import { HomePage } from '../../pages/HomePage/HomePage';
+import { SigninPage } from '../../pages/SigninPage/SigninPage';
+import { LoadCSV } from '../LoadCSV/LoadCSV';
 
 const App: FC = () => {
   const dispatch = useDispatch();
 
   // проверим, есть ли accessToken
-  const init = async () => {
-    if (getCookie('accessToken')) {
-      dispatch(getUserDataThunk());
-    }
-  }
 
   useEffect(() => {
-    init();
-  }, [dispatch]);
+    if (getCookie('accessToken')) {
+      // console.log('accessToken ЕСТЬ!!!!! ');
+      dispatch(getUserDataThunk());
+    } else {
+      // console.log('accessToken НЕТУ!!!!! ');
+    }
+  });
 
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path='/1' element={<h1>1</h1>} />
-        <Route path='/2' element={<h1>222</h1>} />
-        <Route path='/' element={<HomePage />} />
+        <Route path="/1" element={<h1>1</h1>} />
+        <Route path="/2" element={<h1>222</h1>} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signin" element={<SigninPage />} />
+        <Route path="/loadcsv" element={<LoadCSV />} />
       </Route>
-      <Route path='*' element={<Page404 />} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
   );
 };

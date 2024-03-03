@@ -1,0 +1,32 @@
+.signin-form {
+  border: 1px solid tomato;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  &__label {
+    text-align: left;
+    margin: 0 0 6px;
+  }
+
+  &__label-title {
+    margin: 0;
+    padding: 0;
+  }
+
+  &__input {
+    margin-bottom: 20px;
+  }
+
+  &__input-password {
+    margin-bottom: 50px;
+  }
+
+  &__submit-btn {
+
+  }
+}
+
+// .add-margin {
+//   margin-bottom: 100px;
+// }
