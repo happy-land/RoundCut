@@ -7,6 +7,8 @@ import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CsvModule } from './csv/csv.module';
+import { PriceitemsModule } from './priceitems/priceitems.module';
+import { Priceitem } from './priceitems/entities/priceitem.entity';
 
 @Module({
   imports: [
@@ -19,12 +21,13 @@ import { CsvModule } from './csv/csv.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       schema: process.env.POSTGRES_SCHEMA,
-      entities: [User],
+      entities: [User, Priceitem],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
     CsvModule,
+    PriceitemsModule,
   ],
   controllers: [AppController],
   providers: [],
