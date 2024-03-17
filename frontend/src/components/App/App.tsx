@@ -9,6 +9,8 @@ import { getUserDataThunk } from '../../services/actions/user';
 import { HomePage } from '../../pages/HomePage/HomePage';
 import { SigninPage } from '../../pages/SigninPage/SigninPage';
 import { LoadCSV } from '../LoadCSV/LoadCSV';
+import { PricePage } from '../../pages/PricePage/PricePage';
+import { getPriceItemsThunk } from '../../services/actions/priceItems';
 
 const App: FC = () => {
   const dispatch = useDispatch();
@@ -24,6 +26,10 @@ const App: FC = () => {
     }
   });
 
+  useEffect(() => {
+    dispatch(getPriceItemsThunk());
+  }, [dispatch]);
+
   return (
     <Routes>
       <Route element={<Layout />}>
@@ -31,6 +37,7 @@ const App: FC = () => {
         <Route path="/2" element={<h1>222</h1>} />
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SigninPage />} />
+        <Route path="/price" element={<PricePage />} />
         <Route path="/loadcsv" element={<LoadCSV />} />
       </Route>
       <Route path="*" element={<Page404 />} />
