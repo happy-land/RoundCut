@@ -60,11 +60,22 @@ export type TProfileModal = {
   readonly name: string;
 }
 
-// тип описывает строку прайса металлопроката
+// тип описывает строку прайса металлопроката, полученную от сервера
 export type TPriceItem = {
-  id?: string;
-  readonly type: string;
+  id: string;
+  readonly actualBalance: number;
+  readonly unitWeight: number;
+  readonly unitPrice: number;
+  readonly pricePer1tn: number;
+  readonly pricePer5tn: number;
+  readonly pricePer15tn: number;
+  readonly baseName: string;
   readonly name: string;
+  readonly size: string;
+  readonly surface: string;
+  readonly other: string;
+  readonly productGroup: string;
+  readonly length: number;
 }
 
 // используется для типизации ответа сервера

@@ -24,7 +24,7 @@ interface CustomResponse extends Response {
 // };
 
 export const checkResponse = <T>(res: Response) => {
-  console.log('checkResponse: ', res);
+  // console.log('checkResponse: ', res);
   return res.ok
     ? res.json().then((data) => data as TResponse<T>)
     : Promise.reject(res.status);
@@ -74,11 +74,13 @@ export const getUserRequest = async () => {
 };
 
 export const getPriceitemsRequest = async () => {
+  console.log('->getPriceitemsRequest');
   const res = await fetch(`${baseUrl}/priceitems`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
+  console.log(res);
   return checkResponse<TPriceitemsData>(res);
 };

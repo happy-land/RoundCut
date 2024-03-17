@@ -5,6 +5,6 @@ import { priceitemsReducer } from './priceItems';
 
 export const rootReducer = combineReducers({
   user: userReducer,
-  priceitem: priceitemsReducer,
+  priceitems: priceitemsReducer,
   profileModal: profileModalReducer,
 });
