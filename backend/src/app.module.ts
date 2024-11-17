@@ -9,6 +9,14 @@ import { AuthModule } from './auth/auth.module';
 import { CsvModule } from './csv/csv.module';
 import { PriceitemsModule } from './priceitems/priceitems.module';
 import { Priceitem } from './priceitems/entities/priceitem.entity';
+import { WarehousesModule } from './warehouses/warehouses.module';
+import { MarkupsModule } from './markups/markups.module';
+import { Warehouse } from './warehouses/entities/warehouse.entity';
+import { Markup } from './markups/entities/markup.entity';
+import { CutsModule } from './cuts/cuts.module';
+import { Cut } from './cuts/entities/cut.entity';
+import { CutitemsModule } from './cutitems/cutitems.module';
+import { Cutitem } from './cutitems/entities/cutitem.entity';
 
 @Module({
   imports: [
@@ -21,13 +29,17 @@ import { Priceitem } from './priceitems/entities/priceitem.entity';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       schema: process.env.POSTGRES_SCHEMA,
-      entities: [User, Priceitem],
+      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
     CsvModule,
     PriceitemsModule,
+    WarehousesModule,
+    MarkupsModule,
+    CutsModule,
+    CutitemsModule,
   ],
   controllers: [AppController],
   providers: [],
