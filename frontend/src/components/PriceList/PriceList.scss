@@ -1,0 +1,30 @@
+.price {
+  &__title {
+
+  }
+
+  &__content-section {
+    
+  }
+
+  &__price-buttons {
+    display: flex;
+  }
+
+  &__button {
+    border-radius: 20px;
+    margin-right: 20px;
+  }
+
+  &__items-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 400px;
+  }
+
+  &__list-item {
+    display: flex;
+  }
+}

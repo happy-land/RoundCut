@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { TLoginForm } from '../services/types/data';
+import { TLoginForm } from '../utils/types';
 
 export const useForm = (inputValues: TLoginForm) => {
   const [values, setValues] = useState(inputValues);

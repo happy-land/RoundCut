@@ -4,7 +4,6 @@ import block from 'bem-cn';
 import { useForm } from '../../hooks/useForm';
 import { useDispatch, useSelector } from '../../hooks';
 import { authUserThunk, getUserDataThunk } from '../../services/actions/user';
-import { getCookie } from '../../utils/cookie';
 import './SigninForm.scss';
 
 const cnStyles = block('signin-form');
@@ -36,7 +35,6 @@ export const SigninForm: FC = () => {
       dispatch(getUserDataThunk());
     }
   }, [isAuth, dispatch]);
-
 
   if (isAuth) {
     return (

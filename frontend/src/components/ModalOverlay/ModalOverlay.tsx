@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import block from 'bem-cn';
 import './ModalOverlay.scss';
-
-const cnStyles = block('overlay');
+import block from 'bem-cn';
 
 type IModalOverlayProps = {
   onClick: () => void;
 };
+
+const cnStyles = block('overlay');
 
 export const ModalOverlay: FC<IModalOverlayProps> = ({ onClick }) => {
   return (

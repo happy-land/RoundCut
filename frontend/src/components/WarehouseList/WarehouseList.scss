@@ -1,0 +1,11 @@
+.warehouse {
+  &__items-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__list-item {
+    display: flex;
+  }
+}
