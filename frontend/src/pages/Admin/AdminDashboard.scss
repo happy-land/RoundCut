@@ -1,0 +1,9 @@
+.admin-dashboard{
+  &__nav-menu {
+    display: flex;
+  }
+
+  &__link {
+    margin: 0 10px 10px 0;
+  }
+}

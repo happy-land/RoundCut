@@ -1,0 +1,21 @@
+.price-item-container {
+  text-decoration: none;
+  font-size: 12px;
+
+  &__priceitem {
+    display: flex;
+  }
+
+  &__column {
+    width: 120px;
+    text-align: left;
+  }
+
+  &__surface {
+    width: 50px;
+  }
+
+  &__other {
+    width: 160px;
+  }
+}

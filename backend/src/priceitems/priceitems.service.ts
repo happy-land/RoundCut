@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePriceitemDto } from './dto/create-priceitem.dto';
 import { UpdatePriceitemDto } from './dto/update-priceitem.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -31,7 +31,26 @@ export class PriceitemsService {
     return `This action updates a #${id} priceitem`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} priceitem`;
+  async remove(id: string) {
+    const item = await this.priceitemsRepository.findOne({
+      where: { id: id },
+    });
+    if (!item) {
+      throw new NotFoundException();
+    }
+
+    await this.priceitemsRepository.delete({ id });
+    return item;
+  }
+
+  async removeAll() {
+    console.log('--REMOVE ALL!');
+    const items = await this.priceitemsRepository.find({});
+
+    if (!items) {
+      throw new NotFoundException();
+    }
+    await this.priceitemsRepository.delete(items);
+    return items;
   }
 }

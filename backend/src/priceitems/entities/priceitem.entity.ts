@@ -1,8 +1,11 @@
 import { IsDate, IsNumber, IsString } from 'class-validator';
+import { Warehouse } from 'src/warehouses/entities/warehouse.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -80,4 +83,10 @@ export class Priceitem {
   @Column('decimal')
   @IsNumber()
   length: number;
+
+  @ManyToOne(() => Warehouse, (warehouse) => warehouse.priceitems, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'warehouse_id' })
+  warehouse: Warehouse;
 }

@@ -41,8 +41,15 @@ export class PriceitemsController {
     return this.priceitemsService.update(+id, updatePriceitemDto);
   }
 
+  @Delete('all')
+  removeAll() {
+    console.log('removeAll');
+    return this.priceitemsService.removeAll();
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.priceitemsService.remove(+id);
+    console.log(id);
+    return this.priceitemsService.remove(id);
   }
 }

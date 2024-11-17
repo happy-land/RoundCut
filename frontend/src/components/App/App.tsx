@@ -1,47 +1,95 @@
 import { FC, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../Layout/Layout';
-import { Page404 } from '../../pages/404/Page404';
-import './App.scss';
-import { useDispatch } from '../../hooks';
+// import { Page404 } from '../../pages/404/Page404';
+// import './App.scss';
+import Counter from '../Counter/Counter';
+import { fetchItems } from '../../features/price/priceitemsSlice';
+import { useAppDispatch } from '../../app/hooks';
 import { getCookie } from '../../utils/cookie';
-import { getUserDataThunk } from '../../services/actions/user';
-import { HomePage } from '../../pages/HomePage/HomePage';
 import { SigninPage } from '../../pages/SigninPage/SigninPage';
-import { LoadCSV } from '../LoadCSV/LoadCSV';
-import { PricePage } from '../../pages/PricePage/PricePage';
-import { getPriceItemsThunk } from '../../services/actions/priceItems';
+import Auth from '../../pages/Auth';
+import Dashboard from '../../pages/Dashboard';
+import { ToastContainer } from 'react-toastify';
+import { setUser } from '../../features/authSlice';
+import { PriceItemDetails } from '../../pages/PriceItemDetails';
+import AdminDashboard from '../../pages/Admin/AdminDashboard';
+import AdminPrice from '../AdminPrice/AdminPrice';
+import { Markup } from '../../pages/Markup';
+import Warehouse from '../../pages/Warehouse';
+import { Modal } from '../Modal/Modal';
+import WarehouseDetails from '../WarehouseDetails/WarehouseDetails';
+import Cut from '../../pages/Cut';
+import CutitemEditPage from '../../pages/CutitemEditPage';
+
+// import { getUserDataThunk } from '../../services/actions/user';
+// import { HomePage } from '../../pages/HomePage/HomePage';
+// import { SigninPage } from '../../pages/SigninPage/SigninPage';
+// import { LoadCSV } from '../LoadCSV/LoadCSV';
+// import { PricePage } from '../../pages/PricePage/PricePage';
+// import { getPriceItemsThunk } from '../../services/actions/priceItems';
 
 const App: FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate(); // useHistory deprecated
 
-  // проверим, есть ли accessToken
+  const location = useLocation();
+  const background = location.state && location.state.background;
+  console.log(`location:`);
+  console.log(location);
+  console.log(`background:`);
+  console.log(background);
+
+  const user = JSON.parse(localStorage.getItem('userData') || '{}');
 
   useEffect(() => {
-    if (getCookie('accessToken')) {
-      // console.log('accessToken ЕСТЬ!!!!! ');
-      dispatch(getUserDataThunk());
-    } else {
-      // console.log('accessToken НЕТУ!!!!! ');
-    }
-  });
+    // console.log('useEffect from App.tsx, ', user);
+    dispatch(setUser(user));
+    // записать наценки в стор
+    
+  }, []);
 
-  useEffect(() => {
-    dispatch(getPriceItemsThunk());
-  }, [dispatch]);
+  const closeAllModals = () => {
+    console.log('Закрыть модалку');
+    navigate(-1);
+  };
 
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/1" element={<h1>1</h1>} />
-        <Route path="/2" element={<h1>222</h1>} />
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signin" element={<SigninPage />} />
-        <Route path="/price" element={<PricePage />} />
-        <Route path="/loadcsv" element={<LoadCSV />} />
-      </Route>
-      <Route path="*" element={<Page404 />} />
-    </Routes>
+    <div>
+      {/* <ToastContainer /> */}
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminDashboard />}>
+            <Route path="/admin/price" element={<AdminPrice />} />
+            <Route path="/admin/warehouse" element={<Warehouse />} />
+            <Route
+              path="/admin/warehouse/:id"
+              element={
+                <Modal onClose={closeAllModals}>
+                  <WarehouseDetails />
+                </Modal>
+              }
+            ></Route>
+            <Route path="/admin/markup" element={<Markup />} />
+            <Route path="/admin/cut" element={<Cut />} />
+            <Route path="/admin/cutitem" element={<CutitemEditPage />} />
+          </Route>
+
+          <Route path="/1" element={<Counter />} />
+          {/* <Route path="/price" element={<PriceList />} /> */}
+          <Route path="/price/:id" element={<PriceItemDetails />} />
+          {/* <Route path="/users/:id" element={<SinglePriceitemPage />} /> */}
+          {/* <Route path="/" element={<HomePage />} /> */}
+          {/* <Route path="/signin" element={<SigninPage />} /> */}
+          {/* <Route path="/price" element={<PricePage />} /> */}
+          {/* <Route path="/loadcsv" element={<LoadCSV />} /> */}
+        </Route>
+        {/* <Route path="*" element={<Page404 />} /> */}
+      </Routes>
+    </div>
   );
 };
 
