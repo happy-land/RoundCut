@@ -7,12 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Priceitem } from 'src/priceitems/entities/priceitem.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { mapBaseName } from 'src/utils/mapping';
+import { WarehousesService } from 'src/warehouses/warehouses.service';
 
 @Injectable()
 export class CsvService {
   constructor(
     @InjectRepository(Priceitem)
     private readonly priceitemsRepository: Repository<Priceitem>,
+    private readonly warehousesService: WarehousesService,
   ) {}
 
   items: Array<Priceitem>;
@@ -21,8 +24,8 @@ export class CsvService {
     console.log('Загружаем CSV...');
     try {
       const { data } = await axios.get(
-        // 'https://www.metallotorg.ru/import/prise_last.csv',
-        'http://localhost:3002/csv/prise_last.csv',
+        'https://www.metallotorg.ru/import/prise_last.csv',
+        // 'http://localhost:3002/csv/prise_last.csv',
         {
           responseType: 'arraybuffer',
           responseEncoding: 'binary',
@@ -44,9 +47,9 @@ export class CsvService {
   parseString(buffer: string): Array<Priceitem> {
     const arr: Array<string> = buffer.split('\n');
     const rounds: Array<Priceitem> = [];
-    arr.map((item) => {
+    arr.map(async (item) => {
       if (this.isRound(item)) {
-        rounds.push(this.parseItem(item));
+        rounds.push(await this.parseItem(item));
       }
     });
     // console.log(krugi.length);
@@ -59,7 +62,7 @@ export class CsvService {
   isRound(item: string): boolean {
     const arr: Array<string> = item.split(';');
     // console.log(arr[7]);
-    if (arr[7].includes('Круг') && arr[6].includes('ЛОБНЯ')) {
+    if (arr[7].includes('Круг') && arr[6].includes('УГЛИ')) {
       return true;
     }
     return false;
@@ -67,9 +70,16 @@ export class CsvService {
 
   // метод получает на вход строку
   // возвращает объект типа Priceitem
-  parseItem(item: string): Priceitem {
+  async parseItem(item: string): Promise<Priceitem> {
     const arr: Array<string> = item.split(';');
     console.log(`${arr[0]} ${arr[1]} ${arr[2]}`);
+
+    console.log('arr[6]');
+    console.log(arr[6]);
+
+    const warehouse = await this.warehousesService.findOne({
+      where: { name: mapBaseName(arr[6]) },
+    });
 
     const createdPriceitem: Priceitem = {
       id: uuidv4(),
@@ -79,13 +89,14 @@ export class CsvService {
       pricePer1tn: this.parsePotentiallyGroupedFloat(arr[3]),
       pricePer5tn: this.parsePotentiallyGroupedFloat(arr[4]),
       pricePer15tn: this.parsePotentiallyGroupedFloat(arr[5]),
-      baseName: arr[6],
+      baseName: mapBaseName(arr[6]),
       name: arr[7],
       size: arr[8],
       surface: arr[9],
       other: arr[10],
       productGroup: arr[11],
       length: this.parsePotentiallyGroupedFloat(arr[12]),
+      warehouse: warehouse,
     };
 
     console.log(typeof createdPriceitem.actualBalance);
@@ -96,15 +107,6 @@ export class CsvService {
   parsePotentiallyGroupedFloat(stringValue: string) {
     return parseFloat(stringValue.replace(',', '.').replace(' ', ''));
   }
-
-  // parsePotentiallyGroupedFloat(stringValue: string) {
-  //   stringValue = stringValue.trim();
-  //   let result = stringValue.replace(/[^0-9]/g, '');
-  //   if (/[,\.]\d{2}$/.test(stringValue)) {
-  //     result = result.replace(/(\d{2})$/, '.$1');
-  //   }
-  //   return parseFloat(result);
-  // }
 
   async saveItems(rounds: Array<Priceitem>) {
     await this.priceitemsRepository.save(rounds);

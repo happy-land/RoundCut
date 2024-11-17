@@ -1,25 +1,42 @@
 import { FC, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import block from 'bem-cn';
-import './Modal.scss';
-
-const cnStyles = block('modal');
+import './Modal.scss'
+import { ModalOverlay } from '../ModalOverlay/ModalOverlay';
 
 interface IModalProps {
   title?: string;
   onClose: () => void;
+  children: React.ReactNode;
 }
+
+const cnStyles = block('modal');
 
 const modalsContainer = document.querySelector('#modals') as HTMLElement;
 
 export const Modal: FC<IModalProps> = ({ title, onClose, children }) => {
+  useEffect(() => {
+    const handleEscKeydown = (event: KeyboardEvent): void => {
+      event.key === 'Escape' && onClose();
+    };
+    document.addEventListener('keydown', (event) => handleEscKeydown(event));
+
+    return () => {
+      document.removeEventListener('keydown', (event) =>
+        handleEscKeydown(event),
+      );
+    };
+  }, [onClose]);
+
   return createPortal(
     <>
-      <div className={cnStyles()}>
-        <h1 className={cnStyles('title')}>{title}</h1>
+      <div className={cnStyles('container')}>
+        <div className={cnStyles('header')}>
+        <h3 className={cnStyles('title')}>{title}</h3>
+        </div>
         {children}
       </div>
-      
+      <ModalOverlay onClick={onClose} />
     </>,
     modalsContainer,
   );

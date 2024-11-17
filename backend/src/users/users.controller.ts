@@ -36,7 +36,12 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Get('me')
+  // @Get('me')
+  // getUser(@Req() req: RequestUser) {
+  //   return req.user;
+  // }
+
+  @Post('me')
   getUser(@Req() req: RequestUser) {
     return req.user;
   }
