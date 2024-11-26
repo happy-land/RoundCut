@@ -35,8 +35,18 @@ export class CutsService {
     return cuts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cut`;
+  findOne(query: FindOneOptions<Cut>) {
+    return this.cutsRepository.findOne(query);
+  }
+
+  async findOneById(id: number) {
+    const cut = await this.cutsRepository.findOne({
+      where: { id: id },
+    });
+    if (!cut) {
+      throw new NotFoundException('резка не найдена');
+    }
+    return cut;
   }
 
   update(id: number, updateCutDto: UpdateCutDto) {
