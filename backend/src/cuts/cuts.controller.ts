@@ -26,8 +26,8 @@ export class CutsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cutsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.cutsService.findOneById(id);
   }
 
   @Patch(':id')

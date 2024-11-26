@@ -9,6 +9,7 @@ import { useFetchWarehousesQuery } from '../services/warehouseApi';
 import { getWarehouseId } from '../utils/warehouse';
 import { useFetchAdminCutsQuery } from '../services/adminCutApi';
 import { getCutId } from '../utils/cut';
+import { useAddCutitemMutation } from '../services/cutitemApi';
 
 interface ICutitemProps {}
 
@@ -27,6 +28,9 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
 
   // получить c сервера список названий резки из БД
   const { data: cuts = [] } = useFetchAdminCutsQuery(0);
+
+  // mutations
+  const [addCutitem] = useAddCutitemMutation();
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -106,12 +110,12 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
           rowList.forEach((row, row_index) => {
             const item: TGoodsCutItem = {
               warehouse: mapBaseName(warehouseName) as string,
-              title: row[1] as string,
+              name: row[1] as string,
               amount: parseFloat(row[windex + 3] as string)
                 ? parseFloat(row[windex + 3] as string)
                 : 0,
-              warehouseId: getWarehouseId(warehouses, mapBaseName(warehouseName) as string),
-              cutId: getCutId(cuts, row[1] as string),
+              warehouse_id: getWarehouseId(warehouses, mapBaseName(warehouseName) as string),
+              cut_id: getCutId(cuts, row[1] as string),
             };
             items.push(item);
           });
@@ -121,19 +125,22 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
     setCutItems(items);
   };
 
-  const handleSaveCutitemsToDB = (event: MouseEvent<HTMLButtonElement>) => {
-    // console.log(cutItems);
-    // const str = '321.00 - 321.00';
-    const str = 'sdf s';
-    let res: number;
-    parseFloat(str) ? (res = parseFloat(str)) : (res = 0);
-    console.log(res);
+  const handleSubmitCutitems = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    cutItems.map(async (cutitem) => {
+      console.log(cutitem.name);
+      await addCutitem(cutitem)
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+        });
+    })
   };
 
   return (
     <div className={cnStyles()}>
       <h1>Cutitem</h1>
-      <button onClick={(event) => handleSaveCutitemsToDB(event)}>
+      <button onClick={(event) => handleSubmitCutitems(event)}>
         Выгрузить в БД
       </button>
 
