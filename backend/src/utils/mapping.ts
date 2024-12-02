@@ -23,7 +23,7 @@ export const mapBaseName = (name: string): string | null => {
     case 'СТРОЙБАЗА':
       return null;
     case 'ТИТАРОВКА':
-      return null; // склад Краснодар уже есть в таблице наценок
+      return 'КРАСНОДАР'; // склад Краснодар уже есть в таблице наценок
     case 'ТУЛА_ПЛЕХАНОВО':
       return 'ТУЛА';
     case 'УГЛИ':
@@ -34,6 +34,8 @@ export const mapBaseName = (name: string): string | null => {
       return 'НАБЕРЕЖНЫЕ ЧЕЛНЫ';
     case 'ЧУЖОЙ СКЛАД':
       return null;
+    case 'ТОЛЬЯТТИАрендСкл':
+      return 'ТОЛЬЯТТИ';
     default:
       return name;
   }

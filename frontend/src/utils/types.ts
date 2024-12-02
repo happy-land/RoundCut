@@ -113,9 +113,9 @@ export type TAdminCut = {
 }
 
 export type TGoodsCutItem = {
-  title: string;
+  name: string;
   warehouse?: string;
   amount: number;
-  warehouseId: number;
-  cutId: number;
+  warehouse_id: number;
+  cut_id: number;
 } 

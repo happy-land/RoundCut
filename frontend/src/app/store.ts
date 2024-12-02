@@ -9,6 +9,7 @@ import cutReducer from '../features/cut/cutSlice';
 import warehouseReducer from '../features/warehouse/warehouseSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { adminCutApi } from '../services/adminCutApi';
+import { cutitemApi } from '../services/cutitemApi';
 // import priceitemsReducer from '../features/price/priceitemsSlice';
 // import usersReducer from '../features/users/usersSlice';
 
@@ -23,6 +24,7 @@ const store = configureStore({
     [warehouseApi.reducerPath]: warehouseApi.reducer,
     [markupApi.reducerPath]: markupApi.reducer,
     [adminCutApi.reducerPath]: adminCutApi.reducer,
+    [cutitemApi.reducerPath]: cutitemApi.reducer,
     // [csvApi.reducerPath]: csvApi.reducer,
     // priceitems: priceitemsReducer,
     // users: usersReducer,
@@ -35,6 +37,7 @@ const store = configureStore({
       .concat(warehouseApi.middleware)
       .concat(markupApi.middleware)
       .concat(adminCutApi.middleware)
+      .concat(cutitemApi.middleware)
       // .concat(csvApi.middleware),
 });
 

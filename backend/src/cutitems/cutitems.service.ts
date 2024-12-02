@@ -13,7 +13,7 @@ export class CutitemsService {
     @InjectRepository(Cutitem)
     private cutitemsRepository: Repository<Cutitem>,
     private warehousesService: WarehousesService,
-    // private cutsService: CutsService,
+    private cutsService: CutsService,
   ) {}
 
   async create(createCutitemDto: CreateCutitemDto) {
@@ -21,16 +21,19 @@ export class CutitemsService {
       where: { id: createCutitemDto.warehouse_id },
     });
 
-    // const cut = await this.cutsService.findOne({
-    //   where: { id: createCutitemDto.cut_id },
-    // });
+    const cut = await this.cutsService.findOne({
+      where: { id: createCutitemDto.cut_id },
+    });
 
     console.log('warehouse: ');
     console.log(warehouse);
+    console.log('cut: ');
+    console.log(cut);
 
     const cutitem = this.cutitemsRepository.create({
       ...createCutitemDto,
       warehouse: warehouse,
+      cut: cut,
     });
     return this.cutitemsRepository.save(cutitem);
   }
