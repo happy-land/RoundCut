@@ -156,8 +156,8 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
           cutItems.map((element, index) => (
             <div key={index}>
               <p>
-                {index} - {element.title} // {element.warehouse} // {element.warehouseId} // 
-                {element.amount} руб // {element.cutId}
+                {index} - {element.name} // {element.warehouse} // {element.warehouse_id} // 
+                {element.amount} руб // {element.cut_id}
               </p>
             </div>
           ))}

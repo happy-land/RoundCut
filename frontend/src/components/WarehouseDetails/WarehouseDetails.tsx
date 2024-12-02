@@ -13,7 +13,8 @@ const WarehouseDetails = () => {
     <>
       {warehouse && (
         <>
-          {warehouse.name}
+          {warehouse.id} ==  
+          {warehouse.name} ==
           {warehouse.description}
         </>
       )}
