@@ -26,7 +26,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const dispatch = useAppDispatch();
 
   const [skip, setSkip] = useState(false);
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState('');
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
   const [query, setQuery] = useState(undefined);

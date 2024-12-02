@@ -57,7 +57,7 @@ export class Priceitem {
 
   @Column()
   @IsString()
-  baseName: string;
+  baseName: string | null;
 
   @Column()
   @IsString()
