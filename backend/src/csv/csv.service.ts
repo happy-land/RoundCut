@@ -19,6 +19,7 @@ export class CsvService {
   ) {}
 
   items: Array<Priceitem>;
+  rounds: Array<Priceitem> = [];
 
   async fetchCsvFile() {
     console.log('Загружаем CSV...');
@@ -32,10 +33,9 @@ export class CsvService {
         },
       );
       const buf = iconv.decode(Buffer.from(data), 'win1251');
-      // console.log(buf);
-      const rounds: Array<Priceitem> = this.parseString(buf);
-      this.saveItems(rounds);
-      return rounds;
+      await this.parseString(buf);
+
+      return this.rounds;
     } catch (error) {
       throw new Error(error);
     }
@@ -44,16 +44,18 @@ export class CsvService {
   // метод получает на вход одну большую строку - содержимое csv файла
   // преобразует эту строку в массив строк по разделителю '\n'
   // проверяем, чтобы название было 'Круг'
-  parseString(buffer: string): Array<Priceitem> {
+  // parseString(buffer: string): Array<Priceitem> {
+  async parseString(buffer: string) {
     const arr: Array<string> = buffer.split('\n');
-    const rounds: Array<Priceitem> = [];
+    // const rounds: Array<Priceitem> = [];
     arr.map(async (item) => {
       if (this.isRound(item)) {
-        rounds.push(await this.parseItem(item));
+        await this.priceitemsRepository.save(await this.parseItem(item));
       }
     });
-    // console.log(krugi.length);
-    return rounds;
+    // console.log(`LENGTH: ${this.rounds.length}`);
+    // await this.saveItems(this.rounds);
+    // return rounds;
   }
 
   // метод получает на вход строку,
@@ -72,7 +74,7 @@ export class CsvService {
   // возвращает объект типа Priceitem
   async parseItem(item: string): Promise<Priceitem> {
     const arr: Array<string> = item.split(';');
-    console.log(`${arr[0]} ${arr[1]} ${arr[2]}`);
+    // console.log(`${arr[0]} ${arr[1]} ${arr[2]}`);
 
     console.log('arr[6]');
     console.log(arr[6]);
@@ -99,7 +101,7 @@ export class CsvService {
       warehouse: warehouse,
     };
 
-    console.log(typeof createdPriceitem.actualBalance);
+    console.log(createdPriceitem);
 
     return createdPriceitem;
   }
