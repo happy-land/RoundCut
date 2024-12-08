@@ -17,6 +17,7 @@ import { CutsModule } from './cuts/cuts.module';
 import { Cut } from './cuts/entities/cut.entity';
 import { CutitemsModule } from './cutitems/cutitems.module';
 import { Cutitem } from './cutitems/entities/cutitem.entity';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { Cutitem } from './cutitems/entities/cutitem.entity';
     MarkupsModule,
     CutsModule,
     CutitemsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [],

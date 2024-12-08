@@ -119,3 +119,9 @@ export type TGoodsCutItem = {
   warehouse_id: number;
   cut_id: number;
 } 
+
+export type TAdminCategory = {
+  id: number;
+  name: string;
+  description?: string;
+}
