@@ -5,5 +5,15 @@
 
   &__link {
     margin: 0 10px 10px 0;
+    padding: 10px;
+    text-decoration: dashed underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: from-font;
+    font-size: 24px;
+    color: black;
+  }
+  &__link:visited {
+    // text-decoration: none;
+    // text-decoration: dotted;
   }
 }

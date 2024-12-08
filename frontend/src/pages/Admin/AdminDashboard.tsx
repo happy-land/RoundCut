@@ -16,6 +16,9 @@ const AdminDashboard = (props: Props) => {
         <NavLink className={cnStyles('link')} to="/admin/price">
           Прайс
         </NavLink>
+        <NavLink className={cnStyles('link')} to="/admin/category">
+          Категории
+        </NavLink>
         <NavLink className={cnStyles('link')} to="/admin/warehouse">
           Склады
         </NavLink>
