@@ -45,7 +45,7 @@ export const priceApi = createApi({
       }),
       invalidatesTags: [{ type: 'Items', id: 'LIST' }],
     }),
-    fetchCsvPrice: builder.mutation<Array<TPriceItem>, void>({
+    fetchCsvPrice: builder.mutation({
       query: () => ({
         url: '/csv',
         method: 'POST',
