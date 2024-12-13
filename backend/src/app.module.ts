@@ -18,6 +18,7 @@ import { Cut } from './cuts/entities/cut.entity';
 import { CutitemsModule } from './cutitems/cutitems.module';
 import { Cutitem } from './cutitems/entities/cutitem.entity';
 import { CategoriesModule } from './categories/categories.module';
+import { CategoriesRepository } from './categories.repository/categories.repository';
 
 @Module({
   imports: [
@@ -44,6 +45,6 @@ import { CategoriesModule } from './categories/categories.module';
     CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [CategoriesRepository],
 })
 export class AppModule {}

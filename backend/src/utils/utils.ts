@@ -8,3 +8,12 @@ export const extractInterval = (inputString: string): [number, number] => {
 
   return [from, to]; // Return as a tuple
 };
+
+export const isPresentInArray = (
+  category: string,
+  categories: string[],
+): boolean => {
+  // console.log(`isUniqueCategory: ${category}`);
+  // if (categories.length === 0) return false;
+  return categories.some((element) => element === category);
+};

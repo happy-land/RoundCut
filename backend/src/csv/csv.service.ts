@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Response } from 'express';
-import csv from 'csv-parser';
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +7,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { mapBaseName } from 'src/utils/mapping';
 import { WarehousesService } from 'src/warehouses/warehouses.service';
+import { CategoriesRepository } from 'src/categories.repository/categories.repository';
 
 @Injectable()
 export class CsvService {
@@ -16,10 +15,12 @@ export class CsvService {
     @InjectRepository(Priceitem)
     private readonly priceitemsRepository: Repository<Priceitem>,
     private readonly warehousesService: WarehousesService,
+    private readonly categoriesRepository: CategoriesRepository,
   ) {}
 
   items: Array<Priceitem>;
   rounds: Array<Priceitem> = [];
+  // categories: Array<string>;
 
   async fetchCsvFile() {
     console.log('Загружаем CSV...');
@@ -33,9 +34,8 @@ export class CsvService {
         },
       );
       const buf = iconv.decode(Buffer.from(data), 'win1251');
-      await this.parseString(buf);
-
-      return this.rounds;
+      this.parseString(buf);
+      // return [this.rounds, this.categoriesRepository.categories];
     } catch (error) {
       throw new Error(error);
     }
@@ -51,11 +51,15 @@ export class CsvService {
     arr.map(async (item) => {
       if (this.isRound(item)) {
         await this.priceitemsRepository.save(await this.parseItem(item));
+        // console.log(this.categoriesRepository.categories);
       }
     });
+
     // console.log(`LENGTH: ${this.rounds.length}`);
     // await this.saveItems(this.rounds);
     // return rounds;
+    console.log('parseString END');
+    this.categoriesRepository.switchFlag();
   }
 
   // метод получает на вход строку,
@@ -64,7 +68,8 @@ export class CsvService {
   isRound(item: string): boolean {
     const arr: Array<string> = item.split(';');
     // console.log(arr[7]);
-    if (arr[7].includes('Круг') && arr[6].includes('УГЛИ')) {
+    // if (arr[7].includes('Круг') && arr[6].includes('УГЛИ')) {
+    if (arr[6].includes('ЛОБНЯ')) {
       return true;
     }
     return false;
@@ -76,12 +81,14 @@ export class CsvService {
     const arr: Array<string> = item.split(';');
     // console.log(`${arr[0]} ${arr[1]} ${arr[2]}`);
 
-    console.log('arr[6]');
-    console.log(arr[6]);
+    // console.log('arr[6]');
+    // console.log(arr[6]);
 
     const warehouse = await this.warehousesService.findOne({
       where: { name: mapBaseName(arr[6]) },
     });
+
+    this.categoriesRepository.save(arr[11]);
 
     const createdPriceitem: Priceitem = {
       id: uuidv4(),
@@ -101,7 +108,7 @@ export class CsvService {
       warehouse: warehouse,
     };
 
-    console.log(createdPriceitem);
+    // console.log(createdPriceitem);
 
     return createdPriceitem;
   }
