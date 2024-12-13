@@ -6,6 +6,7 @@ import { Cutitem } from './entities/cutitem.entity';
 import { Repository } from 'typeorm';
 import { WarehousesService } from 'src/warehouses/warehouses.service';
 import { CutsService } from 'src/cuts/cuts.service';
+import { extractInterval } from 'src/utils/utils';
 
 @Injectable()
 export class CutitemsService {
@@ -25,13 +26,17 @@ export class CutitemsService {
       where: { id: createCutitemDto.cut_id },
     });
 
-    console.log('warehouse: ');
-    console.log(warehouse);
-    console.log('cut: ');
-    console.log(cut);
+    // console.log('warehouse: ');
+    // console.log(warehouse);
+    // console.log('cut: ');
+    // console.log(cut);
+
+    const [from, to] = extractInterval(createCutitemDto.name);
 
     const cutitem = this.cutitemsRepository.create({
       ...createCutitemDto,
+      from,
+      to,
       warehouse: warehouse,
       cut: cut,
     });
