@@ -34,6 +34,14 @@ export class Cutitem {
 
   @Column()
   @IsNumber()
+  from: number;
+
+  @Column()
+  @IsNumber()
+  to: number;
+
+  @Column()
+  @IsNumber()
   amount: number;
 
   @ManyToOne(() => Warehouse, (warehouse) => warehouse.cutitems)

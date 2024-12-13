@@ -4,6 +4,12 @@ export class CreateCutitemDto {
   @IsString()
   name: string;
 
+  // @IsNumber()
+  // from: number;
+
+  // @IsNumber()
+  // to: number;
+
   @IsNumber()
   amount: number;
 

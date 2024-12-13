@@ -1,5 +1,11 @@
 import { FC, useEffect } from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import Layout from '../Layout/Layout';
 // import { Page404 } from '../../pages/404/Page404';
 // import './App.scss';
@@ -21,6 +27,7 @@ import { Modal } from '../Modal/Modal';
 import WarehouseDetails from '../WarehouseDetails/WarehouseDetails';
 import Cut from '../../pages/Cut';
 import CutitemEditPage from '../../pages/CutitemEditPage';
+import CategoryEditPage from '../../pages/CategoryEditPage';
 
 // import { getUserDataThunk } from '../../services/actions/user';
 // import { HomePage } from '../../pages/HomePage/HomePage';
@@ -46,7 +53,6 @@ const App: FC = () => {
     // console.log('useEffect from App.tsx, ', user);
     dispatch(setUser(user));
     // записать наценки в стор
-    
   }, []);
 
   const closeAllModals = () => {
@@ -64,6 +70,7 @@ const App: FC = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminDashboard />}>
             <Route path="/admin/price" element={<AdminPrice />} />
+            <Route path="/admin/category" element={<CategoryEditPage />} />
             <Route path="/admin/warehouse" element={<Warehouse />} />
             <Route
               path="/admin/warehouse/:id"
