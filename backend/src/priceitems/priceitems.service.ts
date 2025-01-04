@@ -4,16 +4,38 @@ import { UpdatePriceitemDto } from './dto/update-priceitem.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Priceitem } from './entities/priceitem.entity';
 import { Repository } from 'typeorm';
+import { WarehousesService } from 'src/warehouses/warehouses.service';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class PriceitemsService {
   constructor(
     @InjectRepository(Priceitem)
     private readonly priceitemsRepository: Repository<Priceitem>,
+    private readonly warehousesService: WarehousesService,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
-  create(createPriceitemDto: CreatePriceitemDto) {
-    return 'This action adds a new priceitem';
+  async create(createPriceitemDto: CreatePriceitemDto) {
+    const warehouse = await this.warehousesService.findOne({
+      where: { name: createPriceitemDto.baseName },
+    });
+
+    const category = await this.categoriesService.findOne({
+      where: { name: createPriceitemDto.categoryName },
+    });
+
+    const createdItem = this.priceitemsRepository.create({
+      ...createPriceitemDto,
+      warehouse,
+      category,
+    });
+    this.priceitemsRepository.save(createdItem);
+  }
+
+  async createMany(createPriceitemDto: CreatePriceitemDto[]) {
+    createPriceitemDto.map((itemDto) => this.create(itemDto));
+    // return createPriceitemDto.slice(100, 120);
   }
 
   async findAll() {
@@ -31,7 +53,7 @@ export class PriceitemsService {
     return `This action updates a #${id} priceitem`;
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const item = await this.priceitemsRepository.findOne({
       where: { id: id },
     });

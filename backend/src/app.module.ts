@@ -18,7 +18,7 @@ import { Cut } from './cuts/entities/cut.entity';
 import { CutitemsModule } from './cutitems/cutitems.module';
 import { Cutitem } from './cutitems/entities/cutitem.entity';
 import { CategoriesModule } from './categories/categories.module';
-import { CategoriesRepository } from './categories.repository/categories.repository';
+import { Category } from './categories/entities/category.entity';
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { CategoriesRepository } from './categories.repository/categories.reposit
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       schema: process.env.POSTGRES_SCHEMA,
-      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem],
+      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category],
       synchronize: true,
     }),
     UsersModule,
@@ -45,6 +45,5 @@ import { CategoriesRepository } from './categories.repository/categories.reposit
     CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [CategoriesRepository],
 })
 export class AppModule {}
