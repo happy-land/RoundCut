@@ -1,11 +1,9 @@
 import { IsDate, IsString, Length } from 'class-validator';
 import { Cutitem } from 'src/cutitems/entities/cutitem.entity';
-import { Warehouse } from 'src/warehouses/entities/warehouse.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,

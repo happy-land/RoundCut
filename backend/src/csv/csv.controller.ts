@@ -5,8 +5,13 @@ import { CsvService } from './csv.service';
 export class CsvController {
   constructor(private readonly csvService: CsvService) {}
 
-  @Post()
-  async getCSVFile() {
-    return await this.csvService.fetchCsvFile();
+  // @Post()
+  // async getCSVFile() {
+  //   return await this.csvService.fetchCsvFile();
+  // }
+
+  @Post('extract')
+  async extractData() {
+    return await this.csvService.extractData();
   }
 }

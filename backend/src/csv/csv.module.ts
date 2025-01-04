@@ -4,12 +4,16 @@ import { CsvService } from './csv.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Priceitem } from 'src/priceitems/entities/priceitem.entity';
 import { WarehousesModule } from 'src/warehouses/warehouses.module';
-import { CategoriesRepository } from 'src/categories.repository/categories.repository';
+import { CategoriesModule } from 'src/categories/categories.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Priceitem]), WarehousesModule],
+  imports: [
+    TypeOrmModule.forFeature([Priceitem]),
+    WarehousesModule,
+    CategoriesModule,
+  ],
   controllers: [CsvController],
-  providers: [CsvService, CategoriesRepository],
+  providers: [CsvService],
   exports: [CsvService],
 })
 export class CsvModule {}

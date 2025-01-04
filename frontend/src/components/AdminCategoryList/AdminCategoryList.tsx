@@ -12,7 +12,7 @@ const AdminCategoryList: FC<IAdminCategoryListProps> = () => {
   const [categoryTitle, setCategoryTitle] = useState<string>('');
 
   // queries
-  const { data: categories = [] } = useFetchCategoriesQuery();
+  const { data: categories = [] } = useFetchCategoriesQuery(0);
 
   // mutations
   const [addCategory] = useAddCategoryMutation();

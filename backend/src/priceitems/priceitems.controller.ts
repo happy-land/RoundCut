@@ -33,6 +33,11 @@ export class PriceitemsController {
     return this.priceitemsService.create(createPriceitemDto);
   }
 
+  @Post('all')
+  createMany(@Body() createPriceitemDto: CreatePriceitemDto[]) {
+    return this.priceitemsService.createMany(createPriceitemDto);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -48,7 +53,7 @@ export class PriceitemsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     console.log(id);
     return this.priceitemsService.remove(id);
   }
