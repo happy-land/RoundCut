@@ -44,8 +44,27 @@ export type TOwnUserData = {
   // isAuth: boolean;
 };
 
-// тип описывает строку прайса металлопроката, полученную от сервера
+// тип описывает строку прайса металлопроката, перед отправкой на сервер,
+// созданную на фронте
 export type TPriceItem = {
+  readonly actualBalance: number;
+  readonly unitWeight: number;
+  readonly unitPrice: number;
+  readonly pricePer1tn: number;
+  readonly pricePer5tn: number;
+  readonly pricePer15tn: number;
+  readonly baseName: string | null;
+  readonly name: string;
+  readonly size: string;
+  readonly surface: string;
+  readonly other: string;
+  readonly productGroup: string;
+  readonly length: number;
+  readonly categoryName: string;
+};
+
+// тип описывает строку прайса металлопроката, полученную от сервера
+export type TPriceItemResponse = {
   id: string;
   readonly actualBalance: number;
   readonly unitWeight: number;
@@ -60,16 +79,17 @@ export type TPriceItem = {
   readonly other: string;
   readonly productGroup: string;
   readonly length: number;
+  readonly catName?: string;
 };
 
-export type TPriceItemExtended = TPriceItem & {
+export type TPriceItemExtendedResponse = TPriceItemResponse & {
   nameExt: string; // на входе: Круг ст20 3ГП  - на выходе Круг ст20
   sizeNum: number; // 'удаляем мм из поля size, чтобы сортировать как number
   indexOfSecondSpace: number;
-  getIndex: (this: never) => void;
+  // getIndex: (this: never) => void;
 };
 
-export type TCutItem = TPriceItemExtended & {
+export type TCutItem = TPriceItemExtendedResponse & {
   length: number;
   weight: number;
 }
@@ -84,7 +104,7 @@ export type TPriceItemTemp = {
 // при получении строк прайса
 // GET /users/me
 export type TPriceitemsData = {
-  data: Array<TPriceItem>;
+  data: Array<TPriceItemResponse>;
 };
 
 export type TWarehouse = {

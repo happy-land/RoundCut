@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { json } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,6 +15,8 @@ async function bootstrap() {
     console.log(`Got invoked: ${req.originalUrl}`);
     next();
   });
+
+  app.use(json({ limit: '50mb' }));
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

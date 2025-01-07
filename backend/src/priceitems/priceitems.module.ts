@@ -3,9 +3,15 @@ import { PriceitemsService } from './priceitems.service';
 import { PriceitemsController } from './priceitems.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Priceitem } from './entities/priceitem.entity';
+import { WarehousesModule } from 'src/warehouses/warehouses.module';
+import { CategoriesModule } from 'src/categories/categories.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Priceitem])],
+  imports: [
+    TypeOrmModule.forFeature([Priceitem]),
+    WarehousesModule,
+    CategoriesModule,
+  ],
   controllers: [PriceitemsController],
   providers: [PriceitemsService],
   exports: [PriceitemsService],

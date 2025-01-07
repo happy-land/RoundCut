@@ -24,7 +24,10 @@ export const categoryApi = createApi({
       query: (body: { name: string }) => ({
         url: '/categories',
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${getCookie('accessToken')}`,
+        },
         body,
       }),
       invalidatesTags: [{ type: 'Categories' }],
