@@ -1,6 +1,6 @@
 export const mapBaseName = (
-  name: string | number | null,
-): string | number | null => {
+  name: string,
+): string | null => {
   switch (name) {
     case 'БЕЛГОРОД_КРЕЙДА':
       return 'БЕЛГОРОД';
@@ -25,7 +25,8 @@ export const mapBaseName = (
     case 'СТРОЙБАЗА':
       return null;
     case 'ТИТАРОВКА':
-      return null; // склад Краснодар уже есть в таблице наценок
+      // return null; // склад Краснодар уже есть в таблице наценок
+      return 'КРАСНОДАР'; // склад Краснодар уже есть в таблице наценок
     case 'ТУЛА_ПЛЕХАНОВО':
       return 'ТУЛА';
     case 'УГЛИ':

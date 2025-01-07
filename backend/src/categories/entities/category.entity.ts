@@ -1,14 +1,10 @@
-import { IsDate, IsNumber, IsString, Length } from 'class-validator';
-import { Cutitem } from 'src/cutitems/entities/cutitem.entity';
+import { IsDate, IsString, Length } from 'class-validator';
+import { Priceitem } from 'src/priceitems/entities/priceitem.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -31,6 +27,6 @@ export class Category {
   @IsString()
   name: string;
 
-  // @OneToMany(() => Cutitem, (cutitem) => cutitem.category)
-  // cutitems: Cutitem[];
+  @OneToMany(() => Priceitem, (priceitem) => priceitem.category)
+  priceitems: Priceitem[];
 }

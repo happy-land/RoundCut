@@ -1,4 +1,5 @@
 import { IsDate, IsNumber, IsString } from 'class-validator';
+import { Category } from 'src/categories/entities/category.entity';
 import { Warehouse } from 'src/warehouses/entities/warehouse.entity';
 import {
   Column,
@@ -13,23 +14,16 @@ import {
 
 @Entity()
 export class Priceitem {
-  // @PrimaryGeneratedColumn()
-  // id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @PrimaryColumn()
-  id: string;
+  @CreateDateColumn()
+  @IsDate()
+  createdAt: Date;
 
-  // @CreateDateColumn()
-  // @IsDate()
-  // createdAt: Date;
-
-  // @UpdateDateColumn()
-  // @IsDate()
-  // updatedAt: Date;
-
-  // @Column()
-  // @IsNumber()
-  // inStock: number; // В продаже
+  @UpdateDateColumn()
+  @IsDate()
+  updatedAt: Date;
 
   @Column('decimal')
   @IsNumber()
@@ -80,13 +74,15 @@ export class Priceitem {
   @IsString()
   productGroup: string;
 
-  @Column('decimal')
+  // @Column('decimal')
   @IsNumber()
   length: number;
 
-  @ManyToOne(() => Warehouse, (warehouse) => warehouse.priceitems, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Warehouse, (warehouse) => warehouse.priceitems)
   @JoinColumn({ name: 'warehouse_id' })
   warehouse: Warehouse;
+
+  @ManyToOne(() => Category, (category) => category.priceitems)
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 }
