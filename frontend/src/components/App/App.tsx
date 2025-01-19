@@ -9,7 +9,6 @@ import {
 import Layout from '../Layout/Layout';
 // import { Page404 } from '../../pages/404/Page404';
 // import './App.scss';
-import Counter from '../Counter/Counter';
 import { fetchItems } from '../../features/price/priceitemsSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { getCookie } from '../../utils/cookie';
@@ -85,7 +84,6 @@ const App: FC = () => {
             <Route path="/admin/cutitem" element={<CutitemEditPage />} />
           </Route>
 
-          <Route path="/1" element={<Counter />} />
           {/* <Route path="/price" element={<PriceList />} /> */}
           <Route path="/price/:id" element={<PriceItemDetails />} />
           {/* <Route path="/users/:id" element={<SinglePriceitemPage />} /> */}

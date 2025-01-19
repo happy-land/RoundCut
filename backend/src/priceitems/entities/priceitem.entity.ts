@@ -74,7 +74,7 @@ export class Priceitem {
   @IsString()
   productGroup: string;
 
-  // @Column('decimal')
+  @Column('decimal')
   @IsNumber()
   length: number;
 

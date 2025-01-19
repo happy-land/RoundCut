@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { PriceList } from '../components/PriceList/PriceList';
 import BilletPanel from '../components/BilletPanel/BilletPanel';
+import WarehousePicker from '../components/WarehousePicker/WarehousePicker';
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ const Dashboard = () => {
         </p>
       )}
       <button onClick={handleLogout}>Logout</button>
+      <WarehousePicker />
       <BilletPanel />
       <PriceList type='user' />
     </>

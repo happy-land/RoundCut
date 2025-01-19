@@ -1,16 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseUrl } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
-import { TPriceItem, TPriceItemExtendedResponse } from '../utils/types';
+import { TPriceItem, TPriceItemExtendedResponse, TPriceItemResponse } from '../utils/types';
 
 export const priceApi = createApi({
   reducerPath: 'priceApi',
   tagTypes: ['Items'],
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
   endpoints: (builder) => ({
-    fetchItems: builder.query<Array<TPriceItemExtendedResponse>, string>({
-      query: (query = '') => ({
-        url: `/priceitems?${query}`,
+    fetchItems: builder.query<Array<TPriceItemExtendedResponse>, number>({
+      query: (warehouseId = 202) => ({
+        url: `/priceitems?warehouseId=${warehouseId}`,
       }),
       providesTags: (result) =>
         result
@@ -70,7 +70,7 @@ export const priceApi = createApi({
     }),
     // items() добавление всех товаров в БД
     items: builder.mutation({
-      query: (body: TPriceItem[]) => ({
+      query: (body: TPriceItemResponse[]) => ({
         url: '/priceitems/all',
         method: 'POST',
         headers: {

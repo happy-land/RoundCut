@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from 'react';
+import React, { FC, ChangeEvent, MouseEvent, useState } from 'react';
 import {
   TPriceItem,
   TPriceItemResponse,
@@ -11,15 +11,16 @@ import {
   useDeleteAllItemsMutation,
   useDeleteItemMutation,
   useFetchItemsQuery,
-  useFetchCsvPriceMutation,
+  // useFetchCsvPriceMutation,
   useExtractDataMutation,
   useItemMutation,
   useItemsMutation,
 } from '../../services/priceApi';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { addItem } from '../../features/cut/cutSlice';
 // import { PAGE_SIZE } from '../../utils/constants';
 import { convertToPriceItem, extractFirstWord } from '../../utils/utils';
+import { selectWarehouse } from '../../features/warehouse/warehouseSlice';
 
 interface IPriceListListProps {
   type: 'user' | 'admin';
@@ -29,22 +30,24 @@ const cnStyles = block('price');
 
 export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const dispatch = useAppDispatch();
+  const { warehouseId } = useAppSelector(selectWarehouse);
 
   const [csvData, setCsvData] = useState<string[]>([]);
 
   // TODO: сделать тип TPriceItem, который будет отличаться от TPriceItemResponse
-  const [itemsToExport, setItemsToExport] = useState<TPriceItem[]>([]);
+  const [itemsToExport, setItemsToExport] = useState<TPriceItemResponse[]>([]);
 
   // Значение uniqueItemNames определяется при нажатии на кнопку "Уникальные названия"
   const [uniqueItemNames, setUniqueItemNames] = useState<string[]>([]);
 
-  // const [status, setStatus] = useState('');
-  // const [pageSize, setPageSize] = useState(PAGE_SIZE);
+  // Значение uniqueItemNames определяется при нажатии на кнопку "Уникальные длины"
+  const [uniqueItemLengths, setUniqueItemLengths] = useState<string[]>([]);
 
-  // const [query, setQuery] = useState(undefined);
+  const [inputName, setInputName] = useState<string>('Круг');
 
   // queries
-  const { data: items = [], refetch } = useFetchItemsQuery('');
+  // тут задать ()  номер айди склада, взять из хранилища
+  const { data: items = [], refetch } = useFetchItemsQuery(warehouseId);
 
   // mutations
   const [deleteItem] = useDeleteItemMutation();
@@ -52,16 +55,6 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const [extractData] = useExtractDataMutation();
   const [uploadItem] = useItemMutation();
   const [uploadItems] = useItemsMutation();
-
-  // TODO: удалить
-  const [fetchCsvPrice] = useFetchCsvPriceMutation();
-
-  // if (isLoading) {
-  //   console.log('loading...');
-  // }
-  // if (isSuccess) {
-  //   console.log(items);
-  // }
 
   const itemsExtended: Array<TPriceItemExtendedResponse> = items.map(
     (item: TPriceItemResponse) => {
@@ -96,6 +89,17 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     .sort((a, b) => a.sizeNum - b.sizeNum)
     .sort((a, b) => a.nameExt.localeCompare(b.nameExt));
 
+  // const filteredItems = orderedItems.map((item) => {
+  //   if (item.name.includes(inputName)) {
+  //     return item;
+  //   } else {
+  //     filteredItems.sp
+  //   }
+  // });
+
+  // console.log(inputName);
+  // console.log(filteredItems.length);
+
   const onItemClick = (item: TPriceItemExtendedResponse): void => {
     console.log(item);
     // сделать dispatch addItem
@@ -104,33 +108,30 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
 
   const content = (
     <ul className={cnStyles('items-list')}>
-      {orderedItems.slice(0, 100).map((item: TPriceItemExtendedResponse, index: number) => (
-        <li className={cnStyles('list-item')} key={index}>
-          <PriceItem
-            key={index}
-            item={item}
-            onClick={() => onItemClick(item)}
-          />
-          {type === 'admin' && (
-            <button onClick={(event) => handleDeleteItem(event, item)}>
-              X
-            </button>
+      {orderedItems.map((item: TPriceItemExtendedResponse, index: number) => (
+        <React.Fragment key={index}>
+          {item.name.toLowerCase().includes(inputName.toLowerCase()) && (
+            <li className={cnStyles('list-item')}>
+              <PriceItem
+                item={item}
+                onClick={() => onItemClick(item)}
+              />
+            </li>
           )}
-        </li>
+        </React.Fragment>
       ))}
     </ul>
   );
-  // }
 
-  const handleDeleteItem = async (
-    event: MouseEvent<HTMLButtonElement>,
-    item: TPriceItemExtendedResponse,
-  ): Promise<void> => {
-    event.preventDefault();
-    console.log(item);
-    const res = await deleteItem(item.id);
-    console.log(res);
-  };
+  // const handleDeleteItem = async (
+  //   event: MouseEvent<HTMLButtonElement>,
+  //   item: TPriceItemExtendedResponse,
+  // ): Promise<void> => {
+  //   event.preventDefault();
+  //   console.log(item);
+  //   const res = await deleteItem(item.id);
+  //   console.log(res);
+  // };
 
   const handleDeleteAllItems = async (
     event: MouseEvent<HTMLButtonElement>,
@@ -155,13 +156,10 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
 
   const handleShowUniqueNames = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // const items: TPriceItem[] = [];
     const uniqueItemNames: string[] = [];
 
     csvData.map((item) => {
       const arr: string[] = item.split(';');
-      // console.log(arr[11]);
-      // items.push(item);
       if (!uniqueItemNames.find((uniqueName) => uniqueName === arr[7])) {
         uniqueItemNames.push(arr[7]);
       }
@@ -169,38 +167,61 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     setUniqueItemNames(uniqueItemNames);
   };
 
+  const handleShowUniqueLengths = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    const uniqueItemLengths: string[] = [];
+
+    csvData.map((item) => {
+      const arr: string[] = item.split(';');
+      if (!uniqueItemLengths.find((uniqueLength) => uniqueLength === arr[12])) {
+        uniqueItemLengths.push(arr[12]);
+      }
+    });
+    setUniqueItemLengths(uniqueItemLengths);
+  };
+
   const handleMapCategoryToPriceItem = (
     event: MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    const arrToExport: TPriceItem[] = csvData.map((item) => {
+    const arrToExport: TPriceItemResponse[] = csvData.map((item) => {
       const arr: string[] = item.split(';');
       const catName = extractFirstWord(arr[7]);
       if (arr[7].includes('калиброванный')) {
         arr.splice(11, 1);
       }
+
+      if (arr[12].includes('Лист г/к')) {
+        arr.splice(11, 1);
+        console.log(arr);
+      }
       arr.push(catName);
-      // console.log(arr);
       return convertToPriceItem(arr);
     });
     // TODO: раскомментировать
     setItemsToExport(arrToExport);
   };
 
-  const handleUploadItem = (event: MouseEvent<HTMLButtonElement>, item: TPriceItem) => {
-    event.preventDefault();
-    console.log(item);
-    uploadItem(item);
-  };
+  // const handleUploadItem = (event: MouseEvent<HTMLButtonElement>, item: TPriceItemResponse) => {
+  //   event.preventDefault();
+  //   console.log(item);
+  //   uploadItem(item);
+  // };
 
   const handleUploadItems = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    console.log(itemsToExport);
     uploadItems(itemsToExport);
-  }
+  };
 
   const handleRefetch = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     refetch();
+  };
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    setInputName(event.target.value);
   };
 
   return (
@@ -242,6 +263,12 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
           </button>
           <button
             className={cnStyles('button')}
+            onClick={(event) => handleShowUniqueLengths(event)}
+          >
+            Уникальные длины
+          </button>
+          <button
+            className={cnStyles('button')}
             onClick={(event) => handleMapCategoryToPriceItem(event)}
           >
             Определить категорию
@@ -257,14 +284,19 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
               {index}. {uniqueName}
             </p>
           ))}
+          {uniqueItemLengths.map((uniqueLength, index) => (
+            <p key={index}>
+              {index}. {uniqueLength}
+            </p>
+          ))}
           {itemsToExport.slice(15580, 15590).map((item, index) => (
             <div key={index}>
               <p>
-                {index}. {item.name} {item.size} {item.baseName} {item.categoryName}
+                {index}. {item.name} {item.size} {item.baseName} {item.catName}
               </p>
               <button
                 className={cnStyles('button')}
-                onClick={(event) => handleUploadItem(event, item)}
+                // onClick={(event) => handleUploadItem(event, item)}
               >
                 +
               </button>
@@ -273,6 +305,15 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
         </div>
       )}
       <p>{items.length} строк и страниц</p>
+      <input
+        className={cnStyles('input')}
+        type="text"
+        name="input"
+        value={inputName ?? ''}
+        onChange={handleInputChange}
+        placeholder="Найти позицию"
+        required
+      />
       {content && (
         <section className={cnStyles('content-section')}>{content}</section>
       )}

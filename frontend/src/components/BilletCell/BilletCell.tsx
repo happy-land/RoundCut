@@ -1,18 +1,18 @@
 import React, { FC, MouseEvent, useEffect, useState } from 'react';
-import { TPriceItemExtended } from '../../utils/types';
+import { TPriceItemExtendedResponse } from '../../utils/types';
 import block from 'bem-cn';
 import { mapWeightToLevel } from '../../utils/markupMapping';
 
 interface IBilletCellProps {
-  item: TPriceItemExtended;
+  item: TPriceItemExtendedResponse;
   // onCloseClick: () => void;
 }
 
 const cnStyles = block('billet-cell-container');
 
 const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
-  const [length, setLength] = useState<number>(0);
-  const [weight, setWeight] = useState<number>(0);
+  const [length, setLength] = useState<number>(0); // длина заготовки
+  const [weight, setWeight] = useState<number>(0); // вес заготовки
   const [markupLevel, setMarkupLevel] = useState<number>(0);
   const [cost, setCost] = useState<number>(0);
 
@@ -20,16 +20,17 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
     event: MouseEvent<HTMLButtonElement>,
     step: number,
   ) => {
-    event.preventDefault();
+    event.preventDefault(); 
     setLength((prev) => prev + step);
   };
 
   useEffect(() => {
-    console.log('useEffect invoked');
+    console.log(`useEffect1 invoked ${item.unitWeight}`);
     setWeight(() => calculateWeight(length, item.length, item.unitWeight));
   }, [length, item.length, item.unitWeight]);
 
   useEffect(() => {
+    console.log(`useEffect2 invoked ${weight}`);
     setCost(() => calculateCost(item.pricePer1tn, weight));
   }, [item.pricePer1tn, weight]);
 
@@ -38,6 +39,7 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
     totalLength: number,
     totalWeight: number,
   ) => {
+    console.log(`${billetLength} ${totalLength} ${totalLength}`);
     return (billetLength * totalWeight) / totalLength;
   };
 

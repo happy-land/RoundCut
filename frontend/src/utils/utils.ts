@@ -1,5 +1,5 @@
 import { mapBaseName } from './mapping';
-import { TPriceItem } from './types';
+import { TPriceItemResponse } from './types';
 
 export const extractFirstWord = (input: string): string => {
   // Split the string by spaces and return the first element
@@ -7,7 +7,7 @@ export const extractFirstWord = (input: string): string => {
   return words[0];
 };
 
-export const convertToPriceItem = (arr: string[]): TPriceItem => {
+export const convertToPriceItem = (arr: string[]): TPriceItemResponse => {
   const createdPriceItem = {
     actualBalance: parsePotentiallyGroupedFloat(arr[0] as string),
     unitWeight: parsePotentiallyGroupedFloat(arr[1] as string),
@@ -22,7 +22,7 @@ export const convertToPriceItem = (arr: string[]): TPriceItem => {
     other: arr[10] as string,
     productGroup: arr[11] as string,
     length: parsePotentiallyGroupedFloat(arr[12] as string),
-    categoryName: arr[14],
+    catName: arr[14],
   };
   return createdPriceItem;
 };
