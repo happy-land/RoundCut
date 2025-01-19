@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { PriceitemsService } from './priceitems.service';
 import { CreatePriceitemDto } from './dto/create-priceitem.dto';
@@ -18,8 +19,9 @@ export class PriceitemsController {
   constructor(private readonly priceitemsService: PriceitemsService) {}
 
   @Get()
-  findAll() {
-    return this.priceitemsService.findAll();
+  findAll(@Query('warehouseId') warehouseId: string) {
+    console.log(warehouseId);
+    return this.priceitemsService.findAll(warehouseId);
   }
 
   @Get(':id')
