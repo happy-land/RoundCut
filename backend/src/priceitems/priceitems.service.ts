@@ -38,10 +38,17 @@ export class PriceitemsService {
     // return createPriceitemDto.slice(100, 120);
   }
 
-  async findAll() {
-    console.log('-> findAll');
-    const priceitems = await this.priceitemsRepository.find();
-    console.log(priceitems.length);
+  async findAll(warehouseId: string) {
+    const warehouse = await this.warehousesService.findOne({
+      where: { id: +warehouseId },
+    });
+    console.log(`-> findAll ${warehouseId}`);
+    console.log(warehouse);
+    const priceitems = await this.priceitemsRepository.find({
+      where: { baseName: warehouse.name },
+      // relations: ['warehouse', 'category'],
+    });
+    console.log(priceitems);
     return priceitems;
   }
 

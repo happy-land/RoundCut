@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TPriceItemExtended } from '../../utils/types';
+import { TPriceItemExtendedResponse } from '../../utils/types';
 import { RootState } from '../../app/store';
 
 export interface CutState {
-  items: Array<TPriceItemExtended>;
+  items: Array<TPriceItemExtendedResponse>;
 }
 
 const initialState: CutState = {
@@ -14,7 +14,7 @@ export const cutSlice = createSlice({
   name: 'cut',
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<{ item: TPriceItemExtended }>) => {
+    addItem: (state, action: PayloadAction<{ item: TPriceItemExtendedResponse }>) => {
       state.items.push(action.payload.item);
     },
     removeItem: (state, action: PayloadAction<{ id: string }>) => {
