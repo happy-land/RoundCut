@@ -65,7 +65,7 @@ export type TPriceItem = {
 
 // тип описывает строку прайса металлопроката, полученную от сервера
 export type TPriceItemResponse = {
-  id: string;
+  readonly id?: string;
   readonly actualBalance: number;
   readonly unitWeight: number;
   readonly unitPrice: number;
