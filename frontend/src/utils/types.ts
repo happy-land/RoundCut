@@ -94,6 +94,13 @@ export type TCutItem = TPriceItemExtendedResponse & {
   weight: number;
 }
 
+export type TBillet = {
+  item: TPriceItemExtendedResponse,
+  markup: TMarkup;
+  cutType: string; // поменять на 'лентопил' 'газ' 'отрезной'
+  
+}
+
 // temp
 export type TPriceItemTemp = {
   id: string;
