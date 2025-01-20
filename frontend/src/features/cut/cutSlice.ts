@@ -6,6 +6,10 @@ export interface CutState {
   items: Array<TPriceItemExtendedResponse>;
 }
 
+// export interface CutState {
+//   billets
+// }
+
 const initialState: CutState = {
   items: [],
 }

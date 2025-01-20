@@ -1,6 +1,8 @@
 export const extractInterval = (inputString: string): [number, number] => {
-  // Split the string at the slash
-  const parts = inputString.split('/');
+  // Split the string at the slash or hyphen
+  const parts = inputString.includes('/')
+    ? inputString.split('/')
+    : inputString.split('-');
 
   // Extract the desired substrings
   const from = Number(parts[0].trim().split(' ').pop()); // Get the last word before the slash
