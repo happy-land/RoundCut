@@ -15,6 +15,7 @@ import {
   useExtractDataMutation,
   useItemMutation,
   useItemsMutation,
+  useFetchItemQuery,
 } from '../../services/priceApi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { addItem } from '../../features/cut/cutSlice';
@@ -89,18 +90,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     .sort((a, b) => a.sizeNum - b.sizeNum)
     .sort((a, b) => a.nameExt.localeCompare(b.nameExt));
 
-  // const filteredItems = orderedItems.map((item) => {
-  //   if (item.name.includes(inputName)) {
-  //     return item;
-  //   } else {
-  //     filteredItems.sp
-  //   }
-  // });
-
-  // console.log(inputName);
-  // console.log(filteredItems.length);
-
-  const onItemClick = (item: TPriceItemExtendedResponse): void => {
+  const onItemClick = (item: TPriceItemExtendedResponse) => {
     console.log(item);
     // сделать dispatch addItem
     dispatch(addItem({ item: item }));
@@ -112,10 +102,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
         <React.Fragment key={index}>
           {item.name.toLowerCase().includes(inputName.toLowerCase()) && (
             <li className={cnStyles('list-item')}>
-              <PriceItem
-                item={item}
-                onClick={() => onItemClick(item)}
-              />
+              <PriceItem item={item} onClick={() => onItemClick(item)} />
             </li>
           )}
         </React.Fragment>

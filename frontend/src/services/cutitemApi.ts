@@ -16,6 +16,7 @@ export const cutitemApi = createApi({
       }),
       invalidatesTags: [{ type: 'Cutitems' }],
     }),
+    // TODO добавить getCutItembyWarehouseId
   }),
 });
 
