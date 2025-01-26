@@ -25,7 +25,7 @@ export class PriceitemsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.priceitemsService.findOne(+id);
   }
 
