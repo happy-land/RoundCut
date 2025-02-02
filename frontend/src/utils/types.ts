@@ -135,6 +135,7 @@ export type TMarkup = {
   level7: number;
   level8: number;
   warehouseId: number;
+  // [key: string]: number | string;
 }
 
 export type TAdminCut = {
