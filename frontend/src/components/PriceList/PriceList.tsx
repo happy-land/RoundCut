@@ -185,15 +185,8 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
       arr.push(catName);
       return convertToPriceItem(arr);
     });
-    // TODO: раскомментировать
     setItemsToExport(arrToExport);
   };
-
-  // const handleUploadItem = (event: MouseEvent<HTMLButtonElement>, item: TPriceItemResponse) => {
-  //   event.preventDefault();
-  //   console.log(item);
-  //   uploadItem(item);
-  // };
 
   const handleUploadItems = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
