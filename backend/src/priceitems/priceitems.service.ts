@@ -22,7 +22,7 @@ export class PriceitemsService {
     });
 
     const category = await this.categoriesService.findOne({
-      where: { name: createPriceitemDto.categoryName },
+      where: { name: createPriceitemDto.catName },
     });
 
     const createdItem = this.priceitemsRepository.create({

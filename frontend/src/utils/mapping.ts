@@ -35,6 +35,8 @@ export const mapBaseName = (
       return null;
     case 'ЧЕЛНЫ':
       return 'НАБЕРЕЖНЫЕ ЧЕЛНЫ';
+    case 'ЧЕЛНЫ НОВЫЙ':
+      return 'НАБЕРЕЖНЫЕ ЧЕЛНЫ НОВЫЙ';
     case 'ЧУЖОЙ СКЛАД':
       return null;
     default:

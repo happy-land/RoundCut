@@ -77,6 +77,8 @@ export class WarehousesService {
       where: { id: id },
       relations: {
         markup: true,
+        cutitems: true,
+        priceitems: true,
       },
     });
     if (!warehouse) {

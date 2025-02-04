@@ -25,10 +25,6 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
   const [preCostCoefApplied, setPreCostCoefApplied] = useState<number>(0);
   const [cost, setCost] = useState<number>(0);
 
-  console.log(`length: ${Number(length.toFixed(2))}`);
-  console.log(`item.length: ${item.length}`);
-
-  // const billetCoef = (Number(length.toFixed(2)) >= Number(item.length.toFixed(2))) ? 0 : 1.1;
   const billetCoef = 1.1;
   const billetMarkup = 800;
 
