@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCutitemDto } from './dto/create-cutitem.dto';
 import { UpdateCutitemDto } from './dto/update-cutitem.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cutitem } from './entities/cutitem.entity';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { WarehousesService } from 'src/warehouses/warehouses.service';
 import { CutsService } from 'src/cuts/cuts.service';
 import { extractInterval } from 'src/utils/utils';
@@ -26,11 +26,6 @@ export class CutitemsService {
       where: { id: createCutitemDto.cut_id },
     });
 
-    // console.log('warehouse: ');
-    // console.log(warehouse);
-    // console.log('cut: ');
-    // console.log(cut);
-
     const [from, to] = extractInterval(createCutitemDto.name);
 
     const cutitem = this.cutitemsRepository.create({
@@ -41,6 +36,31 @@ export class CutitemsService {
       cut: cut,
     });
     return this.cutitemsRepository.save(cutitem);
+  }
+
+  async findByParams(id: number, size: number) {
+    // const warehouse = await this.warehousesService.findOne({
+    //   where: { id: id },
+    // });
+
+    // if (!warehouse) {
+    //   return new NotFoundException(`Склад с id #${id} не найден`);
+    // }
+
+    const cutitem = await this.cutitemsRepository.findOne({
+      where: [
+        {
+          warehouse: { id: id },
+          from: LessThanOrEqual(size),
+          to: MoreThanOrEqual(size),
+        },
+      ],
+    });
+    if (!cutitem) {
+      return new NotFoundException('Резка не найдена');
+    }
+    return cutitem;
+    // return `This action returns a cutitem with warehouse id #${id} and size #${size}`;
   }
 
   findAll() {

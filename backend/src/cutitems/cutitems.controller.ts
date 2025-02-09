@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CutitemsService } from './cutitems.service';
 import { CreateCutitemDto } from './dto/create-cutitem.dto';
@@ -20,9 +21,17 @@ export class CutitemsController {
     return this.cutitemsService.create(createCutitemDto);
   }
 
-  @Get()
-  findAll() {
-    return this.cutitemsService.findAll();
+  // @Get()
+  // findAll() {
+  //   return this.cutitemsService.findAll();
+  // }
+
+  @Get('find')
+  findByParams(
+    @Query('warehouseId') id: string,
+    @Query('sizeNum') size: string,
+  ) {
+    return this.cutitemsService.findByParams(+id, +size);
   }
 
   @Get(':id')

@@ -77,7 +77,7 @@ export class Markup {
   level8: number;
 
   @OneToOne(() => Warehouse, {
-    // onDelete: 'CASCADE',
+    onDelete: 'CASCADE',
     // eager: true, // https://github.com/typeorm/typeorm/issues/3288#issuecomment-663143343
   })
   @JoinColumn() // создаст Foreign Key и не даст создать наценку

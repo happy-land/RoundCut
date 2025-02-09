@@ -22,7 +22,7 @@ export class PriceitemsService {
     });
 
     const category = await this.categoriesService.findOne({
-      where: { name: createPriceitemDto.categoryName },
+      where: { name: createPriceitemDto.catName },
     });
 
     const createdItem = this.priceitemsRepository.create({
@@ -48,12 +48,22 @@ export class PriceitemsService {
       where: { baseName: warehouse.name },
       // relations: ['warehouse', 'category'],
     });
-    console.log(priceitems);
+    // console.log(priceitems);
     return priceitems;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} priceitem`;
+  async findOne(id: number) {
+    const priceitem = await this.priceitemsRepository.findOne({
+      where: { id: id },
+      relations: {
+        warehouse: true,
+      },
+    });
+
+    if (!priceitem) {
+      throw new NotFoundException(`Price item with ID ${id} not found`);
+    }
+    return priceitem;
   }
 
   update(id: number, updatePriceitemDto: UpdatePriceitemDto) {
@@ -65,7 +75,7 @@ export class PriceitemsService {
       where: { id: id },
     });
     if (!item) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Price item with ID ${id} not found`);
     }
 
     await this.priceitemsRepository.delete({ id });
@@ -77,7 +87,7 @@ export class PriceitemsService {
     const items = await this.priceitemsRepository.find({});
 
     if (!items) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Items to remove not found`);
     }
     await this.priceitemsRepository.delete(items);
     return items;

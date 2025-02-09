@@ -65,7 +65,7 @@ export type TPriceItem = {
 
 // тип описывает строку прайса металлопроката, полученную от сервера
 export type TPriceItemResponse = {
-  readonly id?: string;
+  readonly id?: number;
   readonly actualBalance: number;
   readonly unitWeight: number;
   readonly unitPrice: number;
@@ -80,6 +80,9 @@ export type TPriceItemResponse = {
   readonly productGroup: string;
   readonly length: number;
   readonly catName?: string;
+  readonly warehouse?: {
+    id: number;
+  }
 };
 
 export type TPriceItemExtendedResponse = TPriceItemResponse & {
@@ -92,6 +95,13 @@ export type TPriceItemExtendedResponse = TPriceItemResponse & {
 export type TCutItem = TPriceItemExtendedResponse & {
   length: number;
   weight: number;
+}
+
+export type TBillet = {
+  item: TPriceItemExtendedResponse,
+  markup: TMarkup;
+  cutType: string; // поменять на 'лентопил' 'газ' 'отрезной'
+
 }
 
 // temp
@@ -125,6 +135,7 @@ export type TMarkup = {
   level7: number;
   level8: number;
   warehouseId: number;
+  // [key: string]: number | string;
 }
 
 export type TAdminCut = {

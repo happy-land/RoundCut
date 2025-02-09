@@ -20,7 +20,7 @@ export const priceApi = createApi({
             ]
           : [{ type: 'Items', id: 'LIST' }],
     }),
-    fetchItem: builder.query({
+    fetchItem: builder.query<TPriceItemExtendedResponse, number>({
       query: (itemId) => `/priceitems/${itemId}`,
     }),
     deleteItem: builder.mutation({
