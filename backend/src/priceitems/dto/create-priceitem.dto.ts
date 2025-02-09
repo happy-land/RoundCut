@@ -41,7 +41,7 @@ export class CreatePriceitemDto {
   length: number;
 
   @IsString()
-  categoryName: string;
+  catName: string;
 
   // @IsNumber()
   // warehouse_id: number;

@@ -16,7 +16,18 @@ export const cutitemApi = createApi({
       }),
       invalidatesTags: [{ type: 'Cutitems' }],
     }),
+    // TODO добавить getCutitemByParameters
+    getCutitemByParameters: builder.query<
+      TGoodsCutItem,
+      { warehouseId: number; sizeNum: number }
+    >({
+      query: ({ warehouseId, sizeNum }) => ({
+        // url: `/cutitems/warehouse/${warehouseId}/size/${sizeNum}`,
+        url: `/cutitems/find?warehouseId=${warehouseId}&sizeNum=${sizeNum}`,
+      }),
+    }),
   }),
 });
 
-export const { useAddCutitemMutation } = cutitemApi;
+export const { useAddCutitemMutation, useGetCutitemByParametersQuery } =
+  cutitemApi;

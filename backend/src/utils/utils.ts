@@ -1,6 +1,14 @@
 export const extractInterval = (inputString: string): [number, number] => {
-  // Split the string at the slash
-  const parts = inputString.split('/');
+  // обработка случая, когда в строке указано количество 1000
+  // "Резка круга 1000 лентопильным станком"
+  if (inputString.includes('1000')) {
+    inputString = formatString(inputString, 1000);
+  }
+
+  // Split the string at the slash or hyphen
+  const parts = inputString.includes('/')
+    ? inputString.split('/')
+    : inputString.split('-');
 
   // Extract the desired substrings
   const from = Number(parts[0].trim().split(' ').pop()); // Get the last word before the slash
@@ -9,11 +17,14 @@ export const extractInterval = (inputString: string): [number, number] => {
   return [from, to]; // Return as a tuple
 };
 
+const formatString = (inputString: string, targetNumber: number): string => {
+  const regex = new RegExp(`\\b${targetNumber}\\b`);
+  return inputString.replace(regex, `${targetNumber}/${targetNumber}`);
+};
+
 export const isPresentInArray = (
   category: string,
   categories: string[],
 ): boolean => {
-  // console.log(`isUniqueCategory: ${category}`);
-  // if (categories.length === 0) return false;
   return categories.some((element) => element === category);
 };
