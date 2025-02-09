@@ -1,5 +1,5 @@
-import React, { FC, MouseEvent, useEffect, useState } from 'react';
-import { TPriceItemExtendedResponse } from '../../utils/types';
+import { FC, MouseEvent, useEffect, useState } from 'react';
+import { TGoodsCutItem, TPriceItemExtendedResponse } from '../../utils/types';
 import block from 'bem-cn';
 import { mapWeightToLevel } from '../../utils/markupMapping';
 import { useGetMarkupByWarehouseIdQuery } from '../../services/markupApi';
@@ -19,12 +19,13 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
   const [length, setLength] = useState<number>(0); // длина заготовки
   const [weight, setWeight] = useState<number>(0); // вес заготовки
   const [markupValue, setMarkupValue] = useState<number>(0); // малотоннажность
-  const [billetMarkupValue, setBilletMarkupValue] = useState<number>(0); // наценка на часть заготовки
+  // const [billetMarkupValue, setBilletMarkupValue] = useState<number>(0); // наценка на часть заготовки
   const [markupPrice, setMarkupPrice] = useState<number>(0); // цена с учетом малотоннажности
   const [billetPrice, setBilletPrice] = useState<number>(0);
   const [preCost, setPreCost] = useState<number>(0);
   const [preCostCoefApplied, setPreCostCoefApplied] = useState<number>(0);
   const [cost, setCost] = useState<number>(0);
+  const [totalCost, setTotalCost] = useState<number>(0);
 
   const billetCoef = 1.1;
   const billetMarkup = 800;
@@ -150,6 +151,24 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
     setCost(() => calculateCost(billetPrice, weight));
   }, [billetPrice, weight]);
 
+
+  useEffect(() => {
+    const calculateTotalCost = (cost: number, cutitem: TGoodsCutItem) => {
+      if (cutitem) {
+        return cost + cutitem.amount;
+      } else {
+        return cost;
+      }
+    };
+
+    if (cutitem) {
+      setTotalCost(() => calculateTotalCost(cost, cutitem));
+    } else {
+      setTotalCost(cost);
+    }
+  }, [cost, cutitem]);
+
+
   return (
     <article className={cnStyles('cell')}>
       <p className={cnStyles('stat')}>
@@ -176,7 +195,8 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
         ({item.baseName}) - {item.sizeNum} {item.length} - - {weight.toFixed(2)}{' '}
         кг - Стоимость: {cost.toFixed(2)} руб
       </p>
-      <p>{cutitem?.name}</p>
+      <p className={cnStyles('price')}>{cutitem?.name}: {cutitem?.amount} руб.</p>
+      <p className={cnStyles('price')}>Итого: {totalCost ? totalCost.toFixed(2) : 0} руб.</p>
       <div className={cnStyles('actions')}>
         <button
           className={cnStyles('button')}
