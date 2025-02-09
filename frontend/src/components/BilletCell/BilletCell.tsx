@@ -4,6 +4,7 @@ import block from 'bem-cn';
 import { mapWeightToLevel } from '../../utils/markupMapping';
 import { useGetMarkupByWarehouseIdQuery } from '../../services/markupApi';
 import { useFetchItemQuery } from '../../services/priceApi';
+import { useGetCutitemByParametersQuery } from '../../services/cutitemApi';
 import { skipToken } from '@reduxjs/toolkit/query';
 import './BilletCell.scss';
 
@@ -34,6 +35,17 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
   const { data: markup } = useGetMarkupByWarehouseIdQuery(
     itemExtended?.warehouse?.id ?? skipToken,
   );
+
+  const queryArgs = itemExtended?.warehouse?.id
+    ? {
+        warehouseId: itemExtended.warehouse.id,
+        sizeNum: item.sizeNum,
+      }
+    : skipToken;
+
+  const { data: cutitem } = useGetCutitemByParametersQuery(queryArgs, {
+    skip: !queryArgs,
+  });
 
   const handleChangeLength = (
     event: MouseEvent<HTMLButtonElement>,
@@ -161,9 +173,10 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
         Стоимость: {weight > 0 ? cost.toFixed(2) : 0}
       </p>
       <p className={cnStyles('item-label')}>
-        ({item.baseName}) - {item.size} {item.length} - - {weight.toFixed(2)} кг
-        - Стоимость: {cost.toFixed(2)} руб
+        ({item.baseName}) - {item.sizeNum} {item.length} - - {weight.toFixed(2)}{' '}
+        кг - Стоимость: {cost.toFixed(2)} руб
       </p>
+      <p>{cutitem?.name}</p>
       <div className={cnStyles('actions')}>
         <button
           className={cnStyles('button')}
