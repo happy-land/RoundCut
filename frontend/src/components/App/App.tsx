@@ -8,14 +8,14 @@ import {
 } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 // import { Page404 } from '../../pages/404/Page404';
-// import './App.scss';
+import './App.scss';
 import { fetchItems } from '../../features/price/priceitemsSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { getCookie } from '../../utils/cookie';
 import { SigninPage } from '../../pages/SigninPage/SigninPage';
 import Auth from '../../pages/Auth';
 import Dashboard from '../../pages/Dashboard';
-import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
 import { setUser } from '../../features/authSlice';
 import { PriceItemDetails } from '../../pages/PriceItemDetails';
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
@@ -27,13 +27,6 @@ import WarehouseDetails from '../WarehouseDetails/WarehouseDetails';
 import Cut from '../../pages/Cut';
 import CutitemEditPage from '../../pages/CutitemEditPage';
 import CategoryEditPage from '../../pages/CategoryEditPage';
-
-// import { getUserDataThunk } from '../../services/actions/user';
-// import { HomePage } from '../../pages/HomePage/HomePage';
-// import { SigninPage } from '../../pages/SigninPage/SigninPage';
-// import { LoadCSV } from '../LoadCSV/LoadCSV';
-// import { PricePage } from '../../pages/PricePage/PricePage';
-// import { getPriceItemsThunk } from '../../services/actions/priceItems';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
