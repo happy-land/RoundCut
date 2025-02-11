@@ -1,0 +1,16 @@
+@import '../assets/styles/vars.scss';
+
+
+.dashboard-container {
+  &__title {
+    font-family: $title-font-family;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  &__user {
+    font-family: $base-font-family;
+    font-weight: 400;
+    font-size: 24px;
+  }
+}
