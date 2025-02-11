@@ -8,6 +8,10 @@ import { toast } from 'react-toastify';
 import { PriceList } from '../components/PriceList/PriceList';
 import BilletPanel from '../components/BilletPanel/BilletPanel';
 import WarehousePicker from '../components/WarehousePicker/WarehousePicker';
+import block from 'bem-cn';
+import './Dashboard.scss';
+
+const cnStyles = block('dashboard-container');
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -22,9 +26,9 @@ const Dashboard = () => {
 
   return (
     <>
-      <h1>Dashboard</h1>
+      <h1 className={cnStyles('title')}>Dashboard</h1>
       {user && (
-        <p>
+        <p className={cnStyles('user')}>
           Вы вошли как <Link to="/admin">{user.username}</Link>
         </p>
       )}
