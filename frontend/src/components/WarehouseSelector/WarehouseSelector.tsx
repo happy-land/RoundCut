@@ -1,13 +1,13 @@
 import React, { ChangeEvent } from 'react';
 import block from 'bem-cn';
-import './WarehousePicker.scss';
+import './WarehouseSelector.scss';
 import { NavLink } from 'react-router-dom';
 import { setWarehouse } from '../../features/warehouse/warehouseSlice';
 import { useAppDispatch } from '../../app/hooks';
 
-const cnStyles = block('warehouse-picker');
+const cnStyles = block('warehouse-selector');
 
-const WarehousePicker = () => {
+const WarehouseSelector = () => {
 
   const dispath = useAppDispatch();
 
@@ -38,4 +38,4 @@ const WarehousePicker = () => {
   );
 };
 
-export default WarehousePicker;
+export default WarehouseSelector;
