@@ -26,7 +26,7 @@ const WarehouseList: FC<IWarehouseListProps> = ({ type }) => {
   const [warehouseName, setWarehouseName] = useState<string>('');
 
   // queries
-  const { data: warehouses = [] } = useFetchWarehousesQuery();
+  const { data: warehouses = [] } = useFetchWarehousesQuery(0);
 
   // mutations
   const [addWarehouse] = useAddWarehouseMutation();
