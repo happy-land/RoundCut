@@ -1,0 +1,65 @@
+// .warehouse-selector {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   padding: 20px;
+//   background-color: #f9f9f9;
+//   border-radius: 10px;
+//   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+//   margin: 20px 0;
+
+//   &__warehouses {
+//     width: 100%;
+//     margin-bottom: 20px;
+//   }
+
+//   &__warehouses-select {
+//     width: 100%;
+//     padding: 10px;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//     font-size: 16px;
+//     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//     margin-bottom: 20px;
+//   }
+
+//   &__item {
+//     padding: 10px;
+//     cursor: pointer;
+//     transition: background-color 0.3s ease;
+
+//     &:hover {
+//       background-color: #e0e0e0;
+//     }
+//   }
+
+//   .combobox-input {
+//     width: 100%;
+//     padding: 10px;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//     font-size: 16px;
+//     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//     margin-bottom: 10px;
+//   }
+
+//   .combobox-options {
+//     width: 100%;
+//     max-height: 200px;
+//     overflow-y: auto;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//     background-color: #fff;
+//     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+//   }
+
+//   .combobox-option {
+//     padding: 10px;
+//     cursor: pointer;
+//     transition: background-color 0.3s ease;
+
+//     &:hover {
+//       background-color: #e0e0e0;
+//     }
+//   }
+// }

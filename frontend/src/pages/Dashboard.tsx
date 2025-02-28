@@ -32,10 +32,12 @@ const Dashboard = () => {
           Вы вошли как <Link to="/admin">{user.username}</Link>
         </p>
       )}
+      {/* <p className="text-red-50">asd</p> */}
+
       <button onClick={handleLogout}>Logout</button>
       <WarehouseSelector />
       <BilletPanel />
-      <PriceList type='user' />
+      <PriceList type="user" />
     </>
   );
 };
