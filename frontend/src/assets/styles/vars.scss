@@ -5,7 +5,11 @@ $base-font-family: 'Open Sans', Times, sans-serif;
 
 $my-super-color: magenta;
 
-$white: #fff;
+
+// body
+$body-bg: #2a2c2f;
+
+$white: #fbfaf6;
 $text-dark: #100c34;
 $text-light: #a3a3a3;
 $input-hover: #666;
@@ -16,3 +20,14 @@ $error: #e90d41;
 $link-gray: #f0f0f0;
 $hover-gray: #bfbfbf;
 $select-gray: #f8f8f8;
+
+// buttons
+$button-bg: $neon-pink;
+$button-hover: $neon-green;
+$button-text: $white;
+
+// media queries
+$phone: 576px;
+$tablet: 768px;
+$desktop: 992px;
+$large-desktop: 1280px;

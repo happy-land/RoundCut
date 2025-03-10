@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import store from './app/store.ts';
 import './style.css';
 
-// import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 // import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.min.css';
 
