@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react';
+import { ChangeEvent, MouseEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MDBInput } from 'mdb-react-ui-kit';
 import {
@@ -26,21 +26,14 @@ const Auth = () => {
 
   const { username, email, password } = formValue;
   const [showRegister, setShowRegister] = useState(false);
+  const [errorText, setErrorText] = useState<string>("");
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [registerUser] = useRegisterUserMutation();
 
-  const [
-    fetchToken,
-    {
-      data: tokenData,
-      // isSuccess: isTokenSuccess,
-      // isError: isTokenError,
-      // error: tokenError,
-    },
-  ] = useFetchTokenMutation();
+  const [fetchToken] = useFetchTokenMutation();
 
   const [fetchUser, { data: userData, isSuccess: isUserSuccess }] =
     useFetchUserMutation();
@@ -68,6 +61,10 @@ const Auth = () => {
     event.preventDefault();
     if (username && password) {
       const res = await fetchToken({ username, password });
+      console.log(res.error.status);
+      if (res.error.status === 401) {
+        setErrorText(res.error.data.message);
+      }
       setCookie('accessToken', res.data.access_token);
       if (res.data.access_token) {
         console.log('token ok');
@@ -139,6 +136,7 @@ const Auth = () => {
               className={cnStyles('form-input')}
             />
           </label>
+          <span className={cnStyles('error-text')}>{errorText}</span>
           {!showRegister ? (
             <button
               className={cnStyles('form-btn-submit')}
