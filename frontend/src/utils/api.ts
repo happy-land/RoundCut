@@ -7,11 +7,18 @@ export type TResponse<T> = {
 } & T;
 
 export const checkResponse = <T>(res: Response) => {
-  // console.log('checkResponse: ', res);
+  console.log(res);
+  if (res.ok) {
+    console.log(res.ok);
+  }
   return res.ok
     ? res.json().then((data) => data as TResponse<T>)
     : Promise.reject(res.status);
 };
+
+export const checkSuccess = <T>(response: TResponse<T>) => {
+  return response.success ? response : Promise.reject('Error data');
+}
 
 const headersWithAuthorizeFn = () => ({
   'Content-Type': 'application/json',

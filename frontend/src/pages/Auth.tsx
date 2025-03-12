@@ -12,11 +12,12 @@ import { useAppDispatch } from '../app/hooks';
 import { setUser } from '../features/authSlice';
 import './Auth.scss';
 import block from 'bem-cn';
+import { checkResponse, checkSuccess } from '../utils/api';
+import { TAuthData } from '../utils/types';
 
 const cnStyles = block('auth');
 
 const initialState = {
-  username: '',
   email: '',
   password: '',
 };
@@ -24,9 +25,9 @@ const initialState = {
 const Auth = () => {
   const [formValue, setFormValue] = useState(initialState);
 
-  const { username, email, password } = formValue;
+  const { email, password } = formValue;
   const [showRegister, setShowRegister] = useState(false);
-  const [errorText, setErrorText] = useState<string>("");
+  const [errorText, setErrorText] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -37,13 +38,6 @@ const Auth = () => {
 
   const [fetchUser, { data: userData, isSuccess: isUserSuccess }] =
     useFetchUserMutation();
-
-  // переделали useFetchTokenQuery -> useFetchTokenMutation
-  // const {
-  //   data: userDataResponse,
-  //   isLoading: isUserLoading,
-  //   isSuccess: isUserSuccess,
-  // } = useFetchUserQuery('', { skip });
 
   // проверим, если ли токен в куках,
   // если есть - то перейдем на /dashboard
@@ -59,27 +53,52 @@ const Auth = () => {
 
   const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (username && password) {
-      const res = await fetchToken({ username, password });
-      console.log(res.error.status);
-      if (res.error.status === 401) {
-        setErrorText(res.error.data.message);
-      }
-      setCookie('accessToken', res.data.access_token);
-      if (res.data.access_token) {
-        console.log('token ok');
-        const user = await fetchUser({});
-        console.log(user);
-        if (user) {
-          toast.success('вход выполнен!', userData);
-          dispatch(setUser({ user: user.data, token: res.data.access_token }));
-          navigate('/dashboard');
-        } else {
-          console.log('user data loading error');
-        }
-      } else {
-        console.log('token error');
-      }
+    if (email && password) {
+      // const res = await fetchToken({ username: email, password });
+      await fetchToken({ username: email, password })
+        .then((response) => {
+          // console.log(result);
+          if (response.data) {
+            // console.log(response.data);
+            setCookie('accessToken', response.data.access_token);
+
+            // const user = await fetchUser({});
+            // if (user) {
+            //   toast.success('вход выполнен!', userData);
+            //   dispatch(
+            //     setUser({ user: user.data, token: res.data.access_token }),
+            //   );
+            navigate('/dashboard');
+          }
+
+          if (response.error) {
+            // console.log(response.error);
+            setErrorText(response.error.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // console.log(res);
+
+      // if (res.data.access_token) {
+      //   setCookie('accessToken', res.data.access_token);
+      //   console.log('token ok');
+      //   const user = await fetchUser({});
+      //   console.log(user);
+      //   if (user) {
+      //     toast.success('вход выполнен!', userData);
+      //     dispatch(setUser({ user: user.data, token: res.data.access_token }));
+      //     navigate('/dashboard');
+      //   } else {
+      //     console.log('user data loading error');
+      //   }
+      // } else {
+      //   console.log('token error');
+      //   if (res.error && res.error.status === 401) {
+      //     setErrorText(res.error.data.message);
+      //   }
+      // }
     } else {
       toast.error('Please fill all inputs');
     }
@@ -110,13 +129,24 @@ const Auth = () => {
               className="form-control form-control-lg"
             />
           )}
-          <label className={cnStyles('form-field')}>
+          {/* убрать username из формы авторизации и из формы регистрации*/}
+          {/* <label className={cnStyles('form-field')}>
             <MDBInput
               type="text"
               name="username"
               value={username}
               onChange={handleChange}
               label="Имя пользователя"
+              className={cnStyles('form-input')}
+            />
+          </label> */}
+          <label className={cnStyles('form-field')}>
+            <MDBInput
+              type="text"
+              name="email"
+              value={email}
+              onChange={handleChange}
+              label="Эл. почта"
               className={cnStyles('form-input')}
             />
           </label>
