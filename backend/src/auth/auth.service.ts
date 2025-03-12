@@ -17,9 +17,9 @@ export class AuthService {
     return { access_token: this.jwtService.sign(payload) };
   }
 
-  async validatePassword(username: string, password: string) {
+  async validatePassword(email: string, password: string) {
     const usrPswd = password;
-    const user = await this.usersService.findByUsername(username);
+    const user = await this.usersService.findByEmail(email);
 
     if (user) {
       const isValidHash = await this.hashService.verifyHash(

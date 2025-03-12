@@ -25,7 +25,7 @@ export class User {
   updatedAt: Date;
 
   @Column({
-    unique: true,
+    default: 'Пользователь',
   })
   @Length(2, 30)
   @IsString()

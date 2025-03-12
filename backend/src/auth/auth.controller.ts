@@ -12,9 +12,17 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
+  // @UseGuards(LocalGuard)
+  // @Post('signin')
+  // signin(@Req() req: RequestUser) {
+  //   console.log(req.user);
+  //   return this.authService.auth(req.user);
+  // }
+
   @UseGuards(LocalGuard)
   @Post('signin')
   signin(@Req() req: RequestUser) {
+    console.log(req);
     return this.authService.auth(req.user);
   }
 
