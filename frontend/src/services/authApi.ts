@@ -8,7 +8,7 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
-      query: (body: { email: string; username: string; password: string }) => ({
+      query: (body: { email: string; password: string }) => ({
         url: '/auth/signup',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

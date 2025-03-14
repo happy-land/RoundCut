@@ -6,7 +6,7 @@ export type TUser = {
 };
 
 export type TLoginForm = {
-  username: string;
+  email: string; // email === username (Passport.js)
   password: string;
 };
 
