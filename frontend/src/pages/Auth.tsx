@@ -14,20 +14,18 @@ import './Auth.scss';
 import block from 'bem-cn';
 import { checkResponse, checkSuccess } from '../utils/api';
 import { TAuthData } from '../utils/types';
+import { useForm } from '../hooks/useForm';
 
 const cnStyles = block('auth');
 
-const initialState = {
-  email: '',
-  password: '',
-};
-
 const Auth = () => {
-  const [formValue, setFormValue] = useState(initialState);
-
-  const { email, password } = formValue;
   const [showRegister, setShowRegister] = useState(false);
   const [errorText, setErrorText] = useState<string>('');
+
+  const { values, handleChange } = useForm({
+    email: '',
+    password: '',
+  });
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -47,21 +45,16 @@ const Auth = () => {
   // ;    }
   //   });
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormValue({ ...formValue, [event.target.name]: event.target.value });
-  };
-
   const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (email && password) {
-      // const res = await fetchToken({ username: email, password });
-      await fetchToken({ username: email, password })
+    if (values.email && values.password) {
+      await fetchToken({ username: values.email, password: values.password })
         .then((response) => {
-          // console.log(result);
           if (response.data) {
             // console.log(response.data);
             setCookie('accessToken', response.data.access_token);
 
+            // получеие данных о пользователе и сохранение их в сторе - сделаем на странице /dashboard
             // const user = await fetchUser({});
             // if (user) {
             //   toast.success('вход выполнен!', userData);
@@ -70,7 +63,6 @@ const Auth = () => {
             //   );
             navigate('/dashboard');
           }
-
           if (response.error) {
             // console.log(response.error);
             setErrorText(response.error.data.message);
@@ -79,26 +71,6 @@ const Auth = () => {
         .catch((err) => {
           console.log(err);
         });
-      // console.log(res);
-
-      // if (res.data.access_token) {
-      //   setCookie('accessToken', res.data.access_token);
-      //   console.log('token ok');
-      //   const user = await fetchUser({});
-      //   console.log(user);
-      //   if (user) {
-      //     toast.success('вход выполнен!', userData);
-      //     dispatch(setUser({ user: user.data, token: res.data.access_token }));
-      //     navigate('/dashboard');
-      //   } else {
-      //     console.log('user data loading error');
-      //   }
-      // } else {
-      //   console.log('token error');
-      //   if (res.error && res.error.status === 401) {
-      //     setErrorText(res.error.data.message);
-      //   }
-      // }
     } else {
       toast.error('Please fill all inputs');
     }
@@ -106,61 +78,75 @@ const Auth = () => {
 
   const handleRegister = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (username && password && email) {
-      const res = await registerUser({ email, username, password });
-      console.log(res);
+    if (values.email && values.password) {
+      await registerUser({
+        email: values.email,
+        password: values.password,
+      })
+        .then((response) => {
+          if (response.data) {
+            console.log(response.data);
+            fetchToken({
+              username: values.email,
+              password: values.password,
+            }).then((response) => {
+              if (response.data) {
+                setCookie('accessToken', response.data.access_token);
+                navigate('/dashboard');
+              }
+            });
+          }
+          if (response.error) {
+            setErrorText(response.error.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
+  };
+
+  const toggleForm = () => {
+    setShowRegister((prev) => !prev);
+    setErrorText('');
+  };
+
+  const checkButtonDisabled = (): boolean => {
+    return values.email.length < 6 || values.password.length < 4;
   };
 
   return (
     <section className={cnStyles()}>
       <h2 className={cnStyles('title')}>
-        {!showRegister ? 'Вход' : 'Register'}
+        {!showRegister ? 'Вход' : 'Регистрация'}
       </h2>
       <form className={cnStyles('form')}>
         <fieldset className={cnStyles('fieldset')}>
-          {showRegister && (
-            <MDBInput
-              type="email"
-              name="email"
-              value={email}
-              onChange={handleChange}
-              label="Email"
-              className="form-control form-control-lg"
-            />
-          )}
-          {/* убрать username из формы авторизации и из формы регистрации*/}
-          {/* <label className={cnStyles('form-field')}>
-            <MDBInput
-              type="text"
-              name="username"
-              value={username}
-              onChange={handleChange}
-              label="Имя пользователя"
-              className={cnStyles('form-input')}
-            />
-          </label> */}
           <label className={cnStyles('form-field')}>
             <MDBInput
               type="text"
               name="email"
-              value={email}
+              value={values.email}
               onChange={handleChange}
               label="Эл. почта"
               className={cnStyles('form-input')}
             />
           </label>
-          <div className={cnStyles('link-wrapper')}>
-            <Link to="/forgot-password" className={cnStyles('forgot-password')}>
-              Забыли пароль?
-            </Link>
-          </div>
-
+          {!showRegister && (
+            <div className={cnStyles('link-wrapper')}>
+              <Link
+                to="/forgot-password"
+                className={cnStyles('forgot-password')}
+              >
+                Забыли пароль?
+              </Link>
+            </div>
+          )}
           <label className={cnStyles('form-field')}>
             <MDBInput
               type="password"
               name="password"
-              value={password}
+              value={values.password}
               onChange={handleChange}
               label="Пароль"
               className={cnStyles('form-input')}
@@ -172,12 +158,20 @@ const Auth = () => {
               className={cnStyles('form-btn-submit')}
               onClick={handleLogin}
               type="button"
+              disabled={checkButtonDisabled()}
             >
               Войти
             </button>
           ) : (
-            <button onClick={handleRegister} type="button">
-              Register
+            <button
+              className={cnStyles('form-btn-submit').mix(
+                'auth__form-btn-outline',
+              )}
+              onClick={handleRegister}
+              type="button"
+              disabled={checkButtonDisabled()}
+            >
+              Новый пользователь
             </button>
           )}
         </fieldset>
@@ -187,24 +181,17 @@ const Auth = () => {
         {!showRegister ? (
           <p className={cnStyles('text')}>
             Нет аккаунта?
-            <Link
-              to="/register"
-              className={cnStyles('link-text')}
-              onClick={() => setShowRegister(true)}
-            >
+            <span className={cnStyles('link-text')} onClick={toggleForm}>
               {} Регистрация
-            </Link>
+            </span>
           </p>
         ) : (
-          <>
-            Already have an account?
-            <p
-              style={{ cursor: 'pointer' }}
-              onClick={() => setShowRegister(false)}
-            >
-              Sign in
-            </p>
-          </>
+          <p className={cnStyles('text')}>
+            Есть аккаунт?
+            <span className={cnStyles('link-text')} onClick={toggleForm}>
+              {} Вход
+            </span>
+          </p>
         )}
       </div>
     </section>

@@ -16,10 +16,12 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, username } = createUserDto;
+    console.log('Inside create');
+    console.log(createUserDto);
+    const { email } = createUserDto;
 
     const user = await this.usersRepository.find({
-      where: [{ username: username }, { email: email }],
+      where: [{ email: email }],
     });
 
     if (user.length !== 0) {
@@ -46,7 +48,8 @@ export class UsersService {
 
   async findMany(query: string) {
     return this.usersRepository.find({
-      where: [{ username: query }, { email: query }],
+      // where: [{ username: query }, { email: query }],
+      where: [{ email: query }],
     });
   }
 
