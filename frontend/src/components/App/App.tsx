@@ -27,6 +27,7 @@ import WarehouseDetails from '../WarehouseDetails/WarehouseDetails';
 import Cut from '../../pages/Cut';
 import CutitemEditPage from '../../pages/CutitemEditPage';
 import CategoryEditPage from '../../pages/CategoryEditPage';
+import ForgotPassword from '../../pages/ForgotPassword';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -59,6 +60,7 @@ const App: FC = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/auth" replace />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminDashboard />}>
             <Route path="/admin/price" element={<AdminPrice />} />

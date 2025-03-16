@@ -4,6 +4,7 @@ import { UsersService } from 'src/users/users.service';
 import { LocalGuard } from './guards/local-auth.guard';
 import { RequestUser } from 'src/utils/types';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { ForgotPasswordDto } from 'src/users/dto/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,5 +34,10 @@ export class AuthController {
     this.authService.auth(user);
     delete user.password;
     return user;
+  }
+
+  @Post('forgot')
+  forgot(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return forgotPasswordDto;
   }
 }
