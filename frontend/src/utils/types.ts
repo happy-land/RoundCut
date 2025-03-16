@@ -10,6 +10,18 @@ export type TLoginForm = {
   password: string;
 };
 
+export type TForgotPasswordForm = {
+  email: string;
+}
+
+// export type TLoginResponse = {
+
+// };
+
+// export type TRegisterResponse = {
+
+// };
+
 // используется для типизации ответа сервера
 // при регистрации нового пользователя
 // POST /signup
@@ -34,13 +46,13 @@ export type TAuthData = {
 // при получении данных пользователя
 // GET /users/me
 export type TOwnUserData = {
-  id: number;//
-  username: string;//
-  about: string;//
-  avatar: string;//
-  email: string;//
-  createdAt: string;//
-  updatedAt: string;//
+  id: number; //
+  username: string; //
+  about: string; //
+  avatar: string; //
+  email: string; //
+  createdAt: string; //
+  updatedAt: string; //
   // isAuth: boolean;
 };
 
@@ -82,7 +94,7 @@ export type TPriceItemResponse = {
   readonly catName?: string;
   readonly warehouse?: {
     id: number;
-  }
+  };
 };
 
 export type TPriceItemExtendedResponse = TPriceItemResponse & {
@@ -95,14 +107,13 @@ export type TPriceItemExtendedResponse = TPriceItemResponse & {
 export type TCutItem = TPriceItemExtendedResponse & {
   length: number;
   weight: number;
-}
+};
 
 export type TBillet = {
-  item: TPriceItemExtendedResponse,
+  item: TPriceItemExtendedResponse;
   markup: TMarkup;
   cutType: string; // поменять на 'лентопил' 'газ' 'отрезной'
-
-}
+};
 
 // temp
 export type TPriceItemTemp = {
@@ -121,7 +132,7 @@ export type TWarehouse = {
   id: number;
   name: string;
   description?: string;
-}
+};
 
 export type TMarkup = {
   // id: number; // added by postgres
@@ -136,12 +147,12 @@ export type TMarkup = {
   level8: number;
   warehouseId: number;
   // [key: string]: number | string;
-}
+};
 
 export type TAdminCut = {
   id: number;
   name: string;
-}
+};
 
 export type TGoodsCutItem = {
   name: string;
@@ -149,10 +160,10 @@ export type TGoodsCutItem = {
   amount: number;
   warehouse_id: number;
   cut_id: number;
-} 
+};
 
 export type TAdminCategory = {
   id: number;
   name: string;
   description?: string;
-}
+};

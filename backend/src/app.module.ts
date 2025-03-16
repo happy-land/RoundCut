@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
@@ -19,10 +19,30 @@ import { CutitemsModule } from './cutitems/cutitems.module';
 import { Cutitem } from './cutitems/entities/cutitem.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/entities/category.entity';
+// import { MailerModule } from '@nestjs-modules/mailer';
+import { AppService } from './app.service';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
+    // MailerModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     transport: {
+    //       host: configService.get<string>('MAIL_HOST'),
+    //       port: configService.get<string>('MAIL_PORT'),
+    //       secure: false,
+    //       auth: {
+    //         user: configService.get<string>('MAIL_USER'),
+    //         pass: configService.get<string>('MAIL_PASSWORD'),
+    //       },
+    //     },
+    //     defaults: {
+    //       from: configService.get<string>('MAIL_SENDER'),
+    //     },
+    //   }),
+    // }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -43,7 +63,9 @@ import { Category } from './categories/entities/category.entity';
     CutsModule,
     CutitemsModule,
     CategoriesModule,
+    MailerModule,
   ],
   controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

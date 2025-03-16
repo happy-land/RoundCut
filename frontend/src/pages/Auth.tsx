@@ -1,20 +1,19 @@
-import { ChangeEvent, MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MDBInput } from 'mdb-react-ui-kit';
 import {
   useRegisterUserMutation,
   useFetchTokenMutation,
-  useFetchUserMutation,
+  // useFetchUserMutation,
 } from '../services/authApi';
 import { toast } from 'react-toastify';
 import { setCookie } from '../utils/cookie';
-import { useAppDispatch } from '../app/hooks';
-import { setUser } from '../features/authSlice';
+// import { useAppDispatch } from '../app/hooks';
+// import { setUser } from '../features/authSlice';
 import './Auth.scss';
 import block from 'bem-cn';
-import { checkResponse, checkSuccess } from '../utils/api';
-import { TAuthData } from '../utils/types';
 import { useForm } from '../hooks/useForm';
+import { TLoginForm } from '../utils/types';
 
 const cnStyles = block('auth');
 
@@ -23,19 +22,19 @@ const Auth = () => {
   const [errorText, setErrorText] = useState<string>('');
 
   const { values, handleChange } = useForm({
-    email: '',
-    password: '',
-  });
+      email: '',
+      password: '',
+    });
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [registerUser] = useRegisterUserMutation();
 
   const [fetchToken] = useFetchTokenMutation();
 
-  const [fetchUser, { data: userData, isSuccess: isUserSuccess }] =
-    useFetchUserMutation();
+  // const [fetchUser, { data: userData, isSuccess: isUserSuccess }] =
+  //   useFetchUserMutation();
 
   // проверим, если ли токен в куках,
   // если есть - то перейдем на /dashboard
@@ -47,11 +46,11 @@ const Auth = () => {
 
   const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (values.email && values.password) {
+    if ('password' in values && values.email && values.password) {
       await fetchToken({ username: values.email, password: values.password })
         .then((response) => {
-          if (response.data) {
-            // console.log(response.data);
+          if ('data' in response) {
+            console.log(response.data);
             setCookie('accessToken', response.data.access_token);
 
             // получеие данных о пользователе и сохранение их в сторе - сделаем на странице /dashboard
@@ -63,9 +62,15 @@ const Auth = () => {
             //   );
             navigate('/dashboard');
           }
-          if (response.error) {
-            // console.log(response.error);
-            setErrorText(response.error.data.message);
+          if ('error' in response) {
+            console.log(response.error);
+            if ('data' in response.error) {
+              setErrorText(
+                (response.error.data as { message: string }).message,
+              );
+            } else {
+              setErrorText('An unknown error occurred');
+            }
           }
         })
         .catch((err) => {
@@ -78,26 +83,32 @@ const Auth = () => {
 
   const handleRegister = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (values.email && values.password) {
+    if ('password' in values && values.email && values.password) {
       await registerUser({
         email: values.email,
         password: values.password,
       })
         .then((response) => {
-          if (response.data) {
+          if ('data' in response) {
             console.log(response.data);
             fetchToken({
               username: values.email,
               password: values.password,
             }).then((response) => {
-              if (response.data) {
+              if ('data' in response) {
                 setCookie('accessToken', response.data.access_token);
                 navigate('/dashboard');
               }
             });
           }
-          if (response.error) {
-            setErrorText(response.error.data.message);
+          if ('error' in response) {
+            if ('data' in response.error) {
+              setErrorText(
+                (response.error.data as { message: string }).message,
+              );
+            } else {
+              setErrorText('An unknown error occurred');
+            }
           }
         })
         .catch((err) => {
@@ -112,7 +123,7 @@ const Auth = () => {
   };
 
   const checkButtonDisabled = (): boolean => {
-    return values.email.length < 6 || values.password.length < 4;
+    return values.email.length < 6 || (values as TLoginForm).password.length < 4;
   };
 
   return (
@@ -146,7 +157,7 @@ const Auth = () => {
             <MDBInput
               type="password"
               name="password"
-              value={values.password}
+              value={(values as TLoginForm).password}
               onChange={handleChange}
               label="Пароль"
               className={cnStyles('form-input')}

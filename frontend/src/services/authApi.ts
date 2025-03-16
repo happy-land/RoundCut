@@ -24,6 +24,15 @@ export const authApi = createApi({
       }),
       invalidatesTags: [{ type: 'Auth' }],
     }),
+    fetchResetPasswordToken: builder.mutation({
+      query: (body: { email: string }) => ({
+        url: '/auth/forgot',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      }),
+      invalidatesTags: [{ type: 'Auth' }],
+    }),
     fetchUser: builder.mutation({
       query: () => ({
         url: '/users/me',
@@ -33,13 +42,14 @@ export const authApi = createApi({
           authorization: `Bearer ${getCookie('accessToken')}`,
         },
       }),
-      // providesTags
     }),
+
   }),
 });
 
 export const {
   useRegisterUserMutation,
   useFetchTokenMutation,
+  useFetchResetPasswordTokenMutation,
   useFetchUserMutation,
 } = authApi;
