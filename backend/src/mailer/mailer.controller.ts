@@ -8,9 +8,11 @@ export class MailerController {
 
   @Post('send-email')
   async sendMail(@Body() body: Record<string, string>) {
+    console.log(body);
     const dto: SendEmailDto = {
       // from: { name: 'Lucy', address: 'lucye@xample.com' },
-      recipients: [{ name: 'Ruslan', address: 'ruslan.s.kulish@gmail.com' }],
+      // recipients: [{ name: 'Ruslan', address: 'ruslan.s.kulish@gmail.com' }],
+      recipients: [{ name: 'Ruslan', address: body.address }],
       subject: 'Письмо от CustomCut',
       html: '<p>Привет, <strong>%name%</strong>, ваш номер %number% </p>',
       placeholderReplacements: body,

@@ -8,9 +8,13 @@ import { HashModule } from 'src/hash/hash.module';
 import { UsersModule } from 'src/users/users.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { MailerService } from 'src/mailer/mailer.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     PassportModule,
     HashModule,
     UsersModule,
@@ -24,7 +28,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, MailerService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

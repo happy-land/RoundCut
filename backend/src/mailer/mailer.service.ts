@@ -1,12 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { SendEmailDto } from './dto/send-email.dto';
 import Mail from 'nodemailer/lib/mailer';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MailerService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+  ) {}
 
   mailTransport() {
     const transporter = nodemailer.createTransport({
@@ -55,6 +61,41 @@ export class MailerService {
       return result;
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async sendResetPasswordLink(email: string, token: string) {
+    // const user = await this.usersService.findByEmail(email);
+    //user.resetToken = token;  - что это???
+
+    const url = `${this.configService.get<string>(
+      'FRONTEND_URL',
+    )}/reset-password?token=${token}`;
+
+    const dto: SendEmailDto = {
+      recipients: [{ name: 'Ruslan', address: email }],
+      subject: 'Сброс пароля',
+      html: `<p>Для сброса пароля перейдите по <a href="${url}">ссылке</a></p>`,
+      // placeholderReplacements: body,
+    };
+
+    return this.sendEmail(dto);
+  }
+
+  async decodeConfirmationToken(token: string) {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: this.configService.get<string>('JWT_VERIFICATION_TOKEN_SECRET'),
+      });
+      if (typeof payload === 'object' && 'email' in payload) {
+        return payload.email;
+      }
+      throw new BadRequestException('Неверный токен');
+    } catch (error) {
+      if (error?.name === 'TokenExpiredError') {
+        throw new BadRequestException('Токен просрочен');
+      }
+      throw new BadRequestException('Неверный токен');
     }
   }
 }

@@ -22,9 +22,9 @@ const Auth = () => {
   const [errorText, setErrorText] = useState<string>('');
 
   const { values, handleChange } = useForm({
-      email: '',
-      password: '',
-    });
+    email: '',
+    password: '',
+  });
 
   // const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -46,8 +46,15 @@ const Auth = () => {
 
   const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if ('password' in values && values.email && values.password) {
-      await fetchToken({ username: values.email, password: values.password })
+    if (
+      'password' in values &&
+      (values as TLoginForm).email &&
+      values.password
+    ) {
+      await fetchToken({
+        username: (values as TLoginForm).email,
+        password: values.password,
+      })
         .then((response) => {
           if ('data' in response) {
             console.log(response.data);
@@ -83,16 +90,20 @@ const Auth = () => {
 
   const handleRegister = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if ('password' in values && values.email && values.password) {
+    if (
+      'password' in values &&
+      (values as TLoginForm).email &&
+      values.password
+    ) {
       await registerUser({
-        email: values.email,
+        email: (values as TLoginForm).email,
         password: values.password,
       })
         .then((response) => {
           if ('data' in response) {
             console.log(response.data);
             fetchToken({
-              username: values.email,
+              username: (values as TLoginForm).email,
               password: values.password,
             }).then((response) => {
               if ('data' in response) {
@@ -123,7 +134,10 @@ const Auth = () => {
   };
 
   const checkButtonDisabled = (): boolean => {
-    return values.email.length < 6 || (values as TLoginForm).password.length < 4;
+    return (
+      (values as TLoginForm).email.length < 6 ||
+      (values as TLoginForm).password.length < 4
+    );
   };
 
   return (
@@ -137,7 +151,7 @@ const Auth = () => {
             <MDBInput
               type="text"
               name="email"
-              value={values.email}
+              value={(values as TLoginForm).email}
               onChange={handleChange}
               label="Эл. почта"
               className={cnStyles('form-input')}
