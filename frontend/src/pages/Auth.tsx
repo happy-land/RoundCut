@@ -1,53 +1,40 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { MouseEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { MDBInput } from 'mdb-react-ui-kit';
 import {
   useRegisterUserMutation,
   useFetchTokenMutation,
-  useFetchUserMutation /*, useLazyFetchUserQuery*/,
+  // useFetchUserMutation,
 } from '../services/authApi';
 import { toast } from 'react-toastify';
 import { setCookie } from '../utils/cookie';
-import { useAppDispatch } from '../app/hooks';
-import { setUser } from '../features/authSlice';
+// import { useAppDispatch } from '../app/hooks';
+// import { setUser } from '../features/authSlice';
+import './Auth.scss';
+import block from 'bem-cn';
+import { useForm } from '../hooks/useForm';
+import { TLoginForm } from '../utils/types';
 
-const initialState = {
-  username: '',
-  email: '',
-  password: '',
-};
+const cnStyles = block('auth');
 
 const Auth = () => {
-  const [formValue, setFormValue] = useState(initialState);
-  const [skip, setSkip] = useState(true);
-
-  const { username, email, password } = formValue;
   const [showRegister, setShowRegister] = useState(false);
+  const [errorText, setErrorText] = useState<string>('');
 
-  const dispatch = useAppDispatch();
+  const { values, handleChange } = useForm({
+    email: '',
+    password: '',
+  });
+
+  // const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [registerUser] = useRegisterUserMutation();
 
-  const [
-    fetchToken,
-    {
-      data: tokenData,
-      // isSuccess: isTokenSuccess,
-      // isError: isTokenError,
-      // error: tokenError,
-    },
-  ] = useFetchTokenMutation();
+  const [fetchToken] = useFetchTokenMutation();
 
-  const [fetchUser, { data: userData, isSuccess: isUserSuccess }] =
-    useFetchUserMutation();
-
-  // переделали useFetchTokenQuery -> useFetchTokenMutation
-  // const {
-  //   data: userDataResponse,
-  //   isLoading: isUserLoading,
-  //   isSuccess: isUserSuccess,
-  // } = useFetchUserQuery('', { skip });
+  // const [fetchUser, { data: userData, isSuccess: isUserSuccess }] =
+  //   useFetchUserMutation();
 
   // проверим, если ли токен в куках,
   // если есть - то перейдем на /dashboard
@@ -57,134 +44,182 @@ const Auth = () => {
   // ;    }
   //   });
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormValue({ ...formValue, [event.target.name]: event.target.value });
-  };
-
   const handleLogin = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (username && password) {
-      const res = await fetchToken({ username, password });
-      console.log(res);
-      // if (isUserSuccess) {
-      //   console.log('isUserSuccess!!!!');
-      // }
-      setCookie('accessToken', res.data.access_token);
-      if (res.data.access_token) {
-        console.log('token ok');
-        const user = await fetchUser({});
-        console.log(user);
-        if (user) {
-          toast.success('вход выполнен!', userData);
-          dispatch(setUser({ user: user.data, token: res.data.access_token }));
-          navigate('/dashboard');
-        } else {
-          console.log('user data loading error');
-        }
-      } else {
-        console.log('token error');
-      }
+    if (
+      'password' in values &&
+      (values as TLoginForm).email &&
+      values.password
+    ) {
+      await fetchToken({
+        username: (values as TLoginForm).email,
+        password: values.password,
+      })
+        .then((response) => {
+          if ('data' in response) {
+            console.log(response.data);
+            setCookie('accessToken', response.data.access_token);
+
+            // получеие данных о пользователе и сохранение их в сторе - сделаем на странице /dashboard
+            // const user = await fetchUser({});
+            // if (user) {
+            //   toast.success('вход выполнен!', userData);
+            //   dispatch(
+            //     setUser({ user: user.data, token: res.data.access_token }),
+            //   );
+            navigate('/dashboard');
+          }
+          if ('error' in response) {
+            console.log(response.error);
+            if ('data' in response.error) {
+              setErrorText(
+                (response.error.data as { message: string }).message,
+              );
+            } else {
+              setErrorText('An unknown error occurred');
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       toast.error('Please fill all inputs');
     }
   };
 
-  const handleRegister = async(event: MouseEvent<HTMLButtonElement>) => {
+  const handleRegister = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (username && password && email) {
-      const res = await registerUser({ email, username, password });
-      console.log(res);
+    if (
+      'password' in values &&
+      (values as TLoginForm).email &&
+      values.password
+    ) {
+      await registerUser({
+        email: (values as TLoginForm).email,
+        password: values.password,
+      })
+        .then((response) => {
+          if ('data' in response) {
+            console.log(response.data);
+            fetchToken({
+              username: (values as TLoginForm).email,
+              password: values.password,
+            }).then((response) => {
+              if ('data' in response) {
+                setCookie('accessToken', response.data.access_token);
+                navigate('/dashboard');
+              }
+            });
+          }
+          if ('error' in response) {
+            if ('data' in response.error) {
+              setErrorText(
+                (response.error.data as { message: string }).message,
+              );
+            } else {
+              setErrorText('An unknown error occurred');
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-  }
+  };
 
-  const toggleSkip = () => {
-    setSkip((prev) => !prev);
+  const toggleForm = () => {
+    setShowRegister((prev) => !prev);
+    setErrorText('');
+  };
+
+  const checkButtonDisabled = (): boolean => {
+    return (
+      (values as TLoginForm).email.length < 6 ||
+      (values as TLoginForm).password.length < 4
+    );
   };
 
   return (
-    <>
-      <div>
-        {tokenData && <p>tokenData: {tokenData.access_token}</p>}
-        {isUserSuccess && <p>isUserSuccess: {String(isUserSuccess)}</p>}
-        {userData && <p>userData: {userData.username}</p>}
-        <p>Skip: {String(skip)}</p>
-        <button onClick={toggleSkip}>Switch</button>
-      </div>
-      <section className="vh-100 gradient-custom">
-        <div className="container">
-          <h2>{!showRegister ? 'Login' : 'Register'}</h2>
-          <p className="text-white-50 mb-4">
-            {!showRegister
-              ? 'Please enter your username and password'
-              : 'Please enter user details'}
-          </p>
-          {showRegister && (
-            <div className="form-outline form-white mb-4">
-              <MDBInput
-                type="email"
-                name="email"
-                value={email}
-                onChange={handleChange}
-                label="Email"
-                className="form-control form-control-lg"
-              />
-            </div>
-          )}
-          <div className="form-outline form-white mb-4">
+    <section className={cnStyles()}>
+      <h2 className={cnStyles('title')}>
+        {!showRegister ? 'Вход' : 'Регистрация'}
+      </h2>
+      <form className={cnStyles('form')}>
+        <fieldset className={cnStyles('fieldset')}>
+          <label className={cnStyles('form-field')}>
             <MDBInput
               type="text"
-              name="username"
-              value={username}
+              name="email"
+              value={(values as TLoginForm).email}
               onChange={handleChange}
-              label="Username"
-              className="form-control form-control-lg"
+              label="Эл. почта"
+              className={cnStyles('form-input')}
             />
-          </div>
-          <div className="form-outline form-white mb-4">
+          </label>
+          {!showRegister && (
+            <div className={cnStyles('link-wrapper')}>
+              <Link
+                to="/forgot-password"
+                className={cnStyles('forgot-password')}
+              >
+                Забыли пароль?
+              </Link>
+            </div>
+          )}
+          <label className={cnStyles('form-field')}>
             <MDBInput
               type="password"
               name="password"
-              value={password}
+              value={(values as TLoginForm).password}
               onChange={handleChange}
-              label="Password"
-              className="form-control form-control-lg"
+              label="Пароль"
+              className={cnStyles('form-input')}
             />
-          </div>
+          </label>
+          <span className={cnStyles('error-text')}>{errorText}</span>
           {!showRegister ? (
-            <button onClick={handleLogin} type="button">
-              Login
+            <button
+              className={cnStyles('form-btn-submit')}
+              onClick={handleLogin}
+              type="button"
+              disabled={checkButtonDisabled()}
+            >
+              Войти
             </button>
           ) : (
-            <button onClick={handleRegister} type="button">
-              Register
+            <button
+              className={cnStyles('form-btn-submit').mix(
+                'auth__form-btn-outline',
+              )}
+              onClick={handleRegister}
+              type="button"
+              disabled={checkButtonDisabled()}
+            >
+              Новый пользователь
             </button>
           )}
-          <div>
-            {!showRegister ? (
-              <>
-                Don't have an account?
-                <p
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setShowRegister(true)}
-                >
-                  Sign up
-                </p>
-              </>
-            ) : (
-              <>
-                Already have an account?
-                <p
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setShowRegister(false)}
-                >
-                  Sign in
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-    </>
+        </fieldset>
+      </form>
+
+      <div className={cnStyles('actions')}>
+        {!showRegister ? (
+          <p className={cnStyles('text')}>
+            Нет аккаунта?
+            <span className={cnStyles('link-text')} onClick={toggleForm}>
+              {} Регистрация
+            </span>
+          </p>
+        ) : (
+          <p className={cnStyles('text')}>
+            Есть аккаунт?
+            <span className={cnStyles('link-text')} onClick={toggleForm}>
+              {} Вход
+            </span>
+          </p>
+        )}
+      </div>
+    </section>
   );
 };
 

@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
-import { TLoginForm } from '../utils/types';
+import { TForgotPasswordForm, TLoginForm, TResetPasswordForm } from '../utils/types';
 
-export const useForm = (inputValues: TLoginForm) => {
+export const useForm = (inputValues: TLoginForm | TForgotPasswordForm | TResetPasswordForm) => {
   const [values, setValues] = useState(inputValues);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
