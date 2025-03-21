@@ -8,7 +8,7 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
-      query: (body: { email: string; username: string; password: string }) => ({
+      query: (body: { email: string; password: string }) => ({
         url: '/auth/signup',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,6 +24,23 @@ export const authApi = createApi({
       }),
       invalidatesTags: [{ type: 'Auth' }],
     }),
+    sendResetPasswordLinkByEmail: builder.mutation({
+      query: (body: { email: string }) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      }),
+      invalidatesTags: [{ type: 'Auth' }],
+    }),
+    resetPassword: builder.mutation({
+      query: (body: { password: string, token: string }) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
+    }),
     fetchUser: builder.mutation({
       query: () => ({
         url: '/users/me',
@@ -33,13 +50,15 @@ export const authApi = createApi({
           authorization: `Bearer ${getCookie('accessToken')}`,
         },
       }),
-      // providesTags
     }),
+
   }),
 });
 
 export const {
   useRegisterUserMutation,
   useFetchTokenMutation,
+  useSendResetPasswordLinkByEmailMutation,
+  useResetPasswordMutation,
   useFetchUserMutation,
 } = authApi;

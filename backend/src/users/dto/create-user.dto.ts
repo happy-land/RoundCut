@@ -8,20 +8,14 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsEmail()
+  // @IsEmail()
   email: string;
 
   @IsNotEmpty()
   password: string;
 
-  @IsString()
-  @MinLength(2, {
-    message: 'Имя пользователя не может быть короче 2-х символов',
-  })
-  @MaxLength(30, {
-    message: 'Имя пользователя не может быть длиннее 30 символов',
-  })
-  username: string;
+  // @IsNotEmpty()
+  // username: string;
 
   @IsString()
   @IsOptional()
