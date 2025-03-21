@@ -24,14 +24,22 @@ export const authApi = createApi({
       }),
       invalidatesTags: [{ type: 'Auth' }],
     }),
-    fetchResetPasswordToken: builder.mutation({
+    sendResetPasswordLinkByEmail: builder.mutation({
       query: (body: { email: string }) => ({
-        url: '/auth/forgot',
+        url: '/auth/forgot-password',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body,
       }),
       invalidatesTags: [{ type: 'Auth' }],
+    }),
+    resetPassword: builder.mutation({
+      query: (body: { password: string, token: string }) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
     }),
     fetchUser: builder.mutation({
       query: () => ({
@@ -50,6 +58,7 @@ export const authApi = createApi({
 export const {
   useRegisterUserMutation,
   useFetchTokenMutation,
-  useFetchResetPasswordTokenMutation,
+  useSendResetPasswordLinkByEmailMutation,
+  useResetPasswordMutation,
   useFetchUserMutation,
 } = authApi;

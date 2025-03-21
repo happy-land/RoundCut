@@ -14,6 +14,11 @@ export type TForgotPasswordForm = {
   email: string;
 }
 
+export type TResetPasswordForm = {
+  password: string;
+  passwordRepeat: string;
+}
+
 // export type TLoginResponse = {
 
 // };

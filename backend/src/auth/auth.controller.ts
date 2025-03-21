@@ -36,8 +36,16 @@ export class AuthController {
     return user;
   }
 
-  @Post('forgot')
+  @Post('forgot-password')
   forgot(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return forgotPasswordDto;
+    const { email } = forgotPasswordDto;
+    return this.authService.forgotPassword(email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @Body() { token, password }: { token: string; password: string },
+  ) {
+    return this.authService.resetPassword(token, password);
   }
 }
