@@ -29,17 +29,23 @@ import CutitemEditPage from '../../pages/CutitemEditPage';
 import CategoryEditPage from '../../pages/CategoryEditPage';
 import ForgotPassword from '../../pages/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword';
+import WarehouseSelectorV2 from '../WarehouseSelectorV2/WarehouseSelectorV2';
+import WarehouseList from '../WarehouseList/WarehouseList';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate(); // useHistory deprecated
 
   const location = useLocation();
-  const background = location.state && location.state.background;
-  console.log(`location:`);
-  console.log(location);
-  console.log(`background:`);
-  console.log(background);
+  const state = location.state as { backgroundLocation?: Location };
+
+  console.log(state?.backgroundLocation);
+
+  // const background = location.state && location.state.background;
+  // console.log(`location:`);
+  // console.log(location);
+  // console.log(`background:`);
+  // console.log(background);
 
   const user = JSON.parse(localStorage.getItem('userData') || '{}');
 
@@ -62,7 +68,12 @@ const App: FC = () => {
           <Route path="/" element={<Navigate to="/auth" replace />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />  
+          <Route path="/reset-password" element={<ResetPassword />} />
+          {/* <Route path="/warehouse-selector/:id" element={
+            <Modal onClose={closeAllModals}>
+
+            </Modal>
+          } /> */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminDashboard />}>
             <Route path="/admin/price" element={<AdminPrice />} />
@@ -91,6 +102,19 @@ const App: FC = () => {
         </Route>
         {/* <Route path="*" element={<Page404 />} /> */}
       </Routes>
+
+      {state?.backgroundLocation && (
+        <Routes>
+          <Route
+            path="/modal"
+            element={
+              <Modal onClose={closeAllModals}>
+                <WarehouseList type='user' />
+              </Modal>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };

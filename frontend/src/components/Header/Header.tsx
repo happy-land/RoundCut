@@ -7,6 +7,9 @@ import './Header.scss';
 import { useGetOwnUserQuery, useSigninMutation } from '../../features/api/apiSlice';
 import { TAuthData } from '../../utils/types';
 import { setCookie } from '../../utils/cookie';
+import MenuIcon from '../../images/react-icons/hi/HiOutlineMenu.svg';
+import UserIcon from '../../images/react-icons/hi/HiOutlineUser.svg';
+import WarehouseSelectorV2 from '../WarehouseSelectorV2/WarehouseSelectorV2';
 
 const cnStyles = block('header');
 
@@ -55,23 +58,12 @@ const Header: FC = () => {
     <header className={cnStyles()}>
       <div className={cnStyles('wrapper')}>
         <NavLink to="/">
-          <p>Лого</p>
+          <img src={MenuIcon} alt='MenuIcon' />
         </NavLink>
-        {/* { !isAuth && (
-          <button onClick={handleLogin}>Тест логин</button>
-        ) }
-        {!isAuth && (
-          <NavLink to="/signin" className={cnStyles('link')}>
-            {loginLink}
-          </NavLink>
-        )}
-
-        {isAuth && (
-          <div>
-            <p>{loginLink}</p>
-          </div>
-        )} */}
-        {/* <Burger /> */}
+        <WarehouseSelectorV2 />
+        <NavLink to="/">
+          <img src={UserIcon} alt='UserIcon' />
+        </NavLink>
       </div>
     </header>
   );
