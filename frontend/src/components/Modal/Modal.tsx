@@ -30,11 +30,20 @@ export const Modal: FC<IModalProps> = ({ title, onClose, children }) => {
 
   return createPortal(
     <>
+      {/* Close Modal Icon */}
+      <button
+        className={cnStyles('close')}
+        onClick={onClose}
+        aria-label="Close Modal"
+      >
+        ✖
+      </button>
+
       <div className={cnStyles('container')}>
         <div className={cnStyles('header')}>
-        <h3 className={cnStyles('title')}>{title}</h3>
+          <h3 className={cnStyles('title')}>{title}</h3>
         </div>
-        {children}
+        <div className={cnStyles('content')}>{children}</div>
       </div>
       <ModalOverlay onClick={onClose} />
     </>,

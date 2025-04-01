@@ -3,8 +3,10 @@ import { useFetchWarehouseByIdQuery } from '../../services/warehouseApi';
 import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import { Link } from 'react-router-dom';
+import ChevronDownIcon from '../../images/react-icons/hi/HiOutlineChevronDown.svg';
+import './WarehousePicker.scss';
 
-const cnStyles = block('warehouse-selector');
+const cnStyles = block('warehouse-picker');
 
 const WarehousePicker = () => {
   const warehouseId = useAppSelector(selectWarehouseId);
@@ -19,6 +21,7 @@ const WarehousePicker = () => {
       className={cnStyles()}
     >
       {warehouse && <div>{warehouse.name}</div>}
+      <img src={ChevronDownIcon} alt="ChevronDownIcon" className={cnStyles('')} />
     </Link>
   );
 };
