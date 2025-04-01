@@ -29,8 +29,8 @@ import CutitemEditPage from '../../pages/CutitemEditPage';
 import CategoryEditPage from '../../pages/CategoryEditPage';
 import ForgotPassword from '../../pages/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword';
-import WarehouseSelectorV2 from '../WarehouseSelectorV2/WarehouseSelectorV2';
 import WarehouseList from '../WarehouseList/WarehouseList';
+import WarehousePickerModal from '../WarehousePickerModal/WarehousePickerModal';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -106,10 +106,10 @@ const App: FC = () => {
       {state?.backgroundLocation && (
         <Routes>
           <Route
-            path="/modal"
+            path="/select-warehouse"
             element={
               <Modal onClose={closeAllModals}>
-                <WarehouseList type='user' />
+                <WarehousePickerModal />
               </Modal>
             }
           />

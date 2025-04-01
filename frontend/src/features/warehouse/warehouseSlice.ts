@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import { getWarehouseId } from '../../utils/warehouse';
 
 export interface WarehouseState {
   isOpenModal: boolean;
@@ -8,7 +9,7 @@ export interface WarehouseState {
 
 const initialState: WarehouseState = {
   isOpenModal: false,
-  warehouseId: 202, // TODO: убрать хардкод
+  warehouseId: 202, // 202 - Электроугли TODO: убрать хардкод
 }
 
 export const warehouseSlice = createSlice({
@@ -21,6 +22,9 @@ export const warehouseSlice = createSlice({
     closeModal: (state) => {
       state.isOpenModal = false;
     },
+    // getWarehouseId: () => {
+    //   return initialState.warehouseId;
+    // },
     setWarehouse: (state, action: PayloadAction<{ warehouseId: number }>) => {
       state.warehouseId = action.payload.warehouseId;
     }
@@ -28,6 +32,7 @@ export const warehouseSlice = createSlice({
 });
 
 export const selectWarehouse = (state: RootState) => state.warehouse;
+export const selectWarehouseId = (state: RootState) => state.warehouse.warehouseId;
 
 export const { openModal, closeModal, setWarehouse } = warehouseSlice.actions;
 
