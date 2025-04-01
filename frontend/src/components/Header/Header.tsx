@@ -9,7 +9,7 @@ import { TAuthData } from '../../utils/types';
 import { setCookie } from '../../utils/cookie';
 import MenuIcon from '../../images/react-icons/hi/HiOutlineMenu.svg';
 import UserIcon from '../../images/react-icons/hi/HiOutlineUser.svg';
-import WarehouseSelectorV2 from '../WarehouseSelectorV2/WarehouseSelectorV2';
+import WarehousePicker from '../WarehousePicker/WarehousePicker';
 
 const cnStyles = block('header');
 
@@ -60,7 +60,7 @@ const Header: FC = () => {
         <NavLink to="/">
           <img src={MenuIcon} alt='MenuIcon' />
         </NavLink>
-        <WarehouseSelectorV2 />
+        <WarehousePicker />
         <NavLink to="/">
           <img src={UserIcon} alt='UserIcon' />
         </NavLink>

@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { PriceList } from '../components/PriceList/PriceList';
 import BilletPanel from '../components/BilletPanel/BilletPanel';
-import WarehouseSelector from '../components/WarehouseSelector/WarehouseSelector';
 import block from 'bem-cn';
 import './Dashboard.scss';
 
@@ -35,7 +34,6 @@ const Dashboard = () => {
       {/* <p className="text-red-50">asd</p> */}
 
       <button onClick={handleLogout}>Logout</button>
-      <WarehouseSelector />
       <BilletPanel />
       <PriceList type="user" />
     </>
