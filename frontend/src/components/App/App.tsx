@@ -30,7 +30,7 @@ import CategoryEditPage from '../../pages/CategoryEditPage';
 import ForgotPassword from '../../pages/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword';
 import WarehouseList from '../WarehouseList/WarehouseList';
-import WarehouseSelectorModal from '../WarehouseSelectorModal/WarehouseSelectorModal';
+import WarehousePickerModal from '../WarehousePickerModal/WarehousePickerModal';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -109,7 +109,7 @@ const App: FC = () => {
             path="/select-warehouse"
             element={
               <Modal onClose={closeAllModals}>
-                <WarehouseSelectorModal />
+                <WarehousePickerModal />
               </Modal>
             }
           />

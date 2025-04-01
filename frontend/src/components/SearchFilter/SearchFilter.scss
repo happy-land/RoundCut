@@ -1,0 +1,35 @@
+.search-filter {
+  position: relative;
+  margin-bottom: 16px;
+
+  &__input {
+    width: 100%;
+    padding: 8px 32px; /* Space for icons */
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #aaa;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    cursor: pointer;
+    color: #888;
+
+    &--search {
+      left: 8px;
+    }
+
+    &--clear {
+      right: 8px;
+    }
+  }
+}
