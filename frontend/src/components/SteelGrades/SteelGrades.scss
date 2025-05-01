@@ -1,0 +1,37 @@
+@import '../../assets/styles/vars.scss';
+
+.steel-grades {
+  border: 1px solid blue; 
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  scrollbar-color: transparent transparent; /* Hide scrollbar */
+  white-space: nowrap; /* Prevent items from wrapping to the next line */
+
+  user-select: none; /* Prevent text selection */
+  list-style: none;
+
+  &__item {
+  }
+}
+
+.steel-grades::-webkit-scrollbar {
+  height: 1px;
+  background-color: transparent;
+}
+
+@media screen and (max-width: $desktop) {
+  .steel-grades {
+    border: 1px solid red;  
+    max-width: $desktop;
+  }
+}
+
+@media screen and (max-width: $tablet) {
+  .steel-grades {
+    border: 1px solid green; 
+    max-width: $tablet;
+  }
+}

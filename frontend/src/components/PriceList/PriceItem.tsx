@@ -15,9 +15,9 @@ export const PriceItem: FC<IPriceItemProps> = ({ item, onClick }) => {
   return (
     // <Link to={`/price/${item.id}`} className={cnStyles()}>
     <article className={cnStyles('priceitem')} onClick={() => onClick(item)}>
-      <p className={cnStyles('column')}>{item.name}</p>
+      <p className={cnStyles('column').mix('width-80')}>{item.name}</p>
       {/* <p className={cnStyles('column')}>{item.nameExt}</p> */}
-      <p className={cnStyles('column')}>{item.size}</p>
+      <p className={cnStyles('column').mix('price-item-container__size')}>{item.size}</p>
       <p className={cnStyles('column').mix('price-item-container__surface')}>
         {item.surface}
       </p>

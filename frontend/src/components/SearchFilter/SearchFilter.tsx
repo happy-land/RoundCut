@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import './SearchFilter.scss';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectSearchQuery, setSearchQuery } from '../../features/search/searchSlice';
 
 interface SearchFilterProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  placeholder?: string;
 }
 
-const SearchFilter: React.FC<SearchFilterProps> = ({ searchQuery, setSearchQuery }) => {
-  const handleClear = () => {
-    setSearchQuery('');
+const SearchFilter: React.FC<SearchFilterProps> = ({ placeholder }) => {
+  const dispatch = useAppDispatch();
+  const searchQuery = useAppSelector(selectSearchQuery);
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchQuery(event.target.value));
+  };
+
+  const handleClearInput = () => {
+    dispatch(setSearchQuery(''));
   };
 
   return (
@@ -17,17 +25,17 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ searchQuery, setSearchQuery
       <input
         type="text"
         className="search-filter__input"
-        placeholder="Search warehouses..."
+        placeholder={placeholder}
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={handleInputChange}
       />
       {searchQuery && (
-        <div
+        <span
           className="search-filter__icon search-filter__icon--clear"
-          onClick={handleClear}
+          onClick={handleClearInput}
         >
           ✖
-        </div>
+        </span>
       )}
     </div>
   );
