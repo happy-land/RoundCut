@@ -11,6 +11,14 @@
     text-align: left;
   }
 
+  &__name {
+    width: 140px;
+  }
+
+  &__size {
+    width: 80px;
+  }
+
   &__surface {
     color: red;
     width: 50px;
@@ -19,4 +27,13 @@
   &__other {
     width: 160px;
   }
+}
+
+.width-50 {
+  width: 50px; 
+}
+
+.width-80 {
+  border: 1px solid red;
+  width: 80px;
 }

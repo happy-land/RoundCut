@@ -1,16 +1,56 @@
 @import '../assets/styles/vars.scss';
 
-
 .dashboard-container {
-  &__title {
-    font-family: $title-font-family;
-    font-size: 32px;
-    font-weight: 600;
-    margin-bottom: 20px;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: $large-desktop;
+  padding: 16px;
+
+  &__search-filter {
   }
+
+  &__steelgrades-wrapper {
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+  }
+
+  &__steelgrades {
+
+  }
+
+  &__steelgrade-options {
+  }
+
+  &__diameters-wrapper {
+  }
+
+  &__diameters {
+  }
+
+  &__diameter-options {
+  }
+
   &__user {
     font-family: $base-font-family;
     font-weight: 400;
     font-size: 24px;
+  }
+}
+
+@media screen and (max-width: $desktop) {
+  .dashboard-container {
+    background-color: rgb(242, 213, 175);
+  }
+}
+
+// phone
+@media screen and (max-width: $phone) {
+  .dashboard-container {
+    background-color: rgb(160, 156, 151);
   }
 }

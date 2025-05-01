@@ -9,6 +9,8 @@ import { PriceList } from '../components/PriceList/PriceList';
 import BilletPanel from '../components/BilletPanel/BilletPanel';
 import block from 'bem-cn';
 import './Dashboard.scss';
+import SearchFilter from '../components/SearchFilter/SearchFilter';
+import SteelGrades from '../components/SteelGrades/SteelGrades';
 
 const cnStyles = block('dashboard-container');
 
@@ -24,19 +26,36 @@ const Dashboard = () => {
   };
 
   return (
-    <>
-      <h1 className={cnStyles('title')}>Dashboard</h1>
+    <div className={cnStyles()}>
+      <section className={cnStyles('search-filter')}>
+        <SearchFilter placeholder='Круг Ст09Г2С' />
+      </section>
+
+      <section className={cnStyles('steelgrades-wrapper')}>
+        <div className={cnStyles('steelgrades')}>
+          <SteelGrades />
+        </div>
+        <div className={cnStyles('steelgrade-options')}></div>
+      </section>
+
+      <section className={cnStyles('diameters-wrapper')}>
+        <div className={cnStyles('diameters')}>диаметры</div>
+        <div className={cnStyles('diameter-options')}>настр</div>
+      </section>
+
+      <section className={cnStyles('price-list')}>
+        <PriceList type="user" />
+      </section>
+
       {user && (
         <p className={cnStyles('user')}>
           Вы вошли как <Link to="/admin">{user.username}</Link>
         </p>
       )}
-      {/* <p className="text-red-50">asd</p> */}
 
       <button onClick={handleLogout}>Logout</button>
       <BilletPanel />
-      <PriceList type="user" />
-    </>
+    </div>
   );
 };
 

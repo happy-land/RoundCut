@@ -110,16 +110,6 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     </ul>
   );
 
-  // const handleDeleteItem = async (
-  //   event: MouseEvent<HTMLButtonElement>,
-  //   item: TPriceItemExtendedResponse,
-  // ): Promise<void> => {
-  //   event.preventDefault();
-  //   console.log(item);
-  //   const res = await deleteItem(item.id);
-  //   console.log(res);
-  // };
-
   const handleDeleteAllItems = async (
     event: MouseEvent<HTMLButtonElement>,
   ): Promise<void> => {
