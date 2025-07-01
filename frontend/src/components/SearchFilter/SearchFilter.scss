@@ -1,11 +1,17 @@
+@import '../../assets/styles/vars.scss';
+
 .search-filter {
+  // border: 2px solid magenta;
   position: relative;
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
+  max-width: $phone;
+  height: 48px;
 
   &__input {
     width: 100%;
-    padding: 8px 32px; /* Space for icons */
-    font-size: 14px;
+    height: 100%;
+    padding: 8px 36px; /* Space for icons */
+    font-size: 24px;
     border: 1px solid #ddd;
     border-radius: 8px;
     outline: none;
@@ -18,18 +24,39 @@
 
   &__icon {
     position: absolute;
+    width: 24px;
+    height: 24px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 16px;
-    cursor: pointer;
-    color: #888;
 
     &--search {
       left: 8px;
     }
-
     &--clear {
       right: 8px;
+      cursor: pointer;
     }
+  }
+}
+
+
+// @media screen and (max-width: $desktop) {
+//   .steel-grades {
+//     border: 1px solid red;  
+//     max-width: $desktop;
+//   }
+// }
+
+// @media screen and (max-width: $tablet) {
+//   .steel-grades {
+//     border: 1px solid green; 
+//     max-width: $tablet;
+//   }
+// }
+
+@media screen and (max-width: $phone) {
+  .search-filter {
+    border: 1px solid green; 
+    width: 100%;
   }
 }

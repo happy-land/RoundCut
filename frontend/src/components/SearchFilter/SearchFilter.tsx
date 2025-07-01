@@ -1,11 +1,19 @@
 import React, { ChangeEvent } from 'react';
-import './SearchFilter.scss';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectSearchQuery, setSearchQuery } from '../../features/search/searchSlice';
+import {
+  selectSearchQuery,
+  setSearchQuery,
+} from '../../features/search/searchSlice';
+import './SearchFilter.scss';
+import SearchIcon from '../../images/react-icons/hi/HiOutlineSearch.svg';
+import ClearIcon from '../../images/react-icons/hi/HiOutlineBackspace.svg';
+import block from 'bem-cn';
 
 interface SearchFilterProps {
   placeholder?: string;
 }
+
+const cnStyles = block('search-filter');
 
 const SearchFilter: React.FC<SearchFilterProps> = ({ placeholder }) => {
   const dispatch = useAppDispatch();
@@ -20,8 +28,12 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ placeholder }) => {
   };
 
   return (
-    <div className="search-filter">
-      <div className="search-filter__icon search-filter__icon--search">🔍</div>
+    <div className={cnStyles()}>
+      <img
+        src={SearchIcon}
+        alt="SearchIcon"
+        className={cnStyles('icon').mix('search-filter__icon--search')}
+      />
       <input
         type="text"
         className="search-filter__input"
@@ -30,12 +42,12 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ placeholder }) => {
         onChange={handleInputChange}
       />
       {searchQuery && (
-        <span
-          className="search-filter__icon search-filter__icon--clear"
+        <img
+          src={ClearIcon}
+          alt="ClearIcon"
+          className={cnStyles('icon').mix('search-filter__icon--clear')}
           onClick={handleClearInput}
-        >
-          ✖
-        </span>
+        />
       )}
     </div>
   );

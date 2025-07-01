@@ -11,28 +11,25 @@
   padding: 16px;
 
   &__search-filter {
+    width: 100%;
   }
 
   &__steelgrades-wrapper {
-    width: 100%;
     overflow-x: hidden; /* Prevent horizontal scrolling */
     box-sizing: border-box;
-  }
-
-  &__steelgrades {
-
-  }
-
-  &__steelgrade-options {
+    max-width: 800px;
   }
 
   &__diameters-wrapper {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+    max-width: 800px;
   }
 
-  &__diameters {
-  }
-
-  &__diameter-options {
+  &__pricelist-wrapper {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+    max-width: 800px;
   }
 
   &__user {
@@ -42,9 +39,33 @@
   }
 }
 
+// desktop
 @media screen and (max-width: $desktop) {
   .dashboard-container {
     background-color: rgb(242, 213, 175);
+
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
+
+    &__diameters-wrapper {
+      width: 100%;
+    }
+
+    &__pricelist-wrapper {
+      width: 100%;
+    }
+  }
+}
+
+//tablet
+@media screen and (max-width: $tablet) {
+  .dashboard-container {
+    background-color: rgb(219, 246, 246);
+
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
   }
 }
 
@@ -52,5 +73,9 @@
 @media screen and (max-width: $phone) {
   .dashboard-container {
     background-color: rgb(160, 156, 151);
+
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
   }
 }
