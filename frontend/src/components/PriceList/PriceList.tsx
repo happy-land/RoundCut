@@ -22,6 +22,9 @@ import { addItem } from '../../features/cut/cutSlice';
 // import { PAGE_SIZE } from '../../utils/constants';
 import { convertToPriceItem, extractFirstWord } from '../../utils/utils';
 import { selectWarehouse } from '../../features/warehouse/warehouseSlice';
+import { selectSearchQuery } from '../../features/search/searchSlice';
+import { selectSteelgrade } from '../../features/filter/steelgradeSlice';
+import { selectDiameter } from '../../features/filter/diameterSlice';
 
 interface IPriceListListProps {
   type: 'user' | 'admin';
@@ -30,6 +33,10 @@ interface IPriceListListProps {
 const cnStyles = block('price');
 
 export const PriceList: FC<IPriceListListProps> = ({ type }) => {
+  const searchQuery = useAppSelector(selectSearchQuery);
+  const selectedGrades = useAppSelector(selectSteelgrade);
+  const selectedDiameters = useAppSelector(selectDiameter);
+
   const dispatch = useAppDispatch();
   const { warehouseId } = useAppSelector(selectWarehouse);
 
@@ -44,7 +51,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   // Значение uniqueItemNames определяется при нажатии на кнопку "Уникальные длины"
   const [uniqueItemLengths, setUniqueItemLengths] = useState<string[]>([]);
 
-  const [inputName, setInputName] = useState<string>('Круг');
+  // const [inputName, setInputName] = useState<string>('Круг');
 
   // queries
   // тут задать ()  номер айди склада, взять из хранилища
@@ -96,19 +103,51 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     dispatch(addItem({ item: item }));
   };
 
+  const filteredItems = orderedItems.filter((item) => {
+    // Filter by searchQuery (if set)
+    const matchesSearch = searchQuery
+      ? item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      : true;
+
+    // Filter by selectedGrades (if any)
+    const [, ...rest] = item.name.split(' ');
+    const grade = rest.join(' ').trim();
+    const matchesGrade =
+      selectedGrades.length > 0 ? selectedGrades.includes(grade) : true;
+
+    // Filter by selectedDiameters (if any)
+    const itemDiameter = item.size.replace(/мм\.?/g, '').trim();
+    const matchesDiameter =
+      selectedDiameters && selectedDiameters.length > 0
+        ? selectedDiameters.includes(itemDiameter)
+        : true;
+
+    return matchesSearch && matchesGrade && matchesDiameter;
+  });
+
   const content = (
     <ul className={cnStyles('items-list')}>
-      {orderedItems.map((item: TPriceItemExtendedResponse, index: number) => (
-        <React.Fragment key={index}>
-          {item.name.toLowerCase().includes(inputName.toLowerCase()) && (
-            <li className={cnStyles('list-item')}>
-              <PriceItem item={item} onClick={() => onItemClick(item)} />
-            </li>
-          )}
-        </React.Fragment>
+      {filteredItems.map((item: TPriceItemExtendedResponse, index: number) => (
+        <li className={cnStyles('list-item')} key={index}>
+          <PriceItem item={item} onClick={() => onItemClick(item)} />
+        </li>
       ))}
     </ul>
   );
+
+  // const content = (
+  //   <ul className={cnStyles('items-list')}>
+  //     {orderedItems.map((item: TPriceItemExtendedResponse, index: number) => (
+  //       <React.Fragment key={index}>
+  //         {item.name.toLowerCase().includes(inputName.toLowerCase()) && (
+  //           <li className={cnStyles('list-item')}>
+  //             <PriceItem item={item} onClick={() => onItemClick(item)} />
+  //           </li>
+  //         )}
+  //       </React.Fragment>
+  //     ))}
+  //   </ul>
+  // );
 
   const handleDeleteAllItems = async (
     event: MouseEvent<HTMLButtonElement>,
@@ -189,10 +228,10 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     refetch();
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    setInputName(event.target.value);
-  };
+  // const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   event.preventDefault();
+  //   setInputName(event.target.value);
+  // };
 
   return (
     <div className={cnStyles()}>
@@ -275,7 +314,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
         </div>
       )}
       <p>{items.length} строк и страниц</p>
-      <input
+      {/* <input
         className={cnStyles('input')}
         type="text"
         name="input"
@@ -283,7 +322,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
         onChange={handleInputChange}
         placeholder="Найти позицию"
         required
-      />
+      /> */}
       {content && (
         <section className={cnStyles('content-section')}>{content}</section>
       )}

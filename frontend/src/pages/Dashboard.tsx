@@ -11,6 +11,7 @@ import block from 'bem-cn';
 import './Dashboard.scss';
 import SearchFilter from '../components/SearchFilter/SearchFilter';
 import SteelGrades from '../components/SteelGrades/SteelGrades';
+import DiameterSelector from '../components/DiameterSelector/DiameterSelector';
 
 const cnStyles = block('dashboard-container');
 
@@ -28,22 +29,18 @@ const Dashboard = () => {
   return (
     <div className={cnStyles()}>
       <section className={cnStyles('search-filter')}>
-        <SearchFilter placeholder='Круг Ст09Г2С' />
+        <SearchFilter placeholder="Введите запрос, например: Круг" />
       </section>
 
       <section className={cnStyles('steelgrades-wrapper')}>
-        <div className={cnStyles('steelgrades')}>
-          <SteelGrades />
-        </div>
-        <div className={cnStyles('steelgrade-options')}></div>
+        <SteelGrades />
       </section>
 
       <section className={cnStyles('diameters-wrapper')}>
-        <div className={cnStyles('diameters')}>диаметры</div>
-        <div className={cnStyles('diameter-options')}>настр</div>
+        <DiameterSelector />
       </section>
 
-      <section className={cnStyles('price-list')}>
+      <section className={cnStyles('pricelist-wrapper')}>
         <PriceList type="user" />
       </section>
 
