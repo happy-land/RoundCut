@@ -1,22 +1,44 @@
+@import '../../assets/styles/vars.scss';
+
 .price-item-container {
+  width: 100%;
+  cursor: pointer;
   text-decoration: none;
-  font-size: 12px;
 
   &__priceitem {
     display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 4px 0;
+    font-family: $base-font-family;
+    font-size: 14px;
+    font-weight: 400;
+    color: $text-dark;
+    transition: background-color 0.15s ease;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
   }
 
-  &__column {
-    width: 120px;
+  &__name {
+    width: 200px;
+    font-weight: 500;
     text-align: left;
+    margin-right: 16px;
   }
 
-  &__surface {
-    color: red;
-    width: 50px;
+  &__size {
+    width: 100px;
+    text-align: center;
+    margin-right: 16px;
+    color: $text-light;
   }
 
-  &__other {
-    width: 160px;
+  &__price {
+    width: 100px;
+    text-align: right;
+    font-weight: 500;
+    color: $text-dark;
   }
 }

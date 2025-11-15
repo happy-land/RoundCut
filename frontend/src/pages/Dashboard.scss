@@ -1,16 +1,81 @@
 @import '../assets/styles/vars.scss';
 
-
 .dashboard-container {
-  &__title {
-    font-family: $title-font-family;
-    font-size: 32px;
-    font-weight: 600;
-    margin-bottom: 20px;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: $large-desktop;
+  padding: 16px;
+
+  &__search-filter {
+    width: 100%;
   }
+
+  &__steelgrades-wrapper {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+    max-width: 800px;
+  }
+
+  &__diameters-wrapper {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+    max-width: 800px;
+  }
+
+  &__pricelist-wrapper {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    box-sizing: border-box;
+    max-width: 800px;
+  }
+
   &__user {
     font-family: $base-font-family;
     font-weight: 400;
     font-size: 24px;
+  }
+}
+
+// desktop
+@media screen and (max-width: $desktop) {
+  .dashboard-container {
+    background-color: rgb(242, 213, 175);
+
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
+
+    &__diameters-wrapper {
+      width: 100%;
+    }
+
+    &__pricelist-wrapper {
+      width: 100%;
+    }
+  }
+}
+
+//tablet
+@media screen and (max-width: $tablet) {
+  .dashboard-container {
+    background-color: rgb(219, 246, 246);
+
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
+  }
+}
+
+// phone
+@media screen and (max-width: $phone) {
+  .dashboard-container {
+    background-color: rgb(160, 156, 151);
+
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
   }
 }

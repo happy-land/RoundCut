@@ -1,0 +1,56 @@
+@import '../../assets/styles/vars.scss';
+
+.diameter-selector {
+  border: 1px solid $link-gray;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+
+  &__items {
+    // border: 1px solid blue;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0 1rem;
+    margin: 0;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent; /* Hide scrollbar */
+    white-space: nowrap; /* Prevent items from wrapping to the next line */
+    user-select: none; /* Prevent text selection */
+    list-style: none;
+  }
+
+  &__item {
+    box-sizing: content-box;
+    margin: 0;
+    padding: 1px 8px;
+    border-radius: 8px;
+    background-color: $link-gray;
+
+    &:hover {
+      background-color: #e0e0e0;
+    }
+    
+    &_selected {
+      background-color: #e0e0e0;
+      border: 1px solid darkgray;
+    }
+  }
+}
+
+@media screen and (max-width: $desktop) {
+  .diameter-selector {
+    border: 1px solid red;
+    max-width: $desktop;
+  }
+}
+
+@media screen and (max-width: $tablet) {
+  .diameter-selector {
+    border: 1px solid green;
+    // max-width: $tablet;
+  }
+}

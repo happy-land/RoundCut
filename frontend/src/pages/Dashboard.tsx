@@ -9,6 +9,9 @@ import { PriceList } from '../components/PriceList/PriceList';
 import BilletPanel from '../components/BilletPanel/BilletPanel';
 import block from 'bem-cn';
 import './Dashboard.scss';
+import SearchFilter from '../components/SearchFilter/SearchFilter';
+import SteelGrades from '../components/SteelGrades/SteelGrades';
+import DiameterSelector from '../components/DiameterSelector/DiameterSelector';
 
 const cnStyles = block('dashboard-container');
 
@@ -24,19 +27,32 @@ const Dashboard = () => {
   };
 
   return (
-    <>
-      <h1 className={cnStyles('title')}>Dashboard</h1>
+    <div className={cnStyles()}>
+      <section className={cnStyles('search-filter')}>
+        <SearchFilter placeholder="Введите запрос, например: Круг" />
+      </section>
+
+      <section className={cnStyles('steelgrades-wrapper')}>
+        <SteelGrades />
+      </section>
+
+      <section className={cnStyles('diameters-wrapper')}>
+        <DiameterSelector />
+      </section>
+
+      <section className={cnStyles('pricelist-wrapper')}>
+        <PriceList type="user" />
+      </section>
+
       {user && (
         <p className={cnStyles('user')}>
           Вы вошли как <Link to="/admin">{user.username}</Link>
         </p>
       )}
-      {/* <p className="text-red-50">asd</p> */}
 
       <button onClick={handleLogout}>Logout</button>
       <BilletPanel />
-      <PriceList type="user" />
-    </>
+    </div>
   );
 };
 
