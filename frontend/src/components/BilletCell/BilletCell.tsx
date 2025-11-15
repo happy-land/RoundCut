@@ -27,8 +27,8 @@ const BilletCell: FC<IBilletCellProps> = ({ item /*onCloseClick*/ }) => {
   const [cost, setCost] = useState<number>(0);
   const [totalCost, setTotalCost] = useState<number>(0);
 
-  const billetCoef = 1.1;
-  const billetMarkup = 800;
+  const billetCoef = 1.12;
+  const billetMarkup = 1450;
 
   // queries
   // Найти в БД item с данными о его складе

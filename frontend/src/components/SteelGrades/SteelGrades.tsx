@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { useFetchItemsQuery } from '../../services/priceApi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import './SteelGrades.scss';
 import { selectSearchQuery } from '../../features/search/searchSlice';
-import OptionsIcon from '../../images/react-icons/hi/HiOutlineAdjustments.svg';
 import { updateSelectedGrades } from '../../features/filter/steelgradeSlice';
+import { updateAllGrades } from '../../features/filter/steelgradeSlice';
+import OptionsPicker from '../OptionsPicker/OptionsPicker';
 
 const cnStyles = block('steel-grades');
 
-const SteelGrades = () => {
+const SteelGrades: FC = () => {
   const dispatch = useAppDispatch();
   const warehouseId = useAppSelector(selectWarehouseId);
   const searchQuery = useAppSelector(selectSearchQuery);
@@ -51,6 +52,11 @@ const SteelGrades = () => {
     );
   };
 
+  // Сохранять все уникальные марки стали в сторе при загрузке/фильтрации
+  useEffect(() => {
+    dispatch(updateAllGrades(uniqueNames));
+  }, [uniqueNames, dispatch]);
+
   // Dispatch updated grades to Redux when selectedGrades changes
   useEffect(() => {
     dispatch(updateSelectedGrades(selectedGrades));
@@ -77,12 +83,7 @@ const SteelGrades = () => {
     <>
       <div className={cnStyles()}>
         {content}
-
-        <img
-          src={OptionsIcon}
-          alt="steelgrade-options"
-          className={cnStyles('steelgrade-options')}
-        />
+        <OptionsPicker options={uniqueNames} onChange={() => {}} />
       </div>
     </>
   );
