@@ -1,0 +1,16 @@
+.options-picker__options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.options-picker__options-row {
+  display: flex;
+  gap: 12px;
+}
+.options-picker__option {
+  flex: 1;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  text-align: center;
+}

@@ -31,6 +31,7 @@ import ForgotPassword from '../../pages/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword';
 import WarehouseList from '../WarehouseList/WarehouseList';
 import WarehousePickerModal from '../WarehousePickerModal/WarehousePickerModal';
+import OptionsPickerModal from '../OptionsPickerModal/OptionsPickerModal';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -57,7 +58,12 @@ const App: FC = () => {
 
   const closeAllModals = () => {
     console.log('Закрыть модалку');
-    navigate(-1);
+    const modalPaths = ['/select-options', '/select-warehouse'];
+    if (modalPaths.includes(location.pathname)) {
+      navigate('/dashboard');
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -71,7 +77,6 @@ const App: FC = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           {/* <Route path="/warehouse-selector/:id" element={
             <Modal onClose={closeAllModals}>
-
             </Modal>
           } /> */}
           <Route path="/dashboard" element={<Dashboard />} />
@@ -86,12 +91,11 @@ const App: FC = () => {
                   <WarehouseDetails />
                 </Modal>
               }
-            ></Route>
+            />
             <Route path="/admin/markup" element={<Markup />} />
             <Route path="/admin/cut" element={<Cut />} />
             <Route path="/admin/cutitem" element={<CutitemEditPage />} />
           </Route>
-
           {/* <Route path="/price" element={<PriceList />} /> */}
           <Route path="/price/:id" element={<PriceItemDetails />} />
           {/* <Route path="/users/:id" element={<SinglePriceitemPage />} /> */}
@@ -100,6 +104,23 @@ const App: FC = () => {
           {/* <Route path="/price" element={<PricePage />} /> */}
           {/* <Route path="/loadcsv" element={<LoadCSV />} /> */}
         </Route>
+        {/* Add direct routes for modals so they work without backgroundLocation */}
+        <Route
+          path="/select-warehouse"
+          element={
+            <Modal onClose={closeAllModals}>
+              <WarehousePickerModal />
+            </Modal>
+          }
+        />
+        <Route
+          path="/select-options"
+          element={
+            <Modal onClose={closeAllModals}>
+              <OptionsPickerModal />
+            </Modal>
+          }
+        />
         {/* <Route path="*" element={<Page404 />} /> */}
       </Routes>
 
@@ -113,10 +134,18 @@ const App: FC = () => {
               </Modal>
             }
           />
+          <Route
+            path="/select-options"
+            element={
+              <Modal onClose={closeAllModals}>
+                <OptionsPickerModal />
+              </Modal>
+            }
+          />
         </Routes>
       )}
     </div>
   );
-};
+}
 
 export default App;
