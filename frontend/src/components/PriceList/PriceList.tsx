@@ -126,35 +126,28 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   });
 
   const content = (
-    <ul className={cnStyles('items-list')}>
-      {filteredItems.map((item: TPriceItemExtendedResponse, index: number) => (
-        <li className={cnStyles('list-item')} key={index}>
-          <PriceItem item={item} onClick={() => onItemClick(item)} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <div className={cnStyles('header')}>
+        <div className={cnStyles('header-cell')}>Наименование</div>
+        <div className={cnStyles('header-cell')}>Диаметр</div>
+        <div className={cnStyles('header-cell')}>Цена за т</div>
+      </div>
+      <ul className={cnStyles('items-list')}>
+        {filteredItems.map((item: TPriceItemExtendedResponse, index: number) => (
+          <li className={cnStyles('list-item')} key={index}>
+            <PriceItem item={item} onClick={() => onItemClick(item)} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-
-  // const content = (
-  //   <ul className={cnStyles('items-list')}>
-  //     {orderedItems.map((item: TPriceItemExtendedResponse, index: number) => (
-  //       <React.Fragment key={index}>
-  //         {item.name.toLowerCase().includes(inputName.toLowerCase()) && (
-  //           <li className={cnStyles('list-item')}>
-  //             <PriceItem item={item} onClick={() => onItemClick(item)} />
-  //           </li>
-  //         )}
-  //       </React.Fragment>
-  //     ))}
-  //   </ul>
-  // );
 
   const handleDeleteAllItems = async (
     event: MouseEvent<HTMLButtonElement>,
   ): Promise<void> => {
     event.preventDefault();
     console.log('remove all');
-    const res = await deleteAllItems(event);
+    const res = await deleteAllItems(warehouseId);
     console.log(res);
   };
 
@@ -313,16 +306,6 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
           ))}
         </div>
       )}
-      <p>{items.length} строк и страниц</p>
-      {/* <input
-        className={cnStyles('input')}
-        type="text"
-        name="input"
-        value={inputName ?? ''}
-        onChange={handleInputChange}
-        placeholder="Найти позицию"
-        required
-      /> */}
       {content && (
         <section className={cnStyles('content-section')}>{content}</section>
       )}
