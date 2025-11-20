@@ -44,6 +44,7 @@ export class MailerService {
       : dto.html;
 
     const transport = this.mailTransport();
+    console.log(process.env.NODE_EXTRA_CA_CERTS);
 
     const options: Mail.Options = {
       from: from ?? {
@@ -57,6 +58,7 @@ export class MailerService {
 
     try {
       const result = await transport.sendMail(options);
+      
       console.log(result);
 
       return result;
