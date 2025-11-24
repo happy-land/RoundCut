@@ -3,7 +3,7 @@ import { CreateCutitemDto } from './dto/create-cutitem.dto';
 import { UpdateCutitemDto } from './dto/update-cutitem.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cutitem } from './entities/cutitem.entity';
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository, ILike } from 'typeorm';
 import { WarehousesService } from 'src/warehouses/warehouses.service';
 import { CutsService } from 'src/cuts/cuts.service';
 import { extractInterval } from 'src/utils/utils';
@@ -39,43 +39,56 @@ export class CutitemsService {
   }
 
   async findByParams(id: number, size: number) {
-    // const warehouse = await this.warehousesService.findOne({
-    //   where: { id: id },
+
+    // For small diameters (<50) prefer off-cut machine; for >=50 prefer band-saw
+    const nameFragment = size < 50 ? 'отрезным станком' : 'лентопильным станком';
+    console.log(`Searching cutitem in warehouse ${id} for size ${size} with name fragment "${nameFragment}"`);
+
+    const cutitemByName = await this.findCutitemByCutNameFragment(id, size, nameFragment);
+    console.log('cutitemByName:');
+    console.log(cutitemByName);
+    if (cutitemByName) return cutitemByName;
+
+    // Fallback: original behaviour — search any cutitem covering the size interval
+    // const cutitem = await this.cutitemsRepository.findOne({
+    //   where: [
+    //     {
+    //       warehouse: { id: id },
+    //       from: LessThanOrEqual(size),
+    //       to: MoreThanOrEqual(size),
+    //     },
+    //   ],
     // });
-
-    // if (!warehouse) {
-    //   return new NotFoundException(`Склад с id #${id} не найден`);
+    // if (!cutitem) {
+    //   return new NotFoundException('Резка не найдена');
     // }
+    // return cutitem;
+  }
 
+  private async findCutitemByCutNameFragment(
+    warehouseId: number,
+    size: number,
+    nameFragment: string,
+  ) {
+    // find Cut by name fragment (case-insensitive)
+    // const cut = await this.cutsService.findOne({ where: { name: ILike(`%${nameFragment}%`) } });
+    // console.log('cut found by name fragment:');
+    // console.log(cut);
+    // if (!cut) return null;
+
+    // find cutitem for the found cut and warehouse that covers the size interval
     const cutitem = await this.cutitemsRepository.findOne({
       where: [
         {
-          warehouse: { id: id },
+          warehouse: { id: warehouseId },
+          name: ILike(`%${nameFragment}%`),
+          // cut: { id: cut.id },
           from: LessThanOrEqual(size),
           to: MoreThanOrEqual(size),
         },
       ],
     });
-    if (!cutitem) {
-      return new NotFoundException('Резка не найдена');
-    }
-    return cutitem;
-    // return `This action returns a cutitem with warehouse id #${id} and size #${size}`;
-  }
 
-  findAll() {
-    return `This action returns all cutitems`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} cutitem`;
-  }
-
-  update(id: number, updateCutitemDto: UpdateCutitemDto) {
-    return `This action updates a #${id} cutitem`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} cutitem`;
+    return cutitem || null;
   }
 }
