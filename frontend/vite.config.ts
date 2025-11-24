@@ -12,4 +12,10 @@ export default defineConfig({
     //   svgrOptions: {},
     // }),
   ],
+  server: {
+    // bind explicitly to 127.0.0.1 to avoid VPN network adapters intercepting localhost
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: false,
+  },
 });
