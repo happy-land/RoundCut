@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../app/hooks';
-import { selectAllGrades } from '../../features/filter/steelgradeSlice';
+import { selectAvailableGrades } from '../../features/filter/steelgradeSlice';
 import block from 'bem-cn';
 import './OptionsPickerModal.scss';
 
@@ -9,7 +9,7 @@ const cnStyles = block('options-picker');
 
 const OptionsPickerModal: React.FC = () => {
   const navigate = useNavigate();
-  const options: string[] = useAppSelector(selectAllGrades);
+  const options: string[] = useAppSelector(selectAvailableGrades);
   console.log('Options in modal:', options);
 
   const handleCloseModal = () => {

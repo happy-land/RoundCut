@@ -5,8 +5,7 @@ import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import './SteelGrades.scss';
 import { selectSearchQuery } from '../../features/search/searchSlice';
-import { updateSelectedGrades } from '../../features/filter/steelgradeSlice';
-import { updateAllGrades } from '../../features/filter/steelgradeSlice';
+import { updateActiveGrades, updateAllGrades } from '../../features/filter/steelgradeSlice';
 import OptionsPicker from '../OptionsPicker/OptionsPicker';
 
 const cnStyles = block('steel-grades');
@@ -59,7 +58,7 @@ const SteelGrades: FC = () => {
 
   // Dispatch updated grades to Redux when selectedGrades changes
   useEffect(() => {
-    dispatch(updateSelectedGrades(selectedGrades));
+    dispatch(updateActiveGrades(selectedGrades));
   }, [selectedGrades, dispatch]);
 
   const content = (
