@@ -23,7 +23,7 @@ import { addItem } from '../../features/cut/cutSlice';
 import { convertToPriceItem, extractFirstWord } from '../../utils/utils';
 import { selectWarehouse } from '../../features/warehouse/warehouseSlice';
 import { selectSearchQuery } from '../../features/search/searchSlice';
-import { selectSteelgrade } from '../../features/filter/steelgradeSlice';
+import { selectActiveGrades } from '../../features/filter/steelgradeSlice';
 import { selectDiameter } from '../../features/filter/diameterSlice';
 
 interface IPriceListListProps {
@@ -34,7 +34,7 @@ const cnStyles = block('price');
 
 export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const searchQuery = useAppSelector(selectSearchQuery);
-  const selectedGrades = useAppSelector(selectSteelgrade);
+  const selectedGrades = useAppSelector(selectActiveGrades);
   const selectedDiameters = useAppSelector(selectDiameter);
 
   const dispatch = useAppDispatch();

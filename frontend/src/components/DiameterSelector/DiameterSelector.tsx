@@ -5,7 +5,7 @@ import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import './DiameterSelector.scss';
 import OptionsIcon from '../../images/react-icons/hi/HiOutlineAdjustments.svg';
-import { selectSteelgrade } from '../../features/filter/steelgradeSlice';
+import { selectActiveGrades } from '../../features/filter/steelgradeSlice';
 import { selectSearchQuery } from '../../features/search/searchSlice';
 import { updateSelectedDiameters } from '../../features/filter/diameterSlice';
 
@@ -14,7 +14,7 @@ const cnStyles = block('diameter-selector');
 const DiameterSelector = () => {
   const dispatch = useAppDispatch();
   const warehouseId = useAppSelector(selectWarehouseId);
-  const selectedGrades = useAppSelector(selectSteelgrade);
+  const selectedGrades = useAppSelector(selectActiveGrades);
   const searchQuery = useAppSelector(selectSearchQuery);
 
   const [filteredDiameters, setFilteredDiameters] = useState<string[]>([]);
