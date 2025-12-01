@@ -10,11 +10,13 @@ import { TForgotPasswordForm } from '../utils/types';
 const cnStyles = block('forgot-password');
 
 type TButtonText = 'Восстановить' | 'Письмо отправлено';
+// type TSubmitMessage = 'Письмо отправлено на почту' | '';
 
 const ForgotPassword = () => {
   const [errorText, setErrorText] = useState<string>('');
   const [linkSent, setLinkSent] = useState<boolean>(false);
   const [buttonText, setButtonText] = useState<TButtonText>('Восстановить');
+  const [submitMessage, setSubmitMessage] = useState<string>('');
 
   const { values, handleChange } = useForm({
     email: 'ruslan.s.kulish@gmail.com',
@@ -36,7 +38,7 @@ const ForgotPassword = () => {
         .then((response) => {
           if ('data' in response) {
             setLinkSent(true);
-            setButtonText('Письмо отправлено');
+            setButtonText(`Письмо отправлено на ${(values as TForgotPasswordForm).email}`);
             console.log(response.data);
           }
         })
