@@ -4,10 +4,10 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import './DiameterSelector.scss';
-import OptionsIcon from '../../images/react-icons/hi/HiOutlineAdjustments.svg';
+// import OptionsIcon from '../../images/react-icons/hi/HiOutlineAdjustments.svg';
 import { selectActiveGrades } from '../../features/filter/steelgradeSlice';
 import { selectSearchQuery } from '../../features/search/searchSlice';
-import { updateSelectedDiameters } from '../../features/filter/diameterSlice';
+import { updateSelectedDiameters, selectDiameter } from '../../features/filter/diameterSlice';
 
 const cnStyles = block('diameter-selector');
 
@@ -16,9 +16,10 @@ const DiameterSelector = () => {
   const warehouseId = useAppSelector(selectWarehouseId);
   const selectedGrades = useAppSelector(selectActiveGrades);
   const searchQuery = useAppSelector(selectSearchQuery);
+  const selectedDiametersFromStore = useAppSelector(selectDiameter);
 
   const [filteredDiameters, setFilteredDiameters] = useState<string[]>([]);
-  const [selectedDiameters, setSelectedDiameters] = useState<string[]>([]);
+  const [selectedDiameters, setSelectedDiameters] = useState<string[]>(selectedDiametersFromStore || []);
 
   const { data: items = [] } = useFetchItemsQuery(warehouseId);
 
@@ -30,6 +31,11 @@ const DiameterSelector = () => {
       setSelectedDiameters([]);
     }
   }, [searchQuery, selectedGrades]);
+
+  // Sync local state with Redux store when it changes (e.g., from OptionsPickerModal)
+  useEffect(() => {
+    setSelectedDiameters(selectedDiametersFromStore || []);
+  }, [selectedDiametersFromStore]);
 
   useEffect(() => {
     if (selectedGrades.length > 0 && searchQuery) {
@@ -92,7 +98,7 @@ const DiameterSelector = () => {
         </li>
       ))}
       {filteredDiameters.length === 0 && (
-        <li className={cnStyles('no-items')}>No diameters found</li>
+        <li className={cnStyles('no-items')}></li>
       )}
     </ul>
   );
@@ -102,11 +108,11 @@ const DiameterSelector = () => {
       <div className={cnStyles()}>
         {content}
 
-        <img
+        {/* <img
           src={OptionsIcon}
           alt="diameter-options"
           className={cnStyles('diameter-options')}
-        />
+        /> */}
       </div>
     </>
   );

@@ -9,7 +9,7 @@ import { selectSearchQuery } from '../../features/search/searchSlice';
 import block from 'bem-cn';
 import './OptionsPickerModal.scss';
 
-const cnStyles = block('options-picker');
+const cnStyles = block('options-picker-modal');
 
 const OptionsPickerModal: React.FC = () => {
   const navigate = useNavigate();
@@ -117,10 +117,11 @@ const OptionsPickerModal: React.FC = () => {
   };
 
   const handleCancel = () => {
-    // revert local changes by resetting from store
-    setLocalActiveGrades(activeGrades || []);
-    setLocalSelectedDiameters(selectedDiameters || []);
-    navigate(-1);
+    // Clear both local state and Redux store, but keep modal open
+    setLocalActiveGrades([]);
+    setLocalSelectedDiameters([]);
+    dispatch(updateActiveGrades([]));
+    dispatch(updateSelectedDiameters([]));
   };
 
   return (

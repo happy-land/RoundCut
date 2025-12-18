@@ -25,8 +25,7 @@ const OptionsPicker: React.FC<OptionsPickerProps> = ({
       state={{ backgroundLocation: true }}
       className={cnStyles()}
     >
-      {/* {warehouse && <div>{warehouse.name}</div>} */}
-      <img src={OptionsIcon} alt="OptionsIcon" className={cnStyles('')} />
+      <img src={OptionsIcon} alt="OptionsIcon" className={cnStyles('icon')} />
     </Link>
   );
 };
