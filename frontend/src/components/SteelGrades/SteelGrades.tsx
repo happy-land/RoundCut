@@ -5,8 +5,7 @@ import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import './SteelGrades.scss';
 import { selectSearchQuery } from '../../features/search/searchSlice';
-import { updateSelectedGrades } from '../../features/filter/steelgradeSlice';
-import { updateAllGrades } from '../../features/filter/steelgradeSlice';
+import { updateActiveGrades, updateAllGrades, selectActiveGrades } from '../../features/filter/steelgradeSlice';
 import OptionsPicker from '../OptionsPicker/OptionsPicker';
 
 const cnStyles = block('steel-grades');
@@ -15,8 +14,9 @@ const SteelGrades: FC = () => {
   const dispatch = useAppDispatch();
   const warehouseId = useAppSelector(selectWarehouseId);
   const searchQuery = useAppSelector(selectSearchQuery);
+  const activeGradesFromStore = useAppSelector(selectActiveGrades);
 
-  const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
+  const [selectedGrades, setSelectedGrades] = useState<string[]>(activeGradesFromStore || []);
 
   const { data: items = [] } = useFetchItemsQuery(warehouseId);
 
@@ -57,9 +57,14 @@ const SteelGrades: FC = () => {
     dispatch(updateAllGrades(uniqueNames));
   }, [uniqueNames, dispatch]);
 
+  // Sync local state with Redux store when it changes (e.g., from OptionsPickerModal)
+  useEffect(() => {
+    setSelectedGrades(activeGradesFromStore);
+  }, [activeGradesFromStore]);
+
   // Dispatch updated grades to Redux when selectedGrades changes
   useEffect(() => {
-    dispatch(updateSelectedGrades(selectedGrades));
+    dispatch(updateActiveGrades(selectedGrades));
   }, [selectedGrades, dispatch]);
 
   const content = (

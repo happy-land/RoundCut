@@ -2,35 +2,35 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
 interface SteelgradeState {
-  items: string[];
-  allGrades: string[];
+  selectedGrades: string[];
+  availableGrades: string[];
 }
 
 const initialState: SteelgradeState = {
-  items: [],
-  allGrades: [],
+  selectedGrades: [],
+  availableGrades: [],
 }
 
 const steelgradeSlice = createSlice({
   name: 'steelgrade',
   initialState,
   reducers: {
-    updateSelectedGrades: (state, action: PayloadAction<string[]>) => {
-      state.items = action.payload;
+    updateActiveGrades: (state, action: PayloadAction<string[]>) => {
+      state.selectedGrades = action.payload;
     },
     updateAllGrades: (state, action: PayloadAction<string[]>) => {
-      state.allGrades = action.payload;
+      state.availableGrades = action.payload;
     },
     reset: (state) => {
-      state.items = [];
-      state.allGrades = [];
+      state.selectedGrades = [];
+      state.availableGrades = [];
     }
   }
 });
 
-export const { updateSelectedGrades, updateAllGrades, reset } = steelgradeSlice.actions;
+export const { updateActiveGrades, updateAllGrades, reset } = steelgradeSlice.actions;
 
-export const selectSteelgrade = (state: RootState) => state.steelGrade.items;
-export const selectAllGrades = (state: RootState) => state.steelGrade.allGrades;
+export const selectActiveGrades = (state: RootState) => state.steelGrade.selectedGrades;
+export const selectAvailableGrades = (state: RootState) => state.steelGrade.availableGrades;
 
 export default steelgradeSlice.reducer;
