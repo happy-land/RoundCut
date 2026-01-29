@@ -27,28 +27,48 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ placeholder }) => {
     dispatch(setSearchQuery(''));
   };
 
+  const handleSuggestionClick = (value: string) => {
+    dispatch(setSearchQuery(value));
+  };
+
   return (
     <div className={cnStyles()}>
-      <img
-        src={SearchIcon}
-        alt="SearchIcon"
-        className={cnStyles('icon').mix('search-filter__icon--search')}
-      />
-      <input
-        type="text"
-        className="search-filter__input"
-        placeholder={placeholder}
-        value={searchQuery}
-        onChange={handleInputChange}
-      />
-      {searchQuery && (
+      <div className={cnStyles('search-filter-wrapper')}>
         <img
-          src={ClearIcon}
-          alt="ClearIcon"
-          className={cnStyles('icon').mix('search-filter__icon--clear')}
-          onClick={handleClearInput}
+          src={SearchIcon}
+          alt="SearchIcon"
+          className={cnStyles('icon').mix('search-filter__icon--search')}
         />
-      )}
+        <input
+          type="text"
+          className="search-filter__input"
+          placeholder={placeholder}
+          value={searchQuery}
+          onChange={handleInputChange}
+        />
+        {searchQuery && (
+          <img
+            src={ClearIcon}
+            alt="ClearIcon"
+            className={cnStyles('icon').mix('search-filter__icon--clear')}
+            onClick={handleClearInput}
+          />
+        )}
+      </div>
+      <div className={cnStyles('suggestions')}>
+        <span 
+          className={cnStyles('suggestion-item')}
+          onClick={() => handleSuggestionClick('Круг')}
+        >
+          круг
+        </span>
+        <span 
+          className={cnStyles('suggestion-item')}
+          onClick={() => handleSuggestionClick('Поковка')}
+        >
+          поковка
+        </span>
+      </div>
     </div>
   );
 };
