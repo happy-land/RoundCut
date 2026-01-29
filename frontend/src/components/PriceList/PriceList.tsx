@@ -97,11 +97,12 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     .sort((a, b) => a.sizeNum - b.sizeNum)
     .sort((a, b) => a.nameExt.localeCompare(b.nameExt));
 
-  const onItemClick = (item: TPriceItemExtendedResponse) => {
-    console.log(item);
-    // сделать dispatch addItem
-    dispatch(addItem({ item: item }));
-  };
+  // 24.01.2026 закомментить этот обработчик, 
+  // т.к. теперь клик по элементу открывает модальное окно с деталями
+  // const onItemClick = (item: TPriceItemExtendedResponse) => {
+  //   console.log(item);
+  //   dispatch(addItem({ item: item }));
+  // };
 
   const filteredItems = orderedItems.filter((item) => {
     // Filter by searchQuery (if set)
@@ -135,7 +136,8 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
       <ul className={cnStyles('items-list')}>
         {filteredItems.map((item: TPriceItemExtendedResponse, index: number) => (
           <li className={cnStyles('list-item')} key={index}>
-            <PriceItem item={item} onClick={() => onItemClick(item)} />
+            {/* <PriceItem item={item} onClick={() => onItemClick(item)} /> */}
+            <PriceItem item={item} />
           </li>
         ))}
       </ul>
