@@ -32,6 +32,7 @@ import ResetPassword from '../../pages/ResetPassword';
 import WarehouseList from '../WarehouseList/WarehouseList';
 import WarehousePickerModal from '../WarehousePickerModal/WarehousePickerModal';
 import OptionsPickerModal from '../OptionsPickerModal/OptionsPickerModal';
+import BilletModal from '../BilletModal/BilletModal';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -97,7 +98,7 @@ const App: FC = () => {
             <Route path="/admin/cutitem" element={<CutitemEditPage />} />
           </Route>
           {/* <Route path="/price" element={<PriceList />} /> */}
-          <Route path="/price/:id" element={<PriceItemDetails />} />
+          {/* <Route path="/price/:id" element={<PriceItemDetails />} /> */}
           {/* <Route path="/users/:id" element={<SinglePriceitemPage />} /> */}
           {/* <Route path="/" element={<HomePage />} /> */}
           {/* <Route path="/signin" element={<SigninPage />} /> */}
@@ -118,6 +119,14 @@ const App: FC = () => {
           element={
             <Modal onClose={closeAllModals}>
               <OptionsPickerModal />
+            </Modal>
+          }
+        />
+        <Route
+          path="/price/:id"
+          element={
+            <Modal onClose={closeAllModals}>
+              <BilletModal />
             </Modal>
           }
         />
@@ -142,6 +151,14 @@ const App: FC = () => {
               </Modal>
             }
           />
+          <Route
+          path="/price/:id"
+          element={
+            <Modal onClose={closeAllModals}>
+              <BilletModal />
+            </Modal>
+          }
+        />
         </Routes>
       )}
     </div>

@@ -1,7 +1,7 @@
 @import '../../assets/styles/vars.scss';
 
-.diameter-selector {
-  // border: 1px solid $link-gray;
+// .diameter-selector {
+.steel-grades {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -42,14 +42,14 @@
 }
 
 @media screen and (max-width: $desktop) {
-  .diameter-selector {
+  .steel-grades {
     border: 1px solid red;
     max-width: $desktop;
   }
 }
 
 @media screen and (max-width: $tablet) {
-  .diameter-selector {
+  .steel-grades {
     border: 1px solid green;
     // max-width: $tablet;
   }

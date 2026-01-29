@@ -40,7 +40,7 @@ const SteelGrades: FC = () => {
   };
 
   // Filter unique names based on the searchQuery
-  const uniqueNames = getUniqueNamesByPrefix(items, searchQuery);
+  const uniqueNames = getUniqueNamesByPrefix(items, searchQuery.toLowerCase());
 
   // Handle chip selection
   const handleChipClick = (grade: string) => {
@@ -89,7 +89,7 @@ const SteelGrades: FC = () => {
       <div className={cnStyles()}>
         {content}
         <OptionsPicker options={uniqueNames} onChange={() => {}} />
-      </div>
+      </div> 
     </>
   );
 };

@@ -2,10 +2,33 @@
 
 .search-filter {
   // border: 2px solid magenta;
-  position: relative;
   margin: 0 auto 16px;
   max-width: $phone;
-  height: 48px;
+
+  &__search-filter-wrapper {
+    position: relative;
+    margin: 0;
+  }
+
+  &__suggestions {
+    // border: 1px solid blue;
+    display: flex;
+    margin: 0;
+    padding: 0 0 0 2rem;
+  }
+
+  &__suggestion-item {
+    list-style: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: blue;
+    text-decoration: dotted underline;
+    text-underline-offset: 5px;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+  }
 
   &__input {
     width: 100%;
