@@ -9,7 +9,7 @@ export interface WarehouseState {
 
 const initialState: WarehouseState = {
   isOpenModal: false,
-  warehouseId: 45, // 45 - Электроугли TODO: убрать хардкод
+  warehouseId: 202, // 45 - Электроугли TODO: убрать хардкод
 }
 
 export const warehouseSlice = createSlice({
