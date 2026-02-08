@@ -1,27 +1,25 @@
 import React, { FC, useState, useEffect } from 'react';
 import block from 'bem-cn';
 import './BilletModal.scss';
-import { mapWeightToLevel } from '../../utils/markupMapping';
-import { useGetMarkupByWarehouseIdQuery } from '../../services/markupApi';
-import { skipToken } from '@reduxjs/toolkit/query';
-import { useNavigate, useParams } from 'react-router-dom';
 import { TPriceItemResponse } from '../../utils/types';
-import { useFetchItemQuery } from '../../services/priceApi';
+import BilletCellNew from '../BilletCellNew/BilletCellNew';
+import { useParams } from 'react-router-dom';
 
 interface BilletModalProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-  item?: TPriceItemResponse;
-  cutPrice?: number;
+
 }
 
 const cnStyles = block('billet-modal');
 
 const BilletModal: FC<BilletModalProps> = () => {
-  
+  const { id } = useParams<{  id: string }>();
+
+  if (!id) {
+    return null;
+  }
 
   return (
-    <div>Модалка с заготовкой</div>
+    <BilletCellNew id={id} />
   )
     
 };
