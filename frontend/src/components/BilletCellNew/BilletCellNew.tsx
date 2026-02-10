@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import block from "bem-cn";
 import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
@@ -37,6 +37,28 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     { id: "1", length: 0, quantity: 0 },
   ]);
 
+  // Состояние для расчета покупки целыми штуками
+  const [buyQuantity, setBuyQuantity] = useState<number>(1);
+  const [buyWeight, setBuyWeight] = useState<number>(
+    itemExtended
+      ? parseFloat(((itemExtended.unitWeight || 0) / 1000).toFixed(3))
+      : 0,
+  );
+
+  const [buyLength, setBuyLength] = useState<number>(
+    itemExtended ? itemExtended.length : 0,
+  );
+
+  // Обновляем buyWeight при загрузке itemExtended
+  useEffect(() => {
+    if (itemExtended) {
+      setBuyWeight(
+        parseFloat(((itemExtended.unitWeight || 0) / 1000).toFixed(3)),
+      );
+      setBuyLength(itemExtended.length);
+    }
+  }, [itemExtended]);
+
   const addWorkpiece = () => {
     const newId = String(
       Math.max(...workpieces.map((w) => Number(w.id)), 0) + 1,
@@ -58,6 +80,49 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     setWorkpieces(
       workpieces.map((w) => (w.id === id ? { ...w, [field]: value } : w)),
     );
+  };
+
+  // Обработчик изменения кол-ва шт для покупки
+  const handleBuyQuantityChange = (quantity: number) => {
+    if (!itemExtended) return;
+
+    const singleWeightKg = itemExtended.unitWeight || 0;
+    const singleLength = itemExtended.length || 0;
+
+    setBuyQuantity(quantity);
+    setBuyWeight(parseFloat(((singleWeightKg * quantity) / 1000).toFixed(3)));
+    setBuyLength(parseFloat((singleLength * quantity).toFixed(2)));
+  };
+
+  // Обработчик изменения веса для покупки
+  const handleBuyWeightChange = (weightTons: number) => {
+    if (!itemExtended) return;
+
+    const singleWeightKg = itemExtended.unitWeight || 0;
+    const singleLength = itemExtended.length || 0;
+
+    if (singleWeightKg === 0) return;
+
+    const weightKg = weightTons * 1000;
+    const quantity = Math.round((weightKg / singleWeightKg) * 100) / 100;
+    setBuyWeight(weightTons);
+    setBuyQuantity(quantity);
+    setBuyLength(parseFloat((singleLength * quantity).toFixed(2)));
+  };
+
+  // Обработчик изменения длины для покупки
+  const handleBuyLengthChange = (length: number) => {
+    if (!itemExtended) return;
+
+    const singleWeightKg = itemExtended.unitWeight || 0;
+    const singleLength = itemExtended.length || 0;
+
+    if (singleLength === 0) return;
+
+    const quantity = Math.round((length / singleLength) * 100) / 100;
+    setBuyLength(length);
+    setBuyQuantity(quantity);
+    setBuyWeight(parseFloat(((singleWeightKg * quantity) / 1000).toFixed(3)));
   };
 
   const calculateBillets = (): BilletResult[] => {
@@ -209,6 +274,81 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
           </span>
         )}
       </div>
+
+      <div className={cnStyles("buy-calculator")}>
+        <h2 className={cnStyles("section-title")}>Калькулятор покупки</h2>
+        <div className={cnStyles("buy-fields")}>
+          <label className={cnStyles("form-field")}>
+            <MDBInput
+              type="number"
+              name="buy-quantity"
+              label="Кол-во, шт"
+              placeholder="0"
+              className={cnStyles("form-input", "input-buy")}
+              value={buyQuantity || ""}
+              onChange={(e) =>
+                handleBuyQuantityChange(
+                  e.target.value ? Number(e.target.value) : 0,
+                )
+              }
+              disabled={!itemExtended}
+              step="1"
+              min="0"
+            />
+          </label>
+          <label className={cnStyles("form-field")}>
+            <MDBInput
+              type="number"
+              name="buy-weight"
+              label="Кол-во, т"
+              placeholder="0"
+              className={cnStyles("form-input", "input-buy")}
+              value={buyWeight}
+              onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                let value = e.currentTarget.value.replace(",", ".");
+
+                // Защита от двух нулей подряд в начале
+                if (value.match(/^0{2,}/)) {
+                  value = value.replace(/^0+/, "0");
+                  e.currentTarget.value = value;
+                }
+
+                // Если начинается на точку, добавляем 0
+                if (value.startsWith(".")) {
+                  value = "0" + value;
+                  e.currentTarget.value = value;
+                }
+
+                const numValue = parseFloat(value);
+                if (!isNaN(numValue)) {
+                  handleBuyWeightChange(numValue);
+                }
+              }}
+              disabled={!itemExtended}
+              step="0.001"
+              min="0"
+            />
+          </label>
+          <label className={cnStyles("form-field")}>
+            <MDBInput
+              type="number"
+              name="buy-length"
+              label="Кол-во, м"
+              placeholder="0"
+              className={cnStyles("form-input", "input-buy")}
+              value={buyLength || ""}
+              onChange={(e) =>
+                handleBuyLengthChange(
+                  e.target.value ? Number(e.target.value) : 0,
+                )
+              }
+              disabled={!itemExtended}
+              step="0.01"
+            />
+          </label>
+        </div>
+      </div>
+
       <form className={cnStyles("calculator")}>
         <h2 className={cnStyles("section-title")}>Параметры резки</h2>
         <div className={cnStyles("parameters")}>
