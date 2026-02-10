@@ -20,6 +20,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+    margin-bottom: 16px;
 
     @media (max-width: 480px) {
       flex-direction: column;
@@ -51,6 +52,29 @@
     }
   }
 
+  &__buy-calculator {
+    padding: 16px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  &__buy-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+
   &__calculator {
     display: flex;
     flex-direction: column;
@@ -59,7 +83,7 @@
   }
 
   &__section-title {
-    margin: 16px 0 12px 0;
+    margin: 0 0 12px 0;
     font-size: 14px;
     font-weight: 600;
     color: #555;
@@ -116,6 +140,10 @@
     }
 
     &.input-parameter {
+      font-size: 14px;
+    }
+
+    &.input-buy {
       font-size: 14px;
     }
   }
