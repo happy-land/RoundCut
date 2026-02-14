@@ -4,6 +4,10 @@ import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
 
+import { CuttingService, BilletCalculator } from "../../utils/cutting";
+
+
+
 const cnStyles = block("billet-cell-new-container");
 
 interface IBilletCellNewProps {
@@ -260,6 +264,39 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
   const billets = calculateBillets();
   const totalCutsOverall = billets.reduce((sum, b) => sum + b.totalCuts, 0);
 
+  const isValidQuantity = () => {
+    return Number.isInteger(buyQuantity) && buyQuantity > 0;
+  };
+
+  const handleAddToCart = () => {
+    if (isValidQuantity()) {
+      // Логика добавления в корзину с buyQuantity
+      console.log(`Добавляем в корзину: ${buyQuantity} шт`);
+    }
+  };
+
+  useEffect(() => {
+    // const { CuttingService, BilletCalculator } = require("../../utils/cutting");
+
+    console.log("=== ТЕСТ СИСТЕМЫ РЕЗКИ ===");
+
+    // Тест 1: Маленький диаметр
+    console.log("Диаметр 45мм:", CuttingService.getAvailableCuts(45));
+
+    // Тест 2: Средний диаметр
+    console.log("Диаметр 60мм:", CuttingService.getAvailableCuts(60));
+
+    // Тест 3: Большой диаметр
+    console.log("Диаметр 100мм:", CuttingService.getAvailableCuts(100));
+
+    // Тест 4: Расчет
+    const billets = BilletCalculator.calculate(
+      [{ id: "1", length: 150, quantity: 5 }],
+      6000,
+    );
+    console.log("Результат расчета:", billets);
+  }, []);
+
   return (
     <article className={cnStyles()}>
       <div className={cnStyles("title-section")}>
@@ -343,9 +380,25 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
                 )
               }
               disabled={!itemExtended}
-              step="0.01"
+              step="0.001"
             />
           </label>
+        </div>
+        <div className={cnStyles("cart-button-container")}>
+          <button
+            className={cnStyles("btn-add-to-cart", {
+              disabled: !isValidQuantity(),
+            })}
+            onClick={handleAddToCart}
+            disabled={!isValidQuantity()}
+          >
+            В корзину
+          </button>
+          {!isValidQuantity() && (
+            <p className={cnStyles("warning-text")}>
+              Добавить в корзину можно только целыми штуками (1, 2, 3 и т.д.)
+            </p>
+          )}
         </div>
       </div>
 
