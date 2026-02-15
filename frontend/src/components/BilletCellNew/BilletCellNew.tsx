@@ -5,6 +5,8 @@ import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
 
 import { CuttingService, BilletCalculator } from "../../utils/cutting";
+import { useSelector } from "react-redux";
+import { useCuttingCalculator, useCutMethodSelection } from "../../hooks/useCutting";
 
 
 
@@ -34,12 +36,29 @@ interface BilletResult {
 }
 
 const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
+  
+
+  // const { useFetchItemQuery } = useSelector((state: any) => state.priceApi);
   const { data: itemExtended } = useFetchItemQuery(Number(id));
-  const [cutThickness, setCutThickness] = useState<number>(2);
-  const [endCut, setEndCut] = useState<number>(0);
-  const [workpieces, setWorkpieces] = useState<Workpiece[]>([
-    { id: "1", length: 0, quantity: 0 },
-  ]);
+  const {
+    cutThickness,
+    setCutThickness,
+    endCut,
+    setEndCut,
+    workpieces,
+    addWorkpiece,
+    removeWorkpiece,
+    updateWorkpiece,
+    billets,
+    statistics,
+    selectedCutMethod,
+    setSelectedCutMethod,
+  } = useCuttingCalculator({
+    billetLength: itemExtended ? itemExtended.length * 1000 : 0,
+  });
+
+  const itemDiameter = itemExtended ? itemExtended.size : 0;
+  // const {} = useCutMethodSelection(itemDiameter);
 
   // Состояние для расчета покупки целыми штуками
   const [buyQuantity, setBuyQuantity] = useState<number>(1);
@@ -63,28 +82,6 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     }
   }, [itemExtended]);
 
-  const addWorkpiece = () => {
-    const newId = String(
-      Math.max(...workpieces.map((w) => Number(w.id)), 0) + 1,
-    );
-    setWorkpieces([...workpieces, { id: newId, length: 0, quantity: 0 }]);
-  };
-
-  const removeWorkpiece = (id: string) => {
-    if (workpieces.length > 1) {
-      setWorkpieces(workpieces.filter((w) => w.id !== id));
-    }
-  };
-
-  const updateWorkpiece = (
-    id: string,
-    field: "length" | "quantity",
-    value: number,
-  ) => {
-    setWorkpieces(
-      workpieces.map((w) => (w.id === id ? { ...w, [field]: value } : w)),
-    );
-  };
 
   // Обработчик изменения кол-ва шт для покупки
   const handleBuyQuantityChange = (quantity: number) => {
@@ -129,139 +126,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     setBuyWeight(parseFloat(((singleWeightKg * quantity) / 1000).toFixed(3)));
   };
 
-  const calculateBillets = (): BilletResult[] => {
-    if (!itemExtended) return [];
 
-    let billetLength = itemExtended.length * 1000; // мм
-
-    // Вычитаем торцевой рез в начале
-    const actualBilletLength =
-      endCut > 0 ? billetLength - endCut : billetLength;
-
-    const validWorkpieces = workpieces.filter(
-      (w) => w.length > 0 && w.quantity > 0,
-    );
-
-    if (validWorkpieces.length === 0) return [];
-
-    // Объединяем одинаковые длины
-    const mergedWorkpieces: { [key: number]: number } = {};
-    validWorkpieces.forEach((w) => {
-      mergedWorkpieces[w.length] =
-        (mergedWorkpieces[w.length] || 0) + w.quantity;
-    });
-
-    // Преобразуем обратно в массив и сортируем по длине (от больших к меньшим)
-    const sortedWorkpieces = Object.entries(mergedWorkpieces)
-      .map(([length, quantity]) => ({ length: Number(length), quantity }))
-      .sort((a, b) => b.length - a.length);
-
-    // Остаток для каждого заготовляемого размера
-    const remaining: { [key: number]: number } = {};
-    sortedWorkpieces.forEach((w) => {
-      remaining[w.length] = w.quantity;
-    });
-
-    const billets: BilletResult[] = [];
-    let billetIndex = 1;
-    let totalCuts = 0;
-
-    while (Object.values(remaining).some((r) => r > 0)) {
-      let currentBilletLength = actualBilletLength;
-      const billetItems: Array<{
-        length: number;
-        quantity: number;
-        workpieces: number;
-      }> = [];
-      let usedLength = 0;
-      let cutsInBillet = endCut > 0 ? 1 : 0; // Торцевой рез в начале (если есть)
-
-      // Сначала размещаем большие заготовки
-      for (const workpiece of sortedWorkpieces) {
-        const length = workpiece.length;
-
-        while (remaining[length] > 0 && length <= currentBilletLength) {
-          currentBilletLength -= length;
-          remaining[length]--;
-          usedLength += length;
-          cutsInBillet++; // Добавляем рез для этой заготовки
-
-          // Вычитаем толщину реза (если есть ещё заготовки)
-          if (
-            remaining[length] > 0 ||
-            Object.values(remaining).some((r) => r > 0)
-          ) {
-            currentBilletLength -= cutThickness;
-          }
-
-          const existingItem = billetItems.find(
-            (item) => item.length === length,
-          );
-          if (existingItem) {
-            existingItem.workpieces++;
-          } else {
-            billetItems.push({ length, quantity: 1, workpieces: 1 });
-          }
-        }
-      }
-
-      // Затем пытаемся заполнить остаток маленькими заготовками
-      for (const workpiece of sortedWorkpieces.slice().reverse()) {
-        const length = workpiece.length;
-
-        while (remaining[length] > 0 && length <= currentBilletLength) {
-          currentBilletLength -= length;
-          remaining[length]--;
-          usedLength += length;
-          cutsInBillet++; // Добавляем рез для этой заготовки
-
-          // Вычитаем толщину реза (если есть ещё заготовки)
-          if (
-            remaining[length] > 0 ||
-            Object.values(remaining).some((r) => r > 0)
-          ) {
-            currentBilletLength -= cutThickness;
-          }
-
-          const existingItem = billetItems.find(
-            (item) => item.length === length,
-          );
-          if (existingItem) {
-            existingItem.workpieces++;
-          } else {
-            billetItems.push({ length, quantity: 1, workpieces: 1 });
-          }
-        }
-      }
-
-      if (billetItems.length > 0) {
-        totalCuts += cutsInBillet;
-        billets.push({
-          billetIndex,
-          items: billetItems,
-          usedLength,
-          billetLength: billetLength,
-          endCut,
-          totalCuts: cutsInBillet,
-        });
-        billetIndex++;
-      } else {
-        // Если ничего не поместилось, пропускаем невходящие размеры
-        const minRemaining = Math.min(
-          ...Object.entries(remaining)
-            .filter(([_, q]) => q > 0)
-            .map(([len, _]) => Number(len)),
-        );
-
-        // Если минимальный размер больше длины круга, прерываем
-        if (minRemaining > actualBilletLength) break;
-      }
-    }
-
-    return billets;
-  };
-
-  const billets = calculateBillets();
   const totalCutsOverall = billets.reduce((sum, b) => sum + b.totalCuts, 0);
 
   const isValidQuantity = () => {
@@ -544,3 +409,4 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
 };
 
 export default BilletCellNew;
+
