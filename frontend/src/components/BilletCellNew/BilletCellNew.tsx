@@ -1,11 +1,12 @@
-
-import { FC, useState, useEffect, useMemo } from "react";
+import { FC, useState, useEffect, useMemo, useRef } from "react";
 import block from "bem-cn";
 import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
 import { CuttingService, BilletCalculator } from "../../utils/cutting";
-import { useCuttingCalculator /*, useCutMethodSelection*/ } from "../../hooks/useCutting";
+import {
+  useCuttingCalculator /*, useCutMethodSelection*/,
+} from "../../hooks/useCutting";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -33,7 +34,7 @@ const showEmptyIfZero = (v: number | null | undefined) =>
 const normalizeEmptyToZero = (raw: string) =>
   raw.trim() === "" ? 0 : Number(raw);
 
-/** Парсим десятичный ввод с запятой/точкой, допускаем пустую строку */
+/** Парсим десятичный ввод (поддержка запятой), допускаем пустую строку */
 const parseDecimalMaybe = (raw: string): number | null => {
   const s = raw.trim();
   if (s === "") return null;
@@ -41,10 +42,12 @@ const parseDecimalMaybe = (raw: string): number | null => {
   return Number.isFinite(n) ? n : null;
 };
 
-/** Округление до 3 знаков (математическое) */
+/** Округление до 3 знаков (математическое) для тонн */
 const round3 = (x: number) => Math.round(x * 1000) / 1000;
+/** Округление до 3 знаков (математическое) для метров */
+const round3m = (x: number) => Math.round(x * 1000) / 1000;
 
-/** Тоновый шаг по весу 1 шт */
+/** Вес 1 шт в тоннах */
 const tonsPerPiece = (unitWeightKg: number) => unitWeightKg / 1000;
 
 /** Пересчёт из штук */
@@ -53,44 +56,79 @@ function deriveByQuantity(
   singleWeightKg: number,
   singleLengthM: number,
 ) {
-  const q = Math.max(0, quantity);
-  const weightTons = round3((singleWeightKg * q) / 1000);
-  const lengthMeters = singleLengthM * q;
-  return { quantity: q, weightTons, lengthMeters };
+  const k = Math.max(0, Math.floor(quantity + 0.0000001)); // безопасный floor для неинт. ввода
+  const weightTons = round3((singleWeightKg * k) / 1000);
+  const lengthMeters = round3m(singleLengthM * k); // ⬅️ округлили метры
+  return { quantity: k, weightTons, lengthMeters };
 }
 
-/** Пересчёт из тонн */
-function deriveByWeightTons(
-  weightTons: number,
+type Dir = "up" | "down" | "auto";
+
+/** Притягиваем вес (в тоннах) к кратному шагу stepTons с учётом направления. Возвращаем вес и k. */
+const snapWeightToStep = (wTons: number, stepTons: number, dir: Dir) => {
+  if (stepTons <= 0) return { wAligned: round3(wTons), k: 0 };
+  const q = wTons / stepTons; // «сколько штук» по весу
+  const EPS = 1e-9;
+
+  let k: number;
+  if (dir === "down") k = Math.floor(q + EPS);
+  else if (dir === "up") k = Math.ceil(q - EPS);
+  else k = Math.round(q); // auto: ближайшее
+
+  if (k < 0) k = 0;
+
+  const wAligned = round3(k * stepTons);
+  return { wAligned, k };
+};
+
+/** Пересчёт из тонн (направленный «снэп» к шагу = весу 1 шт). quantity = k (строго целое). */
+function deriveByWeightTonsDirected(
+  weightTonsIn: number,
   singleWeightKg: number,
   singleLengthM: number,
+  dir: Dir,
 ) {
-  const w = round3(Math.max(0, weightTons));
-  if (singleWeightKg === 0)
-    return { quantity: 0, weightTons: w, lengthMeters: 0 };
-  const quantity = (w * 1000) / singleWeightKg;
-  const lengthMeters = singleLengthM * quantity;
-  return { quantity, weightTons: w, lengthMeters };
+  const stepT = tonsPerPiece(singleWeightKg); // точный вес 1 шт (т)
+  const wIn = round3(Math.max(0, weightTonsIn)); // UI ограничен 3 знаками
+
+  if (singleWeightKg === 0 || stepT === 0) {
+    return { quantity: 0, weightTons: wIn, lengthMeters: 0 };
+  }
+
+  // прилипание к кратному с учётом направления
+  const { wAligned, k } = snapWeightToStep(wIn, stepT, dir);
+
+  // ВАЖНО: количество задаём ровно k (целое), а не через деление веса
+  const quantity = k;
+  const weightTons = wAligned; // в UI отрисуем .toFixed(3)
+  const lengthMeters = round3m(singleLengthM * k); // ⬅️ округлили метры
+
+  return { quantity, weightTons, lengthMeters };
 }
 
-/** Пересчёт из метров */
+/** Пересчёт из метров (здесь допускаем дробные штуки, т.к. ввод произвольный) */
 function deriveByLengthMeters(
-  lengthMeters: number,
+  lengthMetersIn: number,
   singleWeightKg: number,
   singleLengthM: number,
 ) {
-  const L = Math.max(0, lengthMeters);
-  if (singleLengthM === 0) return { quantity: 0, weightTons: 0, lengthMeters: L };
-  const quantity = L / singleLengthM;
+  const L = Math.max(0, lengthMetersIn);
+  if (singleLengthM === 0)
+    return { quantity: 0, weightTons: 0, lengthMeters: L };
+  const lengthMeters = round3m(L); // ⬅️ фиксируем метры с 3 знаками
+  const quantity = lengthMeters / singleLengthM;
   const weightTons = round3((singleWeightKg * quantity) / 1000);
-  return { quantity, weightTons, lengthMeters: L };
+  return { quantity, weightTons, lengthMeters };
 }
 
 /* ====================== component ====================== */
 
 const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
-  const { data: itemExtended, isLoading, isError } =
-    useFetchItemQuery<ItemExtended | undefined>(Number(id));
+  const {
+    data: itemExtended,
+    isLoading,
+    isError,
+  } = useFetchItemQuery<ItemExtended | undefined>(Number(id));
 
   /* --- Cutting calculator --- */
   const billetLengthMm = useMemo(
@@ -115,20 +153,23 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
 
   /* --- Purchase calculator (шт/т/м) --- */
   const singleWeightKg = itemExtended?.unitWeight ?? 0; // кг за 1 шт
-  const singleLengthM = itemExtended?.length ?? 0;      // м за 1 шт
+  const singleLengthM = itemExtended?.length ?? 0; // м за 1 шт
 
   const [buyQuantity, setBuyQuantity] = useState<number>(1);
   const [buyWeightTons, setBuyWeightTons] = useState<number>(0);
   const [buyLengthMeters, setBuyLengthMeters] = useState<number>(0);
 
-  // Инициализация значений после загрузки itemExtended:
-  // Показываем вес 1 шт в тоннах сразу в number-инпуте «Кол-во, т»
+  // прошлое значение веса — для определения направления up/down
+  const prevWeightTonsRef = useRef(0);
+
+  // Инициализация значений после загрузки itemExtended
   useEffect(() => {
     if (!itemExtended) return;
     const init = deriveByQuantity(1, singleWeightKg, singleLengthM);
-    setBuyQuantity(init.quantity);
-    setBuyWeightTons(init.weightTons);    // вес 1 шт округлён до 3 знаков
-    setBuyLengthMeters(init.lengthMeters);
+    setBuyQuantity(init.quantity); // 1
+    setBuyWeightTons(init.weightTons); // вес 1 шт (т), round3
+    setBuyLengthMeters(init.lengthMeters); // длина 1 шт (м), round3m
+    prevWeightTonsRef.current = init.weightTons;
   }, [itemExtended, singleWeightKg, singleLengthM]);
 
   // Handlers
@@ -140,8 +181,9 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
       singleLengthM,
     );
     setBuyQuantity(quantity);
-    setBuyWeightTons(weightTons);       // уже round3
+    setBuyWeightTons(weightTons);
     setBuyLengthMeters(lengthMeters);
+    prevWeightTonsRef.current = weightTons; // зафиксируем для направления
   };
 
   const handleBuyWeightChange = (raw: string) => {
@@ -151,23 +193,40 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
       setBuyWeightTons(0);
       setBuyQuantity(0);
       setBuyLengthMeters(0);
+      prevWeightTonsRef.current = 0;
       return;
     }
-    const { quantity, weightTons, lengthMeters } = deriveByWeightTons(
+
+    const prev = prevWeightTonsRef.current;
+    const dir: Dir = parsed > prev ? "up" : parsed < prev ? "down" : "auto";
+
+    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsDirected(
       parsed,
       singleWeightKg,
       singleLengthM,
+      dir,
     );
-    setBuyQuantity(quantity);
-    setBuyWeightTons(weightTons);       // уже round3
-    setBuyLengthMeters(lengthMeters);
+
+    setBuyQuantity(quantity); // СТРОГО ЦЕЛОЕ (k)
+    setBuyWeightTons(weightTons); // выровненный и round3
+    setBuyLengthMeters(lengthMeters); // round3m
+    prevWeightTonsRef.current = weightTons;
   };
 
   const handleBuyWeightBlur = (raw: string) => {
-    // Нормализуем отображение при уходе из поля: ставим ровно 3 знака
+    // На blur — доводим до ближайшего кратного (auto) и 3 знаков
     const parsed = parseDecimalMaybe(raw);
     const safe = parsed == null ? 0 : parsed;
-    setBuyWeightTons(round3(safe));
+    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsDirected(
+      safe,
+      singleWeightKg,
+      singleLengthM,
+      "auto",
+    );
+    setBuyQuantity(quantity);
+    setBuyWeightTons(weightTons);
+    setBuyLengthMeters(lengthMeters);
+    prevWeightTonsRef.current = weightTons;
   };
 
   const handleBuyLengthChange = (raw: string) => {
@@ -178,8 +237,9 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
       singleLengthM,
     );
     setBuyQuantity(quantity);
-    setBuyWeightTons(weightTons);       // уже round3
+    setBuyWeightTons(weightTons);
     setBuyLengthMeters(lengthMeters);
+    prevWeightTonsRef.current = weightTons;
   };
 
   // Cuts total
@@ -188,8 +248,9 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     [billets],
   );
 
-  // Cart validation: only integer > 0
-  const isValidQuantity = () => Number.isInteger(buyQuantity) && buyQuantity > 0;
+  // Корзина: только целые и > 0
+  const isValidQuantity = () =>
+    Number.isInteger(buyQuantity) && buyQuantity > 0;
 
   const handleAddToCart = () => {
     if (!isValidQuantity()) return;
@@ -211,13 +272,6 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     console.log("Результат расчета:", testBillets);
   }, []);
 
-    // Шаг для number-инпута по весу в тоннах:
-  const weightStepTons = useMemo(() => {
-    const step = tonsPerPiece(singleWeightKg); // кг -> т
-    // если вес 1 шт = 0 (маловероятно) — даём безопасный минимум
-    return step > 0 ? round3(step) : 0.001;
-  }, [singleWeightKg]);
-
   /* --------- UI: загрузка/ошибка --------- */
   if (isLoading) {
     return (
@@ -238,8 +292,6 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     );
   }
 
-
-
   /* ----------------------------- render ----------------------------- */
   return (
     <article className={cnStyles()}>
@@ -256,7 +308,6 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
       <div className={cnStyles("buy-calculator")}>
         <h2 className={cnStyles("section-title")}>Калькулятор покупки</h2>
         <div className={cnStyles("buy-fields")}>
-
           {/* Кол-во, шт */}
           <label className={cnStyles("form-field")}>
             <MDBInput
@@ -275,7 +326,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
             />
           </label>
 
-          {/* Кол-во, т — number с шагом = весу 1 шт (в тоннах), округление до 3 знаков */}
+          {/* Кол-во, т — number со step=0.001. Кратность весу 1 шт обеспечиваем логикой снэпа. */}
           <label className={cnStyles("form-field")}>
             <MDBInput
               type="number"
@@ -283,19 +334,10 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
               label="Кол-во, т"
               placeholder="0"
               className={cnStyles("form-input", "input-buy")}
-              value={showEmptyIfZero(buyWeightTons)}
-              onChange={(e) => {
-                const parsed = parseDecimalMaybe(e.target.value);
-                if (parsed === null) {
-                  setBuyWeightTons(0);
-                  setBuyQuantity(0);
-                  setBuyLengthMeters(0);
-                } else {
-                  handleBuyWeightChange(String(parsed));
-                }
-              }}
+              value={buyWeightTons === 0 ? "" : buyWeightTons.toFixed(3)} // ровно 3 знака
+              onChange={(e) => handleBuyWeightChange(e.target.value)}
               onBlur={(e) => handleBuyWeightBlur(e.target.value)}
-              step={weightStepTons}
+              step={0.001}
               min="0"
               inputMode="decimal"
             />
@@ -309,7 +351,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
               label="Кол-во, м"
               placeholder="0"
               className={cnStyles("form-input", "input-buy")}
-              value={showEmptyIfZero(buyLengthMeters)}
+              value={buyLengthMeters === 0 ? "" : buyLengthMeters.toFixed(3)} // ⬅️ всегда 3 знака
               onChange={(e) => handleBuyLengthChange(e.target.value)}
               onBlur={(e) => {
                 if (e.target.value.trim() === "") handleBuyLengthChange("0");
@@ -323,10 +365,16 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
         <div className={cnStyles("cart-button-container")}>
           <button
             type="button"
-            className={cnStyles("btn-add-to-cart", { disabled: !isValidQuantity() })}
+            className={cnStyles("btn-add-to-cart", {
+              disabled: !isValidQuantity(),
+            })}
             onClick={handleAddToCart}
             disabled={!isValidQuantity()}
-            title={!isValidQuantity() ? "Добавить в корзину можно только целыми штуками" : undefined}
+            title={
+              !isValidQuantity()
+                ? "Добавить в корзину можно только целыми штуками"
+                : undefined
+            }
           >
             В корзину
           </button>
@@ -464,7 +512,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
           <div className={cnStyles("billets-result")}>
             <h3 className={cnStyles("result-title")}>Расчет резки:</h3>
             {billets.map((billet) => {
-              const cutsWithoutEnd = billet.totalCuts - (endCut > 0 ? 1 : 0) - 1;
+              const cutsWithoutEnd =
+                billet.totalCuts - (endCut > 0 ? 1 : 0) - 1;
               const technicalCuts = Math.max(0, cutsWithoutEnd);
               const wasteLength = Math.max(
                 0,
@@ -475,7 +524,10 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
               );
 
               return (
-                <div key={billet.billetIndex} className={cnStyles("billet-item")}>
+                <div
+                  key={billet.billetIndex}
+                  className={cnStyles("billet-item")}
+                >
                   <div className={cnStyles("billet-header")}>
                     Круг {billet.billetIndex}: {billet.usedLength} мм от{" "}
                     {billet.billetLength} мм
