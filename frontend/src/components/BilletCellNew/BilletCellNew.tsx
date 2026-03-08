@@ -4,6 +4,7 @@ import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
 import { CuttingService, BilletCalculator } from "../../utils/cutting";
+import { useGetCutitemByParametersQuery } from "../../services/cutitemApi"; 
 import {
   useCuttingCalculator /*, useCutMethodSelection*/,
 } from "../../hooks/useCutting";
@@ -362,6 +363,96 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
           </label>
         </div>
 
+        {/* 🔹 NEW: карточки видов резки с + / – и ценой из БД */}
+        {itemDiameter > 0 && availableCuts.length > 0 && (
+          <section className={cnStyles("cutting-methods")}>
+            <h3 className={cnStyles("cutting-title")}>
+              Виды резки для Ø{itemDiameter} мм
+              {recommendedCutLabel ? (
+                <span className={cnStyles("cutting-hint")}>
+                  {" "}
+                  (рекомендуется: {recommendedCutLabel})
+                </span>
+              ) : null}
+            </h3>
+
+            <div className={cnStyles("cutting-grid")}>
+              {availableCuts.map((m) => {
+                const price = priceByCode[m.code];
+                const qty = cutCounts[m.code] ?? 0;
+                const priceText = isCutPriceLoading
+                  ? "Загрузка..."
+                  : isCutPriceError
+                    ? "—"
+                    : typeof price === "number"
+                      ? formatMoney(price, priceCurrency)
+                      : "—";
+
+                return (
+                  <div key={m.code} className={cnStyles("cutting-card")}>
+                    <div className={cnStyles("cutting-card__header")}>
+                      <div className={cnStyles("cutting-card__label")}>
+                        {m.label}
+                      </div>
+                      <div className={cnStyles("cutting-card__price")}>
+                        {priceText}{" "}
+                        <span className={cnStyles("cutting-card__unit")}>
+                          / рез
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className={cnStyles("cutting-card__controls")}>
+                      <button
+                        type="button"
+                        className={cnStyles("btn-qty", { minus: true })}
+                        onClick={() => decCut(m.code)}
+                        aria-label={`Уменьшить ${m.label}`}
+                      >
+                        –
+                      </button>
+
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        max={999}
+                        className={cnStyles("qty-input")}
+                        value={qty}
+                        onChange={(e) =>
+                          setCutDirect(m.code, Number(e.target.value || 0))
+                        }
+                      />
+
+                      <button
+                        type="button"
+                        className={cnStyles("btn-qty", { plus: true })}
+                        onClick={() => incCut(m.code)}
+                        aria-label={`Увеличить ${m.label}`}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Итого по резке */}
+            <div className={cnStyles("cutting-total")}>
+              <span>Итого за резку:</span>
+              <strong>
+                {isCutPriceLoading
+                  ? "Загрузка..."
+                  : totalCuttingCost > 0
+                    ? formatMoney(totalCuttingCost, priceCurrency)
+                    : formatMoney(0, priceCurrency)}
+              </strong>
+            </div>
+          </section>
+        )}
+
+        {/* Кнопка корзины */}
         <div className={cnStyles("cart-button-container")}>
           <button
             type="button"

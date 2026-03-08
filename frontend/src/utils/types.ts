@@ -157,6 +157,8 @@ export type TMarkup = {
 export type TAdminCut = {
   id: number;
   name: string;
+  profile?: string;
+  code?: string;
 };
 
 export type TGoodsCutItem = {
