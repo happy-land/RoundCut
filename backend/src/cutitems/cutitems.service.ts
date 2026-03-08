@@ -48,21 +48,10 @@ export class CutitemsService {
     console.log('cutitemByName:');
     console.log(cutitemByName);
     if (cutitemByName) return cutitemByName;
+  }
 
-    // Fallback: original behaviour — search any cutitem covering the size interval
-    // const cutitem = await this.cutitemsRepository.findOne({
-    //   where: [
-    //     {
-    //       warehouse: { id: id },
-    //       from: LessThanOrEqual(size),
-    //       to: MoreThanOrEqual(size),
-    //     },
-    //   ],
-    // });
-    // if (!cutitem) {
-    //   return new NotFoundException('Резка не найдена');
-    // }
-    // return cutitem;
+  async findAllByParams(id: number, size: number) {
+    return id;
   }
 
   private async findCutitemByCutNameFragment(
@@ -70,11 +59,6 @@ export class CutitemsService {
     size: number,
     nameFragment: string,
   ) {
-    // find Cut by name fragment (case-insensitive)
-    // const cut = await this.cutsService.findOne({ where: { name: ILike(`%${nameFragment}%`) } });
-    // console.log('cut found by name fragment:');
-    // console.log(cut);
-    // if (!cut) return null;
 
     // find cutitem for the found cut and warehouse that covers the size interval
     const cutitem = await this.cutitemsRepository.findOne({
