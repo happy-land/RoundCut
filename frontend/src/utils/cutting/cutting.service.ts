@@ -1,8 +1,4 @@
-import {
-  CutMethod,
-  CutSelection,
-  PartSaleInfo,
-} from './cutting.types';
+import { CutMethod, CutSelection, PartSaleInfo } from "./cutting.types";
 import {
   getPreferredMethod,
   getAllowedMethods,
@@ -10,7 +6,7 @@ import {
   getPreferredMethod as getOptimalMethod,
   getCutMethodDisplayName,
   canSellParts,
-} from './cutting.rules';
+} from "./cutting.rules";
 
 /**
  * Сервис для работы с логикой резки
@@ -22,7 +18,7 @@ export class CuttingService {
    */
   static getOptimalCut(diameter: number): CutSelection | null {
     const preferredMethod = getOptimalMethod(diameter);
-    
+
     if (!preferredMethod) {
       return null;
     }
@@ -42,15 +38,22 @@ export class CuttingService {
     const allowedMethods = getAllowedMethods(diameter);
     const preferredMethod = getOptimalMethod(diameter);
 
-    return allowedMethods.map((method) => ({
+    console.log(`[getAvailableCuts] diameter=${diameter}`);
+    console.log(`[getAvailableCuts] allowedMethods=`, allowedMethods);
+    console.log(`[getAvailableCuts] preferredMethod=`, preferredMethod);
+
+    const result = allowedMethods.map((method) => ({
       diameter,
       method,
       isOptimal: method === preferredMethod,
       reason:
         method === preferredMethod
-          ? 'Предпочтительный метод'
-          : 'Альтернативный метод',
+          ? "Предпочтительный метод"
+          : "Альтернативный метод",
     }));
+
+    console.log(`[getAvailableCuts] result=`, result);
+    return result;
   }
 
   /**
@@ -99,7 +102,7 @@ export class CuttingService {
     totalLength: number,
   ): number | null {
     const partSaleInfo = canSellParts(diameter);
-    
+
     if (!partSaleInfo.canSell || !partSaleInfo.maxLengthPercent) {
       return null;
     }
@@ -114,9 +117,9 @@ export class CuttingService {
   static getCutMethodName(method: CutMethod): string {
     // Эти названия должны совпадать с тем, как они хранятся в BD
     const nameMap: Record<CutMethod, string> = {
-      [CutMethod.GAS]: 'газом',
-      [CutMethod.BANDSAW]: 'лентопильным станком',
-      [CutMethod.CUTOFF_MACHINE]: 'отрезным станком',
+      [CutMethod.GAS]: "газом",
+      [CutMethod.BANDSAW]: "лентопильным станком",
+      [CutMethod.CUTOFF]: "отрезным станком",
     };
     return nameMap[method];
   }
@@ -126,9 +129,9 @@ export class CuttingService {
    */
   static getCutMethodSearchFragment(method: CutMethod): string {
     const fragmentMap: Record<CutMethod, string> = {
-      [CutMethod.GAS]: 'газом',
-      [CutMethod.BANDSAW]: 'лентопильным станком',
-      [CutMethod.CUTOFF_MACHINE]: 'отрезным станком',
+      [CutMethod.GAS]: "газом",
+      [CutMethod.BANDSAW]: "лентопильным станком",
+      [CutMethod.CUTOFF]: "отрезным станком",
     };
     return fragmentMap[method];
   }
