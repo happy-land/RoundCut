@@ -4,7 +4,7 @@ import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
 import { CuttingService, BilletCalculator } from "../../utils/cutting";
-import { useGetCutitemByParametersQuery } from "../../services/cutitemApi"; 
+import { useGetCutitemsByParametersQuery } from "../../services/cutitemApi";
 import {
   useCuttingCalculator /*, useCutMethodSelection*/,
 } from "../../hooks/useCutting";
@@ -12,7 +12,8 @@ import {
 const cnStyles = block("billet-cell-new-container");
 
 interface IBilletCellNewProps {
-  id: string;
+  id: string; // id товара (product)
+  warehouseId: number; // id склада для получения cutitem
 }
 
 interface ItemExtended {
@@ -122,9 +123,14 @@ function deriveByLengthMeters(
   return { quantity, weightTons, lengthMeters };
 }
 
+/** Функция форматирования денег */
+const formatMoney = (value: number, currency: string) => {
+  return `${value.toFixed(0)} ${currency}`;
+};
+
 /* ====================== component ====================== */
 
-const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
+const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const {
     data: itemExtended,
     isLoading,
@@ -149,8 +155,10 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
     billets,
   } = useCuttingCalculator({ billetLength: billetLengthMm });
 
-  const itemDiameter = useMemo(() => itemExtended?.size ?? 0, [itemExtended]);
-  // const {} = useCutMethodSelection(itemDiameter);
+  const itemDiameter = useMemo(() => {
+    const size = itemExtended?.size ?? 0;
+    return typeof size === "string" ? parseInt(size, 10) : size;
+  }, [itemExtended]);
 
   /* --- Purchase calculator (шт/т/м) --- */
   const singleWeightKg = itemExtended?.unitWeight ?? 0; // кг за 1 шт
@@ -159,6 +167,95 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
   const [buyQuantity, setBuyQuantity] = useState<number>(1);
   const [buyWeightTons, setBuyWeightTons] = useState<number>(0);
   const [buyLengthMeters, setBuyLengthMeters] = useState<number>(0);
+  const [cutCounts, setCutCounts] = useState<Record<string, number>>({});
+  // Для цены резки нужно получить из API
+  const [priceByCode, setPriceByCode] = useState<Record<string, number>>({});
+  const [isCutPriceLoading, setIsCutPriceLoading] = useState(false);
+  const [isCutPriceError, setIsCutPriceError] = useState(false);
+  const priceCurrency = "₽";
+
+  // Получить цены резки для данного склада и диаметра
+  const { data: cutitemsForDiameter } = useGetCutitemsByParametersQuery(
+    { warehouseId, sizeNum: itemDiameter },
+    { skip: itemDiameter === 0 },
+  );
+
+  // CutMethod в label и code для UI
+  const methodToLabel: Record<string, string> = {
+    bandsaw: "Лентопильная (bandsaw)",
+    cutoff: "Отрезной станок (cutoff)",
+    gas: "Газовая резка (gas)",
+  };
+
+  // Доступные типы резки для текущего диаметра
+  const availableCuts = useMemo(() => {
+    const cuts = CuttingService.getAvailableCuts(itemDiameter);
+    return cuts.map((cut) => ({
+      code: cut.method,
+      label: methodToLabel[cut.method] || cut.method,
+      isOptimal: cut.isOptimal,
+    }));
+  }, [itemDiameter]);
+
+  // Заполнить priceByCode из cutitems
+  useEffect(() => {
+    if (!cutitemsForDiameter || cutitemsForDiameter.length === 0) {
+      setPriceByCode({});
+      return;
+    }
+
+    const prices: Record<string, number> = {};
+    console.log("[DEBUG] cutitemsForDiameter:", cutitemsForDiameter);
+    cutitemsForDiameter.forEach((cutitem) => {
+      console.log(
+        `[DEBUG] cutitem.cut.code=${cutitem.cut?.code}, amount=${cutitem.amount}`,
+      );
+      if (cutitem.cut?.code) {
+        prices[cutitem.cut.code] = cutitem.amount;
+      }
+    });
+    console.log("[DEBUG] Final priceByCode:", prices);
+    console.log(
+      "[DEBUG] availableCuts codes:",
+      availableCuts.map((c) => c.code),
+    );
+
+    setPriceByCode(prices);
+  }, [cutitemsForDiameter, availableCuts]);
+
+  const incCut = (code: string) => {
+    setCutCounts((prev) => ({
+      ...prev,
+      [code]: (prev[code] ?? 0) + 1,
+    }));
+  };
+
+  const decCut = (code: string) => {
+    setCutCounts((prev) => ({
+      ...prev,
+      [code]: Math.max(0, (prev[code] ?? 0) - 1),
+    }));
+  };
+
+  const setCutDirect = (code: string, value: number) => {
+    setCutCounts((prev) => ({
+      ...prev,
+      [code]: Math.max(0, value),
+    }));
+  };
+
+  const totalCuttingCost = useMemo(() => {
+    return Object.entries(cutCounts).reduce((sum, [code, qty]) => {
+      const price = priceByCode[code] ?? 0;
+      return sum + price * qty;
+    }, 0);
+  }, [cutCounts, priceByCode]);
+
+  // Рекомендуемый тип резки
+  const recommendedCutLabel = useMemo(() => {
+    const optimal = CuttingService.getOptimalCut(itemDiameter);
+    return optimal ? methodToLabel[optimal.method] || null : null;
+  }, [itemDiameter]);
 
   // прошлое значение веса — для определения направления up/down
   const prevWeightTonsRef = useRef(0);
@@ -260,18 +357,24 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
   };
 
   // Dev logs
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    console.log("=== ТЕСТ СИСТЕМЫ РЕЗКИ ===");
-    console.log("Диаметр 45мм:", CuttingService.getAvailableCuts(45));
-    console.log("Диаметр 60мм:", CuttingService.getAvailableCuts(60));
-    console.log("Диаметр 100мм:", CuttingService.getAvailableCuts(100));
-    const testBillets = BilletCalculator.calculate(
-      [{ id: "1", length: 150, quantity: 5 }],
-      6000,
-    );
-    console.log("Результат расчета:", testBillets);
-  }, []);
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV === "production") return;
+  //   console.log("=== ТЕСТ СИСТЕМЫ РЕЗКИ ===");
+  //   console.log("itemDiameter:", itemDiameter);
+  //   console.log("itemExtended:", itemExtended);
+
+  //   console.log("availableCuts из useMemo:", availableCuts);
+
+  //   console.log("availableCuts:", availableCuts);
+  //   console.log("Диаметр 45мм:", CuttingService.getAvailableCuts(45));
+  //   console.log("Диаметр 60мм:", CuttingService.getAvailableCuts(60));
+  //   console.log("Диаметр 100мм:", CuttingService.getAvailableCuts(100));
+  //   const testBillets = BilletCalculator.calculate(
+  //     [{ id: "1", length: 150, quantity: 5 }],
+  //     6000,
+  //   );
+  //   console.log("Результат расчета:", testBillets);
+  // }, [itemDiameter, availableCuts, itemExtended]);
 
   /* --------- UI: загрузка/ошибка --------- */
   if (isLoading) {
@@ -377,65 +480,74 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
             </h3>
 
             <div className={cnStyles("cutting-grid")}>
-              {availableCuts.map((m) => {
-                const price = priceByCode[m.code];
-                const qty = cutCounts[m.code] ?? 0;
-                const priceText = isCutPriceLoading
-                  ? "Загрузка..."
-                  : isCutPriceError
-                    ? "—"
-                    : typeof price === "number"
-                      ? formatMoney(price, priceCurrency)
-                      : "—";
+              {availableCuts
+                .filter((m) => {
+                  const hasPrice = priceByCode[m.code] !== undefined && priceByCode[m.code] > 0;
+                  console.log(
+                    `[DEBUG FILTER] code=${m.code}, hasPrice=${hasPrice}, priceByCode=`,
+                    priceByCode,
+                  );
+                  return hasPrice;
+                })
+                .map((m) => {
+                  const price = priceByCode[m.code];
+                  const qty = cutCounts[m.code] ?? 0;
+                  const priceText = isCutPriceLoading
+                    ? "Загрузка..."
+                    : isCutPriceError
+                      ? "—"
+                      : typeof price === "number"
+                        ? formatMoney(price, priceCurrency)
+                        : "—";
 
-                return (
-                  <div key={m.code} className={cnStyles("cutting-card")}>
-                    <div className={cnStyles("cutting-card__header")}>
-                      <div className={cnStyles("cutting-card__label")}>
-                        {m.label}
+                  return (
+                    <div key={m.code} className={cnStyles("cutting-card")}>
+                      <div className={cnStyles("cutting-card__header")}>
+                        <div className={cnStyles("cutting-card__label")}>
+                          {m.label}
+                        </div>
+                        <div className={cnStyles("cutting-card__price")}>
+                          {priceText}{" "}
+                          <span className={cnStyles("cutting-card__unit")}>
+                            / рез
+                          </span>
+                        </div>
                       </div>
-                      <div className={cnStyles("cutting-card__price")}>
-                        {priceText}{" "}
-                        <span className={cnStyles("cutting-card__unit")}>
-                          / рез
-                        </span>
+
+                      <div className={cnStyles("cutting-card__controls")}>
+                        <button
+                          type="button"
+                          className={cnStyles("btn-qty", { minus: true })}
+                          onClick={() => decCut(m.code)}
+                          aria-label={`Уменьшить ${m.label}`}
+                        >
+                          –
+                        </button>
+
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          max={999}
+                          className={cnStyles("qty-input")}
+                          value={qty}
+                          onChange={(e) =>
+                            setCutDirect(m.code, Number(e.target.value || 0))
+                          }
+                        />
+
+                        <button
+                          type="button"
+                          className={cnStyles("btn-qty", { plus: true })}
+                          onClick={() => incCut(m.code)}
+                          aria-label={`Увеличить ${m.label}`}
+                        >
+                          +
+                        </button>
                       </div>
                     </div>
-
-                    <div className={cnStyles("cutting-card__controls")}>
-                      <button
-                        type="button"
-                        className={cnStyles("btn-qty", { minus: true })}
-                        onClick={() => decCut(m.code)}
-                        aria-label={`Уменьшить ${m.label}`}
-                      >
-                        –
-                      </button>
-
-                      <input
-                        type="number"
-                        inputMode="numeric"
-                        min={0}
-                        max={999}
-                        className={cnStyles("qty-input")}
-                        value={qty}
-                        onChange={(e) =>
-                          setCutDirect(m.code, Number(e.target.value || 0))
-                        }
-                      />
-
-                      <button
-                        type="button"
-                        className={cnStyles("btn-qty", { plus: true })}
-                        onClick={() => incCut(m.code)}
-                        aria-label={`Увеличить ${m.label}`}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
 
             {/* Итого по резке */}

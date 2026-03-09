@@ -22,9 +22,9 @@ export const CUT_METHOD_INFO: Record<CutMethod, CutMethodInfo> = {
     displayName: 'Лентопильный станок',
     description: 'Высокоточная резка лентопилой, отличная для больших диаметров',
   },
-  [CutMethod.CUTOFF_MACHINE]: {
-    id: CutMethod.CUTOFF_MACHINE,
-    name: 'cutoff_machine',
+  [CutMethod.CUTOFF]: {
+    id: CutMethod.CUTOFF,
+    name: 'cutoff',
     displayName: 'Отрезной станок',
     description: 'Отрезной станок, оптимален для малых диаметров',
   },
@@ -39,8 +39,8 @@ export const DIAMETER_RULES: DiameterRuleSet[] = [
     range: DiameterRange.SMALL,
     minDiameter: 0,
     maxDiameter: 49,
-    allowedMethods: [CutMethod.CUTOFF_MACHINE, CutMethod.GAS],
-    preferredMethod: CutMethod.CUTOFF_MACHINE,
+    allowedMethods: [CutMethod.CUTOFF, CutMethod.BANDSAW, CutMethod.GAS],
+    preferredMethod: CutMethod.CUTOFF,
     canSellParts: false,
     partsLengthLimit: null,
   },
@@ -57,7 +57,7 @@ export const DIAMETER_RULES: DiameterRuleSet[] = [
     range: DiameterRange.LARGE,
     minDiameter: 80,
     maxDiameter: null,
-    allowedMethods: [CutMethod.BANDSAW],
+    allowedMethods: [CutMethod.BANDSAW, CutMethod.GAS],
     preferredMethod: CutMethod.BANDSAW,
     canSellParts: true,
     partsLengthLimit: 50, // 50% длины целого круга

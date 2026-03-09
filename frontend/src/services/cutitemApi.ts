@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../utils/constants";
-import { TGoodsCutItem } from "../utils/types";
+import { TCutitemWithCut, TGoodsCutItem } from "../utils/types";
 
 export const cutitemApi = createApi({
   reducerPath: "cutitemApi",
@@ -29,7 +29,7 @@ export const cutitemApi = createApi({
     // TODO сделать на бэке новый эндпоинт для получения всех cutitem, подходящих под параметры,
     // то есть выбрать все возможные варианты резки для данного размера и склада, а на фронте уже выбирать оптимальный
     getCutitemsByParameters: builder.query<
-      TGoodsCutItem[],
+      TCutitemWithCut[],
       { warehouseId: number; sizeNum: number }
     >({
       query: ({ warehouseId, sizeNum }) => ({
@@ -39,5 +39,8 @@ export const cutitemApi = createApi({
   }),
 });
 
-export const { useAddCutitemMutation, useGetCutitemByParametersQuery } =
-  cutitemApi;
+export const {
+  useAddCutitemMutation,
+  useGetCutitemByParametersQuery,
+  useGetCutitemsByParametersQuery,
+} = cutitemApi;

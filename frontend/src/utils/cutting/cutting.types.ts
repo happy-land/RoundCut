@@ -5,7 +5,7 @@
 export enum CutMethod {
   GAS = 'gas',                      // Резка газом
   BANDSAW = 'bandsaw',              // Лентопильный станок
-  CUTOFF_MACHINE = 'cutoff_machine' // Отрезной станок
+  CUTOFF = 'cutoff' // Отрезной станок
 }
 
 export enum DiameterRange {
