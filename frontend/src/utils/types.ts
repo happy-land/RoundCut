@@ -12,12 +12,12 @@ export type TLoginForm = {
 
 export type TForgotPasswordForm = {
   email: string;
-}
+};
 
 export type TResetPasswordForm = {
   password: string;
   passwordRepeat: string;
-}
+};
 
 // export type TLoginResponse = {
 
@@ -157,6 +157,8 @@ export type TMarkup = {
 export type TAdminCut = {
   id: number;
   name: string;
+  profile?: string;
+  code?: string;
 };
 
 export type TGoodsCutItem = {
@@ -165,6 +167,21 @@ export type TGoodsCutItem = {
   amount: number;
   warehouse_id: number;
   cut_id: number;
+};
+
+export type TCutitemWithCut = {
+  id: number;
+  name: string;
+  from: number;
+  to: number;
+  amount: number;
+  warehouse_id: number;
+  cut_id: number;
+  cut: {
+    id: number;
+    code?: string; // ← вот что нам нужно
+    name: string;
+  };
 };
 
 export type TAdminCategory = {

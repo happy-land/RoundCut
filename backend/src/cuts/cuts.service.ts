@@ -49,11 +49,27 @@ export class CutsService {
     return cut;
   }
 
-  update(id: number, updateCutDto: UpdateCutDto) {
-    return `This action updates a #${id} cut`;
+  async update(id: number, updateCutDto: UpdateCutDto) {
+    const cut = await this.findOneById(id);
+
+    // Если обновляется название - проверить на дубликат
+    if (updateCutDto.name && updateCutDto.name !== cut.name) {
+      const existing = await this.cutsRepository.findOne({
+        where: { name: updateCutDto.name },
+      });
+
+      if (existing) {
+        throw new ConflictException('Резка с таким названием уже существует');
+      }
+    }
+
+    // Обновляем только переданные поля
+    const updated = this.cutsRepository.merge(cut, updateCutDto);
+    return this.cutsRepository.save(updated);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cut`;
+  async remove(id: number) {
+    const cut = await this.findOneById(id);
+    return this.cutsRepository.remove(cut);
   }
 }

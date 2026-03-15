@@ -1,0 +1,109 @@
+import { FC, useState } from "react";
+import block from "bem-cn";
+import "./BilletCellNew.scss";
+import { useFetchItemQuery } from "../../services/priceApi";
+import { MDBInput } from "mdb-react-ui-kit";
+
+const cnStyles = block("billet-cell-new-container");
+
+interface IBilletCellNewProps {
+  id: string;
+}
+
+const BilletCellNew: FC<IBilletCellNewProps> = ({ id }) => {
+  const { data: itemExtended } = useFetchItemQuery(Number(id));
+  const [length, setLength] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
+
+  const calculateBillets = () => {
+    if (!itemExtended || !length || !quantity) return [];
+
+    const billetLength = itemExtended.length * 1000; // мм (длина круга)
+    const workpieceLength = length; // мм (длина заготовки)
+    const totalWorkpieces = quantity; // количество необходимых заготовок
+
+    const billets = [];
+    let usedWorkpieces = 0;
+    let billetIndex = 1;
+
+    // Считаем, сколько целых заготовок влезет в каждый круг
+    while (usedWorkpieces < totalWorkpieces) {
+      const workpiecesPerBillet = Math.floor(billetLength / workpieceLength);
+
+      if (workpiecesPerBillet === 0) {
+        // Заготовка длиннее круга - ошибка
+        break;
+      }
+
+      const remainingWorkpieces = totalWorkpieces - usedWorkpieces;
+      const workpiecesInThisBillet = Math.min(workpiecesPerBillet, remainingWorkpieces);
+      const usedLength = workpiecesInThisBillet * workpieceLength;
+
+      billets.push({
+        billetIndex,
+        usedLength,
+        workpieces: workpiecesInThisBillet,
+        workpieceLength,
+        billetLength,
+      });
+
+      usedWorkpieces += workpiecesInThisBillet;
+      billetIndex++;
+    }
+
+    return billets;
+  };
+
+  const billets = calculateBillets();
+
+  return (
+    <article className={cnStyles()}>
+      <h1 className={cnStyles("title")}>
+        {itemExtended
+          ? `${itemExtended?.name} ${itemExtended?.size}`
+          : "Загрузка..."}
+      </h1>
+      <form className={cnStyles("calculator")}>
+        <label className={cnStyles("form-field")}>
+          <MDBInput
+            type="number"
+            name="length"
+            label="Длина заготовки, мм"
+            className={cnStyles("form-input")}
+            value={length}
+            onChange={(e) => setLength(Number(e.target.value))}
+            disabled={!itemExtended}
+          />
+          <span className={cnStyles("form-hint")}>
+            {itemExtended
+              ? `от ${itemExtended.length * 1000} мм`
+              : "Загрузка..."}
+          </span>
+        </label>
+        <label className={cnStyles("form-field")}>
+          <MDBInput
+            type="number"
+            name="quantity"
+            label="Количество, шт"
+            className={cnStyles("form-input")}
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            disabled={!itemExtended}
+          />
+        </label>
+
+        {billets.length > 0 && (
+          <div className={cnStyles("billets-result")}>
+            {billets.map((billet) => (
+              <span key={billet.billetIndex} className={cnStyles("form-hint")}>
+                Круг {billet.billetIndex}: {billet.workpieces} шт × {billet.workpieceLength} = {billet.usedLength} мм
+              </span>
+            ))}
+          </div>
+        )}
+      </form>
+    </article>
+  );
+};
+
+export default BilletCellNew;
