@@ -1,9 +1,9 @@
-import { mapBaseName } from './mapping';
-import { TPriceItemResponse } from './types';
+import { mapBaseName } from "./mapping";
+import { TPriceItemResponse } from "./types";
 
 export const extractFirstWord = (input: string): string => {
   // Split the string by spaces and return the first element
-  const words = input.split(' ');
+  const words = input.split(" ");
   return words[0];
 };
 
@@ -28,5 +28,16 @@ export const convertToPriceItem = (arr: string[]): TPriceItemResponse => {
 };
 
 const parsePotentiallyGroupedFloat = (stringValue: string) => {
-  return parseFloat(stringValue.replace(',', '.').replace(' ', ''));
+  return parseFloat(stringValue.replace(",", ".").replace(" ", ""));
+};
+
+/**
+ * Нормализует CSV строку, заменяя точки с запятой внутри кодов (типа "7417-75;1050-2013") на запятые
+ * Паттерн: NNNN-NN;NNNN(-NN)* → заменяем ; на ,
+ */
+export const normalizeCsvLine = (line: string): string => {
+  // Заменяем ; на , внутри числовых кодов вида "цифры-цифры;цифры"
+  // Обрабатывает: "7417-75;1050-2013", "ГОСТ19903-2015;16523-9",
+  //               "ГОСТ 7417-75;1050-2013", "ГОСТ 7417-75 ;1050-2013"
+  return line.replace(/(\d+-\d+)\s*;(\d+(?:-\d+)?)/g, "$1,$2");
 };
