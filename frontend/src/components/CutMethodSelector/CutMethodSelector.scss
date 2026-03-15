@@ -1,0 +1,110 @@
+.cut-method-selector {
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fafafa;
+
+  &__error {
+    color: #d32f2f;
+    font-size: 0.9rem;
+  }
+
+  &__fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__legend {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  &__methods {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__method-option {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #e8f5e9;
+    }
+
+    &:has(input:checked) {
+      background-color: #e3f2fd;
+    }
+  }
+
+  &__radio {
+    margin-top: 0.25rem;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    accent-color: #1976d2;
+  }
+
+  &__option-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  &__method-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  &__method-desc {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: fit-content;
+
+    &_optimal {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+  }
+
+  &__single-method {
+    padding: 0.75rem;
+    border-radius: 4px;
+    background-color: #e3f2fd;
+  }
+
+  &__label {
+    margin: 0 0 0.5rem 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  &__value {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+}

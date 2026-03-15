@@ -18,4 +18,12 @@ export class CutitemsController {
   ) {
     return this.cutitemsService.findByParams(+id, +size);
   }
+
+  @Get('findAll')
+  findAllByParams(
+    @Query('warehouseId') id: string,
+    @Query('sizeNum') size: string,
+  ) {
+    return this.cutitemsService.findAllByParams(+id, +size);
+  }
 }

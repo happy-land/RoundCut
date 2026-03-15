@@ -30,12 +30,22 @@ export class PriceitemsService {
       warehouse,
       category,
     });
-    this.priceitemsRepository.save(createdItem);
+    await this.priceitemsRepository.save(createdItem);
   }
 
   async createMany(createPriceitemDto: CreatePriceitemDto[]) {
-    createPriceitemDto.map((itemDto) => this.create(itemDto));
-    // return createPriceitemDto.slice(100, 120);
+    for (let i = 0; i < createPriceitemDto.length; i++) {
+      const itemDto = createPriceitemDto[i];
+      try {
+        await this.create(itemDto);
+      } catch (err) {
+        console.error(
+          `[createMany] Ошибка на строке ${i + 1} / ${createPriceitemDto.length}:`,
+          JSON.stringify(itemDto),
+        );
+        throw err;
+      }
+    }
   }
 
   async findAll(warehouseId: string) {
