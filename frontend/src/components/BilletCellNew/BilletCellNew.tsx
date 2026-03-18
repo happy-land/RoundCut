@@ -11,6 +11,7 @@ import {
 import { useGetMarkupByWarehouseIdQuery } from "../../services/markupApi";
 import { mapWeightToLevel } from "../../utils/markupMapping";
 import { useAddCartItemMutation } from "../../services/cartApi";
+import { CUT_CODE_LABELS } from "../../utils/constants";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -468,7 +469,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     const cuttingDescription =
       Object.entries(cutCounts)
         .filter(([, qty]) => qty > 0)
-        .map(([code, qty]) => `${code}: ${qty}`)
+        .map(([code, qty]) => `${CUT_CODE_LABELS[code] ?? code}: ${qty} шт`)
         .join(", ") || null;
     await addCartItem({
       priceitemId: itemExtended.id,

@@ -33,6 +33,11 @@ export class CartController {
     return this.cartService.clearCart(req.user);
   }
 
+  @Post('send-to-self')
+  sendOrderToSelf(@Req() req: any) {
+    return this.cartService.sendOrderToSelf(req.user);
+  }
+
   @Delete(':id')
   removeItem(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.cartService.removeItem(id, req.user);
