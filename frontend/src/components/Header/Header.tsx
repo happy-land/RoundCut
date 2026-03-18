@@ -1,21 +1,25 @@
-import { FC } from 'react';
-import { NavLink } from 'react-router-dom';
-import block from 'bem-cn';
-import './Header.scss';
-import MenuIcon from '../../images/react-icons/hi/HiOutlineMenu.svg';
-import UserIcon from '../../images/react-icons/hi/HiOutlineUser.svg';
-import WarehousePicker from '../WarehousePicker/WarehousePicker';
+import { FC } from "react";
+import { NavLink } from "react-router-dom";
+import block from "bem-cn";
+import "./Header.scss";
+import MenuIcon from "../../images/react-icons/hi/HiOutlineMenu.svg";
+import UserIcon from "../../images/react-icons/hi/HiOutlineUser.svg";
+import CartIcon from "../../images/react-icons/hi/HiOutlineShoppingCart.svg";
+import WarehousePicker from "../WarehousePicker/WarehousePicker";
 
-const cnStyles = block('header');
+const cnStyles = block("header");
 
 const Header: FC = () => {
   return (
     <header className={cnStyles()}>
-      <div className={cnStyles('wrapper')}>
+      <div className={cnStyles("wrapper")}>
         <NavLink to="/">
           <img src={MenuIcon} alt="MenuIcon" />
         </NavLink>
         <WarehousePicker />
+        <NavLink to="/cart">
+          <img src={CartIcon} alt="CartIcon" />
+        </NavLink>
         <NavLink to="/">
           <img src={UserIcon} alt="UserIcon" />
         </NavLink>

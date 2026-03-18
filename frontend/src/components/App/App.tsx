@@ -33,6 +33,7 @@ import WarehouseList from '../WarehouseList/WarehouseList';
 import WarehousePickerModal from '../WarehousePickerModal/WarehousePickerModal';
 import OptionsPickerModal from '../OptionsPickerModal/OptionsPickerModal';
 import BilletModal from '../BilletModal/BilletModal';
+import CartPage from '../../pages/CartPage';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -81,6 +82,7 @@ const App: FC = () => {
             </Modal>
           } /> */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="/admin" element={<AdminDashboard />}>
             <Route path="/admin/price" element={<AdminPrice />} />
             <Route path="/admin/category" element={<CategoryEditPage />} />
