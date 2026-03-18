@@ -10,6 +10,7 @@ import {
 } from "../../hooks/useCutting";
 import { useGetMarkupByWarehouseIdQuery } from "../../services/markupApi";
 import { mapWeightToLevel } from "../../utils/markupMapping";
+import { useAddCartItemMutation } from "../../services/cartApi";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -133,6 +134,7 @@ const formatMoney = (value: number, currency: string) => {
 /* ====================== component ====================== */
 
 const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
+  const [addCartItem] = useAddCartItemMutation();
   const {
     data: itemExtended,
     isLoading,
@@ -461,10 +463,24 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const isValidQuantity = () =>
     Number.isInteger(buyQuantity) && buyQuantity > 0;
 
-  const handleAddToCart = () => {
-    if (!isValidQuantity()) return;
-    console.log(`Добавляем в корзину: ${buyQuantity} шт`);
-    // TODO: интеграция с корзиной
+  const handleAddToCart = async () => {
+    if (!isValidQuantity() || !itemExtended) return;
+    const cuttingDescription =
+      Object.entries(cutCounts)
+        .filter(([, qty]) => qty > 0)
+        .map(([code, qty]) => `${code}: ${qty}`)
+        .join(", ") || null;
+    await addCartItem({
+      priceitemId: itemExtended.id,
+      name: itemExtended.name,
+      size: String(itemExtended.size),
+      quantity: buyQuantity,
+      weightTons: buyWeightTons,
+      pricePerTon,
+      totalGoodsPrice,
+      totalCuttingCost,
+      cuttingDescription: cuttingDescription ?? undefined,
+    });
   };
 
   /* --------- UI: загрузка/ошибка --------- */
