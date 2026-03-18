@@ -52,6 +52,16 @@ export const cartApi = createApi({
       }),
       invalidatesTags: ["Cart"],
     }),
+
+    sendToSelf: builder.mutation<void, void>({
+      query: () => ({
+        url: "/cart/send-to-self",
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${getCookie("accessToken")}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -60,4 +70,5 @@ export const {
   useAddCartItemMutation,
   useRemoveCartItemMutation,
   useClearCartMutation,
+  useSendToSelfMutation,
 } = cartApi;
