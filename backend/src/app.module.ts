@@ -19,6 +19,8 @@ import { CutitemsModule } from './cutitems/cutitems.module';
 import { Cutitem } from './cutitems/entities/cutitem.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/entities/category.entity';
+import { CartModule } from './cart/cart.module';
+import { CartItem } from './cart/entities/cartitem.entity';
 // import { MailerModule } from '@nestjs-modules/mailer';
 import { AppService } from './app.service';
 import { MailerModule } from './mailer/mailer.module';
@@ -51,7 +53,7 @@ import { MailerModule } from './mailer/mailer.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       schema: process.env.POSTGRES_SCHEMA,
-      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category],
+      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category, CartItem],
       synchronize: true,
     }),
     UsersModule,
@@ -63,6 +65,7 @@ import { MailerModule } from './mailer/mailer.module';
     CutsModule,
     CutitemsModule,
     CategoriesModule,
+    CartModule,
     MailerModule,
   ],
   controllers: [AppController],

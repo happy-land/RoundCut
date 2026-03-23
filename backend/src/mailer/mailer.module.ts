@@ -16,5 +16,6 @@ import { JwtModule } from '@nestjs/jwt';
   ],
   controllers: [MailerController],
   providers: [MailerService],
+  exports: [MailerService],
 })
 export class MailerModule {}

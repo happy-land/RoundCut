@@ -189,3 +189,30 @@ export type TAdminCategory = {
   name: string;
   description?: string;
 };
+
+export type TCartItem = {
+  id: number;
+  priceitemId: number;
+  name: string;
+  size: string;
+  quantity: number;
+  weightTons: number;
+  pricePerTon: number;
+  totalGoodsPrice: number;
+  totalCuttingCost: number;
+  cuttingDescription: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TCreateCartItemDto = {
+  priceitemId: number;
+  name: string;
+  size: string;
+  quantity: number;
+  weightTons: number;
+  pricePerTon: number;
+  totalGoodsPrice: number;
+  totalCuttingCost: number;
+  cuttingDescription?: string;
+};
