@@ -190,6 +190,24 @@ export type TAdminCategory = {
   description?: string;
 };
 
+/** Данные расчёта заготовок — зеркало BilletCartData из backend DTO */
+export type TBilletCartData = {
+  cutThickness: number;
+  endCut: number;
+  workpieces: { length: number; quantity: number }[];
+  numCircles: number;
+  numCompleteCircles: number;
+  wholeCirclesWeight: number;
+  /** Цена за тонну целых кругов (с наценкой за малотоннажность), ₽ */
+  wholeCirclesPricePerTon: number;
+  partWeight: number;
+  /** Цена за тонну части (с 12% надбавкой, округлено до 100), ₽ */
+  partPricePerTon: number;
+  billetGoodsCost: number;
+  cuttingCostForBillets: number;
+  totalCuts: number;
+};
+
 export type TCartItem = {
   id: number;
   priceitemId: number;
@@ -201,6 +219,7 @@ export type TCartItem = {
   totalGoodsPrice: number;
   totalCuttingCost: number;
   cuttingDescription: string | null;
+  billetData: TBilletCartData | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -215,4 +234,5 @@ export type TCreateCartItemDto = {
   totalGoodsPrice: number;
   totalCuttingCost: number;
   cuttingDescription?: string;
+  billetData?: TBilletCartData;
 };

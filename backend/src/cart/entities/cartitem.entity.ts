@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { BilletCartData } from '../dto/create-cartitem.dto';
 
 @Entity()
 export class CartItem {
@@ -66,6 +67,11 @@ export class CartItem {
   @IsString()
   @IsOptional()
   cuttingDescription: string | null;
+
+  // Данные расчёта заготовок (только для позиций из вкладки "Расчёт заготовок")
+  @Column({ type: 'jsonb', nullable: true })
+  @IsOptional()
+  billetData: BilletCartData | null;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

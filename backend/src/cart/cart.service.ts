@@ -55,27 +55,65 @@ export class CartService {
     const totalAll = totalGoods + totalCutting;
 
     const rows = items
-      .map(
-        (item, idx) => `
-        <tr style="background:${idx % 2 === 0 ? '#ffffff' : '#f9fafb'}">
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#111">${item.name} ${item.size}</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;text-align:center">${item.quantity} шт</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;text-align:center">${Number(item.weightTons).toFixed(3)} т</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;text-align:right">${Number(item.pricePerTon).toFixed(0)} ₽/т</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;text-align:right">${Number(item.totalGoodsPrice).toFixed(0)} ₽</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;color:#374151;text-align:right">${Number(item.totalCuttingCost) > 0 ? Number(item.totalCuttingCost).toFixed(0) + ' ₽' : '—'}</td>
-          <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;font-size:14px;font-weight:600;color:#111;text-align:right">${(Number(item.totalGoodsPrice) + Number(item.totalCuttingCost)).toFixed(0)} ₽</td>
-        </tr>
-        ${
-          item.cuttingDescription
-            ? `<tr style="background:${idx % 2 === 0 ? '#ffffff' : '#f9fafb'}">
-                <td colspan="7" style="padding:4px 14px 10px;font-size:12px;color:#6b7280;border-bottom:1px solid #e5e7eb">
+      .map((item, idx) => {
+        const bg = idx % 2 === 0 ? '#ffffff' : '#f9fafb';
+        const bd = 'border-bottom:1px solid #e5e7eb';
+
+        // Строка заготовок (для позиций из вкладки "Расчёт заготовок")
+        const billetRow = item.billetData
+          ? (() => {
+              const bd_ = item.billetData;
+              const wpList = bd_.workpieces
+                .map((w) => `${w.length} мм × ${w.quantity} шт`)
+                .join(', ');
+
+              const circlesPricePart =
+                bd_.numCompleteCircles > 0 && bd_.wholeCirclesPricePerTon
+                  ? `целые: ${bd_.wholeCirclesPricePerTon.toLocaleString('ru-RU')} ₽/т`
+                  : '';
+              const partPricePart =
+                bd_.partWeight > 0 && bd_.partPricePerTon
+                  ? `часть: ${bd_.partPricePerTon.toLocaleString('ru-RU')} ₽/т`
+                  : '';
+              const priceInfo = [circlesPricePart, partPricePart]
+                .filter(Boolean)
+                .join(' &nbsp;|&nbsp; ');
+
+              const circlesInfo =
+                bd_.partWeight > 0
+                  ? `${bd_.numCompleteCircles} цел. + 1 часть (${bd_.partWeight.toFixed(3)} т)`
+                  : `${bd_.numCompleteCircles} шт`;
+
+              return `<tr style="background:${bg}">
+                <td colspan="7" style="padding:4px 14px 10px;font-size:12px;color:#6b7280;${bd}">
+                  🔧 Заготовки: ${wpList} &nbsp;|&nbsp;
+                  Кругов: ${circlesInfo} &nbsp;|&nbsp;
+                  ${priceInfo}${priceInfo ? ' &nbsp;|&nbsp; ' : ''}
+                  Рез: ${bd_.cutThickness} мм${bd_.endCut ? ` &nbsp;|&nbsp; Торец: ${bd_.endCut} мм` : ''} &nbsp;|&nbsp;
+                  Резов: ${bd_.totalCuts} шт
+                </td>
+              </tr>`;
+            })()
+          : item.cuttingDescription
+            ? `<tr style="background:${bg}">
+                <td colspan="7" style="padding:4px 14px 10px;font-size:12px;color:#6b7280;${bd}">
                   ✂ Резка: ${item.cuttingDescription}
                 </td>
-               </tr>`
-            : ''
-        }`,
-      )
+              </tr>`
+            : '';
+
+        return `
+        <tr style="background:${bg}">
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#111">${item.name} ${item.size}</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:center">${item.quantity} шт</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:center">${Number(item.weightTons).toFixed(3)} т</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:right">${Number(item.pricePerTon).toFixed(0)} ₽/т</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:right">${Number(item.totalGoodsPrice).toFixed(0)} ₽</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:right">${Number(item.totalCuttingCost) > 0 ? Number(item.totalCuttingCost).toFixed(0) + ' ₽' : '—'}</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;font-weight:600;color:#111;text-align:right">${(Number(item.totalGoodsPrice) + Number(item.totalCuttingCost)).toFixed(0)} ₽</td>
+        </tr>
+        ${billetRow}`;
+      })
       .join('');
 
     const cuttingRow =
