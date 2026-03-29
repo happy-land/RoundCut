@@ -844,7 +844,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
               type="number"
               name="cut-thickness"
               label="Толщина реза, мм"
-              placeholder="2"
+              placeholder="5"
               className={cnStyles("form-input", "input-parameter")}
               value={showEmptyIfZero(cutThickness)}
               onChange={(e) => {

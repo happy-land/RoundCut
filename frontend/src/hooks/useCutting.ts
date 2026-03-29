@@ -18,7 +18,7 @@ interface UseCuttingCalculatorOptions {
  */
 export function useCuttingCalculator({
   billetLength,
-  initialCutThickness = 2,
+  initialCutThickness = 5,
   initialEndCut = 0,
 }: UseCuttingCalculatorOptions) {
   const [cutThickness, setCutThickness] = useState(initialCutThickness);
