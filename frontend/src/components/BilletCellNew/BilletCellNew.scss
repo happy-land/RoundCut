@@ -60,6 +60,47 @@
     margin-bottom: 16px;
   }
 
+  // --------------------------
+  // Tab switcher
+  // --------------------------
+  &__tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    background: #f1f3f5;
+    border-radius: 12px;
+    padding: 4px;
+  }
+
+  &__tab {
+    flex: 1;
+    padding: 9px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition:
+      background 0.18s,
+      color 0.18s,
+      box-shadow 0.18s;
+    white-space: nowrap;
+
+    &:hover:not(&_active) {
+      color: #374151;
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    &_active {
+      background: #fff;
+      color: #111;
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    }
+  }
+
   &__buy-fields {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -111,6 +152,35 @@
     &:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+  }
+
+  &__sell-mode-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.45;
+    margin-bottom: 4px;
+
+    &_partial {
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+    }
+
+    &_whole {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #78350f;
+    }
+
+    &__icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
   }
 
@@ -257,6 +327,12 @@
     font-weight: 600;
     color: #333;
     margin-bottom: 8px;
+
+    &__kerfs {
+      font-weight: 400;
+      font-size: 12px;
+      color: #888;
+    }
   }
 
   &__billet-content {

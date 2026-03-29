@@ -88,18 +88,53 @@ const CartPage: FC = () => {
                     {item.name} {item.size}
                   </span>
 
-                  <span className={cnStyles("list-item__badge", "qty")}>
-                    {item.quantity} шт
-                  </span>
+                  {item.billetData ? (
+                    /* === Позиция из расчёта заготовок === */
+                    <>
+                      <span className={cnStyles("list-item__badge", "qty")}>
+                        {item.billetData.numCompleteCircles > 0 && (
+                          <>{item.billetData.numCompleteCircles} цел.</>
+                        )}
+                        {item.billetData.partWeight > 0 && (
+                          <> + 1 часть ({item.billetData.partWeight.toFixed(3)} т)</>
+                        )}
+                        {" "}кругов
+                      </span>
 
-                  <span className={cnStyles("list-item__badge", "weight")}>
-                    {Number(item.weightTons).toFixed(3)} т
-                  </span>
+                      <span className={cnStyles("list-item__badge", "weight")}>
+                        {Number(item.weightTons).toFixed(3)} т
+                      </span>
 
-                  {item.cuttingDescription && (
-                    <span className={cnStyles("list-item__badge", "cutting")}>
-                      Резка: {localizeDescription(item.cuttingDescription)}
-                    </span>
+                      <span className={cnStyles("list-item__badge", "billet-wp")}>
+                        🔧&nbsp;
+                        {item.billetData.workpieces
+                          .map((w) => `${w.length} мм × ${w.quantity} шт`)
+                          .join(", ")}
+                      </span>
+
+                      <span className={cnStyles("list-item__badge", "billet-params")}>
+                        рез {item.billetData.cutThickness} мм
+                        {item.billetData.endCut > 0 && ` · торец ${item.billetData.endCut} мм`}
+                        {" · "}{item.billetData.totalCuts} резов
+                      </span>
+                    </>
+                  ) : (
+                    /* === Обычная покупка === */
+                    <>
+                      <span className={cnStyles("list-item__badge", "qty")}>
+                        {item.quantity} шт
+                      </span>
+
+                      <span className={cnStyles("list-item__badge", "weight")}>
+                        {Number(item.weightTons).toFixed(3)} т
+                      </span>
+
+                      {item.cuttingDescription && (
+                        <span className={cnStyles("list-item__badge", "cutting")}>
+                          Резка: {localizeDescription(item.cuttingDescription)}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
 
@@ -108,14 +143,40 @@ const CartPage: FC = () => {
                     <span className={cnStyles("list-item__price-main")}>
                       {Number(Number(item.totalGoodsPrice) + Number(item.totalCuttingCost)).toFixed(0)} ₽
                     </span>
-                    <span className={cnStyles("list-item__price-sub")}>
-                      {Number(item.pricePerTon).toFixed(0)} ₽/т
-                    </span>
-                    {Number(item.totalCuttingCost) > 0 && (
-                      <span className={cnStyles("list-item__price-sub")}>
-                        металл {Number(item.totalGoodsPrice).toFixed(0)} + резка{" "}
-                        {Number(item.totalCuttingCost).toFixed(0)}
-                      </span>
+
+                    {item.billetData ? (
+                      /* Цены по составляющим */
+                      <>
+                        {item.billetData.wholeCirclesWeight > 0 && (
+                          <span className={cnStyles("list-item__price-sub")}>
+                            цел.: {item.billetData.wholeCirclesPricePerTon.toFixed(0)} ₽/т
+                          </span>
+                        )}
+                        {item.billetData.partWeight > 0 && (
+                          <span className={cnStyles("list-item__price-sub")}>
+                            часть: {item.billetData.partPricePerTon.toFixed(0)} ₽/т
+                          </span>
+                        )}
+                        {Number(item.totalCuttingCost) > 0 && (
+                          <span className={cnStyles("list-item__price-sub")}>
+                            металл {Number(item.totalGoodsPrice).toFixed(0)} + резка{" "}
+                            {Number(item.totalCuttingCost).toFixed(0)}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      /* Обычная позиция — одна цена за тонну */
+                      <>
+                        <span className={cnStyles("list-item__price-sub")}>
+                          {Number(item.pricePerTon).toFixed(0)} ₽/т
+                        </span>
+                        {Number(item.totalCuttingCost) > 0 && (
+                          <span className={cnStyles("list-item__price-sub")}>
+                            металл {Number(item.totalGoodsPrice).toFixed(0)} + резка{" "}
+                            {Number(item.totalCuttingCost).toFixed(0)}
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
 

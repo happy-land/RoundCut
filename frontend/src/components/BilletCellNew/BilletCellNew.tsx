@@ -12,6 +12,7 @@ import { useGetMarkupByWarehouseIdQuery } from "../../services/markupApi";
 import { mapWeightToLevel } from "../../utils/markupMapping";
 import { useAddCartItemMutation } from "../../services/cartApi";
 import { CUT_CODE_LABELS } from "../../utils/constants";
+import { TBilletCartData } from "../../utils/types";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -181,6 +182,9 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
 
   const BILLET_MARKUP_PERCENT = 0.12; // наценка на часть круга
   const MIN_BILLET_MARKUP_RUB = 1999; // минимальная наценка в рублях
+  /** Диаметр от 80 мм — можно продавать часть круга; меньше — только целыми штуками */
+  const MIN_DIAMETER_FOR_PARTIAL = 80;
+  const canSellPartial = itemDiameter >= MIN_DIAMETER_FOR_PARTIAL;
 
   // Получить цены резки для данного склада и диаметра
   const { data: cutitemsForDiameter } = useGetCutitemsByParametersQuery(
@@ -228,18 +232,24 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     return round3((totalUsedMm / billetLengthMm) * (singleWeightKg / 1000));
   }, [billets, billetLengthMm, singleWeightKg]);
 
-  // Количество целых кругов (проверяем использование последнего круга: >50% = целый, ≤50% = часть)
+  // Количество целых кругов.
+  // Если диаметр < 80мм — всегда все круги целые (частичная продажа запрещена).
+  // Иначе: проверяем последний круг по РЕАЛЬНО ПОТРЕБЛЁННОЙ длине (с учётом резов).
+  // >50% — целый, ≤50% — часть.
   const numCompleteCircles = useMemo(() => {
     if (billets.length === 0) return 0;
-    
+    if (!canSellPartial) return billets.length; // только целые штуки
+
     const lastBillet = billets[billets.length - 1];
-    const lastBilletUsagePercent = (lastBillet.usedLength / lastBillet.billetLength) * 100;
-    
-    // If last billet > 50% used, all circles are whole
-    // Otherwise, last circle is part
+    const nPiecesLast = lastBillet.totalCuts - (lastBillet.endCut > 0 ? 1 : 0);
+    const consumedLast =
+      lastBillet.usedLength +
+      lastBillet.endCut +
+      Math.max(0, nPiecesLast - 1) * cutThickness;
+    const lastBilletUsagePercent = (consumedLast / lastBillet.billetLength) * 100;
     const isLastBilletWhole = lastBilletUsagePercent > 50;
     return isLastBilletWhole ? billets.length : Math.max(0, billets.length - 1);
-  }, [billets]);
+  }, [billets, canSellPartial, cutThickness]);
 
   // Процент использования от целого круга - УДАЛЕНО
   
@@ -251,16 +261,20 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     return numCompleteCircles * weightPerCircle;
   }, [numCompleteCircles, singleWeightKg]);
 
-  // Вес части (тонны) - только последний круг, если он часть
+  // Вес части (тонны) - только последний круг, если он часть.
+  // Учитываем реально потреблённую длину: заготовки + торцевой рез + резы между заготовками.
   const partWeight = useMemo(() => {
     if (numCompleteCircles >= billets.length) return 0;
-    
-    const lastBilletIndex = billets.length - 1;
-    const lastBillet = billets[lastBilletIndex];
-    const partWeightValue = (lastBillet.usedLength / billetLengthMm) * (singleWeightKg / 1000);
-    
-    return round3(partWeightValue);
-  }, [billets, numCompleteCircles, billetLengthMm, singleWeightKg]);
+
+    const lastBillet = billets[billets.length - 1];
+    const nPiecesLast = lastBillet.totalCuts - (lastBillet.endCut > 0 ? 1 : 0);
+    const consumedLast =
+      lastBillet.usedLength +
+      lastBillet.endCut +
+      Math.max(0, nPiecesLast - 1) * cutThickness;
+    const clampedConsumed = Math.min(consumedLast, billetLengthMm);
+    return round3((clampedConsumed / billetLengthMm) * (singleWeightKg / 1000));
+  }, [billets, numCompleteCircles, billetLengthMm, singleWeightKg, cutThickness]);
 
   // Цена за тонну целых кругов (базовая + малотоннажность, БЕЗ наценки на часть)
   const wholeCirclesPricePerTon = useMemo(() => {
@@ -278,26 +292,39 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     return wholeCirclesPricePerTon * wholeCirclesWeight;
   }, [wholeCirclesPricePerTon, wholeCirclesWeight]);
 
-  // Цена за тонну части (базовая + малотоннажность)
+  // Цена за тонну части (базовая + малотоннажность + 12% наценка, округление вверх до 100 руб)
   const partPricePerTon = useMemo(() => {
     if (!itemExtended || !markup || partWeight === 0) return 0;
     const basePrice = getBasePrice(partWeight);
     const level = mapWeightToLevel(partWeight);
     if (level < 1 || level > 8) return basePrice;
     const markupKey = `level${level}` as keyof typeof markup;
-    return basePrice + Number(markup[markupKey] ?? 0);
+    const priceWithMarkup = (basePrice + Number(markup[markupKey] ?? 0)) * (1 + BILLET_MARKUP_PERCENT);
+    // Округляем вверх до 100 руб
+    return Math.ceil(priceWithMarkup / 100) * 100;
   }, [partWeight, itemExtended, markup]);
 
-  // Стоимость части (с 12% наценкой и минимум 1999)
+  // Стоимость части.
+  // partPricePerTon уже включает 12% и округлен вверх до 100 руб.
+  // Если даже после округления 12%-надбавка меньше MIN_BILLET_MARKUP_RUB,
+  // прибавляем минимум к базовой цене (без 12%) и снова округляем цену/тн вверх до 100.
   const partCost = useMemo(() => {
     if (partWeight === 0) return 0;
-    const baseCost = partPricePerTon * partWeight;
-    const withMarkupCost = baseCost * (1 + BILLET_MARKUP_PERCENT);
-    const markupAdded = withMarkupCost - baseCost;
-    return markupAdded < MIN_BILLET_MARKUP_RUB
-      ? baseCost + MIN_BILLET_MARKUP_RUB
-      : withMarkupCost;
-  }, [partWeight, partPricePerTon]);
+    const basePrice = getBasePrice(partWeight);
+    const level = mapWeightToLevel(partWeight);
+    const markupKey = level >= 1 && level <= 8 ? `level${level}` as keyof typeof markup : null;
+    const rawPrice = markupKey && markup ? basePrice + Number(markup[markupKey] ?? 0) : basePrice;
+    const rawCost = rawPrice * partWeight;
+    const markupAdded12 = rawCost * BILLET_MARKUP_PERCENT;
+    if (markupAdded12 < MIN_BILLET_MARKUP_RUB) {
+      // Минимальная надбавка: база + 1999 ₽, округлённая цена/тн — вверх до 100
+      const minCost = rawCost + MIN_BILLET_MARKUP_RUB;
+      // Пересчитываем partPricePerTon на основе minCost, чтобы оно тоже было округлённым
+      const minPricePerTon = Math.ceil((minCost / partWeight) / 100) * 100;
+      return minPricePerTon * partWeight;
+    }
+    return partPricePerTon * partWeight;
+  }, [partWeight, partPricePerTon, itemExtended, markup]);
 
   // Итоговая стоимость товара (целые круги + часть)
   const billetGoodsCost = useMemo(() => {
@@ -464,6 +491,9 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const isValidQuantity = () =>
     Number.isInteger(buyQuantity) && buyQuantity > 0;
 
+  // Активная вкладка
+  const [activeTab, setActiveTab] = useState<'simple' | 'advanced'>('simple');
+
   const handleAddToCart = async () => {
     if (!isValidQuantity() || !itemExtended) return;
     const cuttingDescription =
@@ -481,6 +511,52 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       totalGoodsPrice,
       totalCuttingCost,
       cuttingDescription: cuttingDescription ?? undefined,
+    });
+  };
+
+  const handleAddBilletToCart = async () => {
+    if (billets.length === 0 || !itemExtended) return;
+    const totalWeightTons = round3(wholeCirclesWeight + partWeight);
+    const avgPricePerTon =
+      totalWeightTons > 0
+        ? Math.round((billetGoodsCost) / totalWeightTons)
+        : 0;
+    const billetData: TBilletCartData = {
+      cutThickness,
+      endCut,
+      workpieces: workpieces
+        .filter((w) => w.length > 0 && w.quantity > 0)
+        .map((w) => ({ length: w.length, quantity: w.quantity })),
+      numCircles: billets.length,
+      numCompleteCircles,
+      wholeCirclesWeight,
+      wholeCirclesPricePerTon: wholeCirclesWeight > 0
+        ? Math.round(wholeCirclesCost / wholeCirclesWeight)
+        : 0,
+      partWeight,
+      partPricePerTon,
+      billetGoodsCost,
+      cuttingCostForBillets,
+      totalCuts: totalCutsOverall,
+    };
+    // human-readable описание для старых клиентов / поиска
+    const cuttingDescription =
+      billetData.workpieces
+        .map((w) => `${w.length}×${w.quantity}шт`)
+        .join(", ") +
+      ` | рез ${cutThickness}мм` +
+      (endCut > 0 ? ` | торец ${endCut}мм` : "");
+    await addCartItem({
+      priceitemId: itemExtended.id,
+      name: itemExtended.name,
+      size: String(itemExtended.size),
+      quantity: billets.length,
+      weightTons: totalWeightTons,
+      pricePerTon: avgPricePerTon,
+      totalGoodsPrice: billetGoodsCost,
+      totalCuttingCost: cuttingCostForBillets,
+      cuttingDescription,
+      billetData,
     });
   };
 
@@ -516,7 +592,26 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         </span>
       </div>
 
+      {/* === Вкладки === */}
+      <div className={cnStyles("tabs")}>
+        <button
+          type="button"
+          className={cnStyles("tab", { active: activeTab === 'simple' })}
+          onClick={() => setActiveTab('simple')}
+        >
+          Покупка
+        </button>
+        <button
+          type="button"
+          className={cnStyles("tab", { active: activeTab === 'advanced' })}
+          onClick={() => setActiveTab('advanced')}
+        >
+          Расчёт заготовок
+        </button>
+      </div>
+
       {/* === Калькулятор покупки === */}
+      {activeTab === 'simple' && (
       <div className={cnStyles("buy-calculator")}>
         <h2 className={cnStyles("section-title")}>Калькулятор покупки</h2>
         <div className={cnStyles("buy-fields")}>
@@ -715,12 +810,33 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
           )}
         </div>
       </div>
+      )} {/* end simple tab */}
 
       {/* === Калькулятор резки === */}
+      {activeTab === 'advanced' && (
       <form
         className={cnStyles("calculator")}
         onSubmit={(e) => e.preventDefault()}
       >
+        {/* Баннер режима продажи */}
+        <div className={cnStyles("sell-mode-banner", { partial: canSellPartial, whole: !canSellPartial })}>
+          {canSellPartial ? (
+            <>
+              <span className={cnStyles("sell-mode-banner__icon")}>✓</span>
+              <span>
+                <strong>Частичная продажа доступна</strong> — диаметр ≥ {MIN_DIAMETER_FOR_PARTIAL} мм, можно купить часть круга
+              </span>
+            </>
+          ) : (
+            <>
+              <span className={cnStyles("sell-mode-banner__icon")}>⚠</span>
+              <span>
+                <strong>Только целыми штуками</strong> — диаметр {itemDiameter} мм меньше {MIN_DIAMETER_FOR_PARTIAL} мм, части круга не продаются
+              </span>
+            </>
+          )}
+        </div>
+
         <h2 className={cnStyles("section-title")}>Параметры резки</h2>
         <div className={cnStyles("parameters")}>
           <label className={cnStyles("form-field")}>
@@ -728,7 +844,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
               type="number"
               name="cut-thickness"
               label="Толщина реза, мм"
-              placeholder="2"
+              placeholder="5"
               className={cnStyles("form-input", "input-parameter")}
               value={showEmptyIfZero(cutThickness)}
               onChange={(e) => {
@@ -739,7 +855,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                 if (e.target.value.trim() === "") setCutThickness(0);
               }}
               min="0"
-              step="0.1"
+              step="1"
             />
           </label>
 
@@ -853,14 +969,28 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                   technicalCuts * cutThickness,
               );
 
+              const nPiecesBillet = billet.totalCuts - (billet.endCut > 0 ? 1 : 0);
+              const consumedBillet = Math.min(
+                billet.usedLength +
+                  billet.endCut +
+                  Math.max(0, nPiecesBillet - 1) * cutThickness,
+                billet.billetLength,
+              );
+
               return (
                 <div
                   key={billet.billetIndex}
                   className={cnStyles("billet-item")}
                 >
                   <div className={cnStyles("billet-header")}>
-                    Круг {billet.billetIndex}: {billet.usedLength} мм от{" "}
+                    Круг {billet.billetIndex}: {consumedBillet} мм из{" "}
                     {billet.billetLength} мм
+                    {cutThickness > 0 && nPiecesBillet > 1 && (
+                      <span className={cnStyles("billet-header__kerfs")}>
+                        &nbsp;(резы:{" "}
+                        {Math.max(0, nPiecesBillet - 1) * cutThickness} мм)
+                      </span>
+                    )}
                   </div>
                   <div className={cnStyles("billet-content")}>
                     {billet.endCut > 0 && (
@@ -918,10 +1048,13 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                       <strong>{partWeight.toFixed(3)} т</strong>
                     </div>
                     <div className={cnStyles("billet-price-summary__row")}>
-                      <span>Цена за тонну (с наценкой 12%):</span>
+                      <span>Цена за тонну (с наценкой 12%, окр. до 100 ₽):</span>
                       <strong>
                         {partWeight > 0
-                          ? (partCost / partWeight).toFixed(0)
+                          ? (partCost / partWeight % 100 === 0
+                              ? partCost / partWeight
+                              : Math.ceil(partCost / partWeight / 100) * 100
+                            ).toFixed(0)
                           : "—"}{" "}
                         ₽/тн
                       </strong>
@@ -954,7 +1087,21 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
             )}
           </div>
         )}
+
+        {/* Кнопка "Добавить в корзину" для расчёта заготовок */}
+        {billets.length > 0 && partWeightTons > 0 && (
+          <div className={cnStyles("cart-button-container")}>
+            <button
+              type="button"
+              className={cnStyles("btn-add-to-cart")}
+              onClick={handleAddBilletToCart}
+            >
+              Добавить расчёт в корзину
+            </button>
+          </div>
+        )}
       </form>
+      )} {/* end advanced tab */}
     </article>
   );
 };
