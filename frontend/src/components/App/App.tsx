@@ -71,7 +71,7 @@ const App: FC = () => {
   };
 
   return (
-    <div>
+    <div className="app-root">
       {/* <ToastContainer /> */}
       <Routes>
         <Route element={<Layout />}>
