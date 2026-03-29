@@ -52,6 +52,18 @@ export const authApi = createApi({
       }),
     }),
 
+    updateMe: builder.mutation({
+      query: (body: { about?: string; username?: string }) => ({
+        url: '/users/me',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${getCookie('accessToken')}`,
+        },
+        body,
+      }),
+    }),
+
   }),
 });
 
@@ -61,4 +73,5 @@ export const {
   useSendResetPasswordLinkByEmailMutation,
   useResetPasswordMutation,
   useFetchUserMutation,
+  useUpdateMeMutation,
 } = authApi;
