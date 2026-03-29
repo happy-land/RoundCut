@@ -236,3 +236,29 @@ export type TCreateCartItemDto = {
   cuttingDescription?: string;
   billetData?: TBilletCartData;
 };
+
+/** Позиция сохранённого заказа — зеркало OrderItem */
+export type TOrderItem = {
+  id: number;
+  priceitemId: number;
+  name: string;
+  size: string;
+  quantity: number;
+  weightTons: number;
+  pricePerTon: number;
+  totalGoodsPrice: number;
+  totalCuttingCost: number;
+  cuttingDescription: string | null;
+  billetData: TBilletCartData | null;
+  createdAt: string;
+};
+
+/** Сохранённый заказ — зеркало Order */
+export type TOrder = {
+  id: number;
+  createdAt: string;
+  totalGoods: number;
+  totalCutting: number;
+  totalAll: number;
+  items: TOrderItem[];
+};

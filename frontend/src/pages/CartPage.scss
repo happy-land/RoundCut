@@ -315,6 +315,15 @@
       background-color: #ccc;
       cursor: not-allowed;
     }
+
+    &_save {
+      background-color: #1b8a5a;
+
+      &:hover:not(:disabled) {
+        background-color: #16754d;
+        box-shadow: 0 4px 16px rgba(27, 138, 90, 0.35);
+      }
+    }
   }
 
   &__order-form__btn-icon {

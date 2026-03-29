@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import block from "bem-cn";
 import "./CartPage.scss";
 import ArrowLeftIcon from "../images/react-icons/hi/HiOutlineArrowLeft.svg";
@@ -11,6 +11,7 @@ import {
 } from "../services/cartApi";
 import { TCartItem } from "../utils/types";
 import { CUT_CODE_LABELS } from "../utils/constants";
+import { useCreateOrderFromCartMutation } from "../services/ordersApi";
 
 const cnStyles = block("cart-page");
 
@@ -22,16 +23,23 @@ const localizeDescription = (desc: string): string =>
   );
 
 const CartPage: FC = () => {
+  const navigate = useNavigate();
   const { data: items = [], isLoading } = useGetCartQuery();
   const [removeItem] = useRemoveCartItemMutation();
   const [clearCart, { isLoading: isClearing }] = useClearCartMutation();
   const [sendToSelf, { isLoading: isSending }] = useSendToSelfMutation();
+  const [createOrder, { isLoading: isSaving }] = useCreateOrderFromCartMutation();
 
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSendToSelf = async () => {
     await sendToSelf();
     setShowConfirm(true);
+  };
+
+  const handleSaveOrder = async () => {
+    await createOrder();
+    navigate('/orders');
   };
 
   const handleConfirmClear = async () => {
@@ -237,6 +245,17 @@ const CartPage: FC = () => {
                 <span className={cnStyles("order-form__btn-text")}>
                   <span className={cnStyles("order-form__btn-label")}>Запросить счёт</span>
                   <span className={cnStyles("order-form__btn-hint")}>Менеджер выставит счёт на оплату</span>
+                </span>
+              </button>
+              <button
+                className={cnStyles("order-form__btn", "save")}
+                onClick={handleSaveOrder}
+                disabled={isSaving}
+              >
+                <span className={cnStyles("order-form__btn-icon")}>💾</span>
+                <span className={cnStyles("order-form__btn-text")}>
+                  <span className={cnStyles("order-form__btn-label")}>{isSaving ? "Сохраняем..." : "Сохранить заказ"}</span>
+                  <span className={cnStyles("order-form__btn-hint")}>Записать в историю заказов</span>
                 </span>
               </button>
             </div>
