@@ -9,6 +9,13 @@ import WarehousePicker from "../WarehousePicker/WarehousePicker";
 import { useGetCartQuery } from "../../services/cartApi";
 import { useAppDispatch } from "../../app/hooks";
 import { logout } from "../../features/authSlice";
+import { setSearchQuery } from "../../features/search/searchSlice";
+
+const CATEGORIES = [
+  "Арматура", "Балка", "Катанка", "Квадрат", "Круг",
+  "Лист", "Поковка", "Полоса", "Проволока", "Сетка",
+  "Труба", "Уголок", "Швеллер", "Шестигранник",
+];
 
 const cnStyles = block("header");
 
@@ -23,6 +30,7 @@ const Header: FC = () => {
 
   const [burgerOpen, setBurgerOpen] = useState(false);
   const burgerRef = useRef<HTMLDivElement>(null);
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -58,11 +66,31 @@ const Header: FC = () => {
             <ul className={cnStyles("burger-dropdown")}>
               <li>
                 <button
-                  className={cnStyles("burger-dropdown__item")}
-                  onClick={() => { navigate("/dashboard"); setBurgerOpen(false); }}
+                  className={cnStyles("burger-dropdown__item", { expandable: true, open: catalogOpen })}
+                  onClick={() => setCatalogOpen((v) => !v)}
                 >
                   📋&nbsp;Каталог товаров
+                  <span className={cnStyles("burger-dropdown__arrow", { open: catalogOpen })}>▾</span>
                 </button>
+                {catalogOpen && (
+                  <ul className={cnStyles("burger-subdropdown")}>
+                    {CATEGORIES.map((cat) => (
+                      <li key={cat}>
+                        <button
+                          className={cnStyles("burger-subdropdown__item")}
+                          onClick={() => {
+                            dispatch(setSearchQuery(cat));
+                            navigate("/dashboard");
+                            setBurgerOpen(false);
+                            setCatalogOpen(false);
+                          }}
+                        >
+                          {cat}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
               <li>
                 <button
@@ -110,9 +138,10 @@ const Header: FC = () => {
                   Заказы
                 </button>
               </li>
+              <li className={cnStyles("user-dropdown__divider")} />
               <li>
                 <button
-                  className={cnStyles("user-dropdown__item", "danger")}
+                  className={cnStyles("user-dropdown__item")}
                   onClick={handleLogout}
                 >
                   Выйти

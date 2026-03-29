@@ -1,0 +1,119 @@
+@import '../../assets/styles/vars.scss';
+
+.footer {
+  background: #1a1c1f;
+  border-top: 1px solid #2e3034;
+  margin-top: 48px;
+
+  &__inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 16px 24px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1.6fr 1.4fr;
+    gap: 32px;
+
+    @media (max-width: $desktop) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: $tablet) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__logo {
+    font-family: $title-font-family;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  &__tagline {
+    font-size: 13px;
+    color: #8a8d94;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  &__copy {
+    font-size: 12px;
+    color: #555;
+    margin: 0;
+    margin-top: auto;
+    padding-top: 12px;
+  }
+
+  &__heading {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 0 0 4px;
+  }
+
+  &__nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__catalog {
+    display: flex;
+    gap: 24px;
+  }
+
+  &__link {
+    font-size: 14px;
+    color: #a0a6b1;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.15s;
+    text-align: left;
+
+    &:hover {
+      color: #4e60ff;
+    }
+  }
+
+  &__contacts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__contacts li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  &__contact-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &__contact-text {
+    font-size: 14px;
+    color: #a0a6b1;
+    line-height: 1.4;
+  }
+}

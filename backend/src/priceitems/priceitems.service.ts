@@ -6,12 +6,15 @@ import { Priceitem } from './entities/priceitem.entity';
 import { Repository } from 'typeorm';
 import { WarehousesService } from 'src/warehouses/warehouses.service';
 import { CategoriesService } from 'src/categories/categories.service';
+import { Cutitem } from 'src/cutitems/entities/cutitem.entity';
 
 @Injectable()
 export class PriceitemsService {
   constructor(
     @InjectRepository(Priceitem)
     private readonly priceitemsRepository: Repository<Priceitem>,
+    @InjectRepository(Cutitem)
+    private readonly cutitemsRepository: Repository<Cutitem>,
     private readonly warehousesService: WarehousesService,
     private readonly categoriesService: CategoriesService,
   ) {}
@@ -53,13 +56,28 @@ export class PriceitemsService {
       where: { id: +warehouseId },
     });
     console.log(`-> findAll ${warehouseId}`);
-    console.log(warehouse);
-    const priceitems = await this.priceitemsRepository.find({
-      where: { baseName: warehouse.name },
-      // relations: ['warehouse', 'category'],
+
+    const [priceitems, cutitems] = await Promise.all([
+      this.priceitemsRepository.find({
+        where: { baseName: warehouse.name },
+      }),
+      this.cutitemsRepository.find({
+        where: { warehouse: { id: +warehouseId } },
+        relations: { cut: true },
+      }),
+    ]);
+
+    return priceitems.map((item) => {
+      const sizeNum = parseFloat(item.size);
+      const availableCuts = isNaN(sizeNum)
+        ? []
+        : Array.from(new Set(
+            cutitems
+              .filter((ci) => ci.cut && ci.amount > 0 && ci.from <= sizeNum && sizeNum <= ci.to)
+              .map((ci) => ci.cut.code ?? ci.cut.name),
+          ));
+      return { ...item, availableCuts };
     });
-    // console.log(priceitems);
-    return priceitems;
   }
 
   async findOne(id: number) {

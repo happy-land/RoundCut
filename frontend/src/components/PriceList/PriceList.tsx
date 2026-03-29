@@ -1,6 +1,5 @@
-import React, { FC, ChangeEvent, MouseEvent, useState } from "react";
+import { FC, MouseEvent, useState, useEffect } from "react";
 import {
-  TPriceItem,
   TPriceItemResponse,
   TPriceItemExtendedResponse,
 } from "../../utils/types";
@@ -9,17 +8,11 @@ import block from "bem-cn";
 import "./PriceList.scss";
 import {
   useDeleteAllItemsMutation,
-  useDeleteItemMutation,
   useFetchItemsQuery,
-  // useFetchCsvPriceMutation,
   useExtractDataMutation,
-  useItemMutation,
   useItemsMutation,
-  useFetchItemQuery,
 } from "../../services/priceApi";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { addItem } from "../../features/cut/cutSlice";
-// import { PAGE_SIZE } from '../../utils/constants';
+import { useAppSelector } from "../../app/hooks";
 import {
   convertToPriceItem,
   extractFirstWord,
@@ -41,10 +34,11 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const selectedGrades = useAppSelector(selectActiveGrades);
   const selectedDiameters = useAppSelector(selectDiameter);
 
-  const dispatch = useAppDispatch();
   const { warehouseId } = useAppSelector(selectWarehouse);
 
   const [csvData, setCsvData] = useState<string[]>([]);
+  const PAGE_SIZE = 50;
+  const [currentPage, setCurrentPage] = useState(1);
 
   // TODO: сделать тип TPriceItem, который будет отличаться от TPriceItemResponse
   const [itemsToExport, setItemsToExport] = useState<TPriceItemResponse[]>([]);
@@ -65,10 +59,8 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const { data: items = [], refetch } = useFetchItemsQuery(warehouseId);
 
   // mutations
-  const [deleteItem] = useDeleteItemMutation();
   const [deleteAllItems] = useDeleteAllItemsMutation();
   const [extractData] = useExtractDataMutation();
-  const [uploadItem] = useItemMutation();
   const [uploadItems] = useItemsMutation();
 
   const itemsExtended: Array<TPriceItemExtendedResponse> = items.map(
@@ -104,13 +96,6 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     .sort((a, b) => a.sizeNum - b.sizeNum)
     .sort((a, b) => a.nameExt.localeCompare(b.nameExt));
 
-  // 24.01.2026 закомментить этот обработчик,
-  // т.к. теперь клик по элементу открывает модальное окно с деталями
-  // const onItemClick = (item: TPriceItemExtendedResponse) => {
-  //   console.log(item);
-  //   dispatch(addItem({ item: item }));
-  // };
-
   const filteredItems = orderedItems.filter((item) => {
     // Filter by searchQuery (if set)
     const matchesSearch = searchQuery
@@ -133,23 +118,83 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     return matchesSearch && matchesGrade && matchesDiameter;
   });
 
+  // Сбрасывать страницу при изменении фильтров
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedGrades, selectedDiameters]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
+  const pagedItems = filteredItems.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const content = (
     <div>
-      <div className={cnStyles("header")}>
-        <div className={cnStyles("header-cell")}>Наименование</div>
-        <div className={cnStyles("header-cell")}>Диаметр</div>
-        <div className={cnStyles("header-cell")}>Цена за т</div>
+      <div className={cnStyles("list-meta")}>
+        {filteredItems.length} позиц.
+        {totalPages > 1 && (
+          <span> &mdash; стр. {currentPage} из {totalPages}</span>
+        )}
       </div>
       <ul className={cnStyles("items-list")}>
-        {filteredItems.map(
+        {pagedItems.map(
           (item: TPriceItemExtendedResponse, index: number) => (
             <li className={cnStyles("list-item")} key={index}>
-              {/* <PriceItem item={item} onClick={() => onItemClick(item)} /> */}
               <PriceItem item={item} />
             </li>
           ),
         )}
       </ul>
+      {totalPages > 1 && (
+        <div className={cnStyles("pagination")}>
+          <button
+            className={cnStyles("pagination__btn")}
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            ←
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1)
+            .filter(
+              (p) =>
+                p === 1 ||
+                p === totalPages ||
+                Math.abs(p - currentPage) <= 2,
+            )
+            .reduce<(number | '...')[]>((acc, p, idx, arr) => {
+              if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push('...');
+              acc.push(p);
+              return acc;
+            }, [])
+            .map((p, idx) =>
+              p === '...' ? (
+                <span key={`dots-${idx}`} className={cnStyles("pagination__dots")}>…</span>
+              ) : (
+                <button
+                  key={p}
+                  className={cnStyles("pagination__btn", p === currentPage ? "active" : "")}
+                  onClick={() => handlePageChange(p as number)}
+                  disabled={p === currentPage}
+                >
+                  {p}
+                </button>
+              ),
+            )}
+          <button
+            className={cnStyles("pagination__btn")}
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            →
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -201,28 +246,6 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     });
     setUniqueItemLengths(uniqueItemLengths);
   };
-
-  // мой вариант определения категории товара и заполнения массива для экспорта в БД.
-  // const handleMapCategoryToPriceItem = (
-  //   event: MouseEvent<HTMLButtonElement>,
-  // ) => {
-  //   event.preventDefault();
-  //   const arrToExport: TPriceItemResponse[] = csvData.map((item) => {
-  //     const arr: string[] = item.split(';');
-  //     const catName = extractFirstWord(arr[7]);
-  //     if (arr[7].includes('калиброванный')) {
-  //       arr.splice(11, 1);
-  //     }
-
-  //     if (arr[12].includes('Лист г/к')) {
-  //       arr.splice(11, 1);
-  //       console.log(arr);
-  //     }
-  //     arr.push(catName);
-  //     return convertToPriceItem(arr);
-  //   });
-  //   setItemsToExport(arrToExport);
-  // };
 
   const handleMapCategoryToPriceItem = (
     event: MouseEvent<HTMLButtonElement>,
@@ -313,11 +336,6 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     event.preventDefault();
     refetch();
   };
-
-  // const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   event.preventDefault();
-  //   setInputName(event.target.value);
-  // };
 
   return (
     <div className={cnStyles()}>
