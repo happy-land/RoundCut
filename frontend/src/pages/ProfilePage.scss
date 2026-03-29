@@ -1,0 +1,310 @@
+@import '../assets/styles/vars.scss';
+
+.profile-page {
+  max-width: $large-desktop;
+  margin: 0 auto;
+  padding: 16px 20px;
+  box-sizing: border-box;
+
+  // --------------------------
+  // Шапка
+  // --------------------------
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  &__back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    img {
+      width: 22px;
+      height: 22px;
+    }
+
+    &:hover {
+      background: #ececec;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  &__empty {
+    font-size: 15px;
+    color: #888;
+    margin: 8px 0;
+  }
+
+  // --------------------------
+  // Секция
+  // --------------------------
+  &__section {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  &__section-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  // --------------------------
+  // Строка информации
+  // --------------------------
+  &__info-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f4f4f4;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__info-label {
+    width: 160px;
+    min-width: 160px;
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+  }
+
+  &__info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    word-break: break-all;
+  }
+
+  // --------------------------
+  // Кнопка редактировать
+  // --------------------------
+  &__edit-btn {
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4e60ff;
+    background: #eef0ff;
+    border: 1px solid #c5cbff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #dde1ff;
+    }
+  }
+
+  // --------------------------
+  // О себе
+  // --------------------------
+  &__about-text {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    white-space: pre-wrap;
+
+    &_empty {
+      color: #bbb;
+      font-style: italic;
+    }
+  }
+
+  &__about-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    &__meta {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    &__chars {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    &__error {
+      margin: 0;
+      font-size: 13px;
+      color: #c0392b;
+    }
+
+    &__actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+  }
+
+  &__about-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.5;
+    border: 1px solid #c5cbff;
+    border-radius: 8px;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+    color: #222;
+
+    &:focus {
+      border-color: #4e60ff;
+    }
+  }
+
+  &__save-btn {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #4e60ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover:not(:disabled) {
+      background: #4050e0;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+
+  &__cancel-btn {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f5f5f5;
+    color: #444;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover:not(:disabled) {
+      background: #ebebeb;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+
+  // --------------------------
+  // Ссылка "Все заказы"
+  // --------------------------
+  &__orders-link {
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4e60ff;
+    background: #eef0ff;
+    border: 1px solid #c5cbff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #dde1ff;
+    }
+  }
+
+  // --------------------------
+  // Список последних заказов
+  // --------------------------
+  &__orders-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__order-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    transition: background 0.12s;
+
+    &:hover {
+      background: #f3f4ff;
+    }
+
+    &__meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    &__number {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111;
+    }
+
+    &__date {
+      font-size: 12px;
+      color: #888;
+    }
+
+    &__count {
+      font-size: 12px;
+      padding: 2px 8px;
+      background: #e3f2fd;
+      color: #1565c0;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    &__total {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111;
+      flex-shrink: 0;
+    }
+  }
+}

@@ -35,6 +35,7 @@ import OptionsPickerModal from '../OptionsPickerModal/OptionsPickerModal';
 import BilletModal from '../BilletModal/BilletModal';
 import CartPage from '../../pages/CartPage';
 import OrdersPage from '../../pages/OrdersPage';
+import ProfilePage from '../../pages/ProfilePage';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -85,6 +86,7 @@ const App: FC = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/admin" element={<AdminDashboard />}>
             <Route path="/admin/price" element={<AdminPrice />} />
             <Route path="/admin/category" element={<CategoryEditPage />} />
