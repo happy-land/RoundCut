@@ -44,14 +44,6 @@ const Dashboard = () => {
         <PriceList type="user" />
       </section>
 
-      {user && (
-        <p className={cnStyles('user')}>
-          Вы вошли как <Link to="/admin">{user.username}</Link>
-        </p>
-      )}
-
-      <button onClick={handleLogout}>Logout</button>
-      <BilletPanel />
     </div>
   );
 };

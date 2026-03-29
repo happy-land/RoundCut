@@ -100,6 +100,7 @@ export type TPriceItemResponse = {
   readonly warehouse?: {
     id: number;
   };
+  readonly availableCuts?: string[];
 };
 
 export type TPriceItemExtendedResponse = TPriceItemResponse & {
