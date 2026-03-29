@@ -1,7 +1,6 @@
-@import '../assets/styles/vars.scss';
+﻿@import '../assets/styles/vars.scss';
 
 .dashboard-container {
-  border: 1px solid red;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,21 +14,21 @@
   }
 
   &__steelgrades-wrapper {
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: hidden;
     box-sizing: border-box;
-    max-width: 800px;
+    width: 100%;
   }
 
   &__diameters-wrapper {
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: hidden;
     box-sizing: border-box;
-    max-width: 800px;
+    width: 100%;
   }
 
   &__pricelist-wrapper {
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-x: hidden;
     box-sizing: border-box;
-    max-width: 800px;
+    width: 100%;
   }
 
   &__user {
@@ -39,11 +38,8 @@
   }
 }
 
-// desktop
 @media screen and (max-width: $desktop) {
   .dashboard-container {
-    background-color: rgb(242, 213, 175);
-
     &__steelgrades-wrapper {
       width: 100%;
     }
@@ -58,22 +54,16 @@
   }
 }
 
-//tablet
 @media screen and (max-width: $tablet) {
   .dashboard-container {
-    background-color: rgb(219, 246, 246);
-
     &__steelgrades-wrapper {
       width: 100%;
     }
   }
 }
 
-// phone
 @media screen and (max-width: $phone) {
   .dashboard-container {
-    background-color: rgb(160, 156, 151);
-
     &__steelgrades-wrapper {
       width: 100%;
     }

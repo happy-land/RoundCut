@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useFetchItemsQuery } from '../../services/priceApi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 import block from 'bem-cn';
 import './DiameterSelector.scss';
-// import OptionsIcon from '../../images/react-icons/hi/HiOutlineAdjustments.svg';
 import { selectActiveGrades } from '../../features/filter/steelgradeSlice';
 import { selectSearchQuery } from '../../features/search/searchSlice';
 import { updateSelectedDiameters, selectDiameter } from '../../features/filter/diameterSlice';
@@ -24,15 +23,12 @@ const DiameterSelector = () => {
   const { data: items = [] } = useFetchItemsQuery(warehouseId);
 
   useEffect(() => {
-    // Clear filtered diameters when searchQuery changes
-    // Clear filtered diameters when no Steel Grades are selected
     if (!searchQuery || selectedGrades.length === 0) {
       setFilteredDiameters([]);
       setSelectedDiameters([]);
     }
   }, [searchQuery, selectedGrades]);
 
-  // Sync local state with Redux store when it changes (e.g., from OptionsPickerModal)
   useEffect(() => {
     setSelectedDiameters(selectedDiametersFromStore || []);
   }, [selectedDiametersFromStore]);
@@ -43,7 +39,6 @@ const DiameterSelector = () => {
         new Set(
           items
             .filter((item) => {
-              // Extract the grade part (after the first space)
               const [, ...rest] = item.name.split(' ');
               const grade = rest.join(' ').trim();
               return (
@@ -60,61 +55,54 @@ const DiameterSelector = () => {
       });
 
       setFilteredDiameters(diameters);
-      // Remove any selected diameters that are no longer available
-      setSelectedDiameters((prev) =>
-        prev.filter((size) => diameters.includes(size)),
-      );
+      setSelectedDiameters((prev) => prev.filter((size) => diameters.includes(size)));
     } else {
       setFilteredDiameters([]);
       setSelectedDiameters([]);
     }
   }, [selectedGrades, items, searchQuery]);
 
-  // Hanldle chip selection
   const handleChipClick = (size: string) => {
-    setSelectedDiameters(
-      (prev) =>
-        prev.includes(size)
-          ? prev.filter((s) => s !== size) // Deselect if already selected
-          : [...prev, size], // Add to selected if not already selected
+    setSelectedDiameters((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
     );
   };
+
+  const handleClearAll = () => setSelectedDiameters([]);
 
   useEffect(() => {
     dispatch(updateSelectedDiameters(selectedDiameters));
   }, [selectedDiameters, dispatch]);
 
-  const content = (
-    <ul className={cnStyles('items')}>
-      {filteredDiameters.map((size, index) => (
-        <li
-          key={index}
-          className={cnStyles('item', {
-            selected: selectedDiameters.includes(size),
-          })}
-          onClick={() => handleChipClick(size)}
-        >
-          {size}
-        </li>
-      ))}
-      {filteredDiameters.length === 0 && (
-        <li className={cnStyles('no-items')}></li>
-      )}
-    </ul>
-  );
+  if (filteredDiameters.length === 0) return null;
 
   return (
-    <>
-      <div className={cnStyles()}>
-        {content}
-
-        {/* <img
-          src={OptionsIcon}
-          alt="diameter-options"
-          className={cnStyles('diameter-options')}
-        /> */}
+    <div className={cnStyles()}>
+      <div className={cnStyles('header')}>
+        <span className={cnStyles('label')}>
+          Диаметр
+          {selectedDiameters.length > 0 && (
+            <span className={cnStyles('count')}>{selectedDiameters.length}</span>
+          )}
+        </span>
+        {selectedDiameters.length > 0 && (
+          <button className={cnStyles('clear-btn')} onClick={handleClearAll}>
+            Сбросить
+          </button>
+        )}
       </div>
-    </>
+      <ul className={cnStyles('items')}>
+        {filteredDiameters.map((size, index) => (
+          <li
+            key={index}
+            className={cnStyles('item', { selected: selectedDiameters.includes(size) })}
+            onClick={() => handleChipClick(size)}
+          >
+            {size}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

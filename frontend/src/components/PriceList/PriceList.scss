@@ -5,7 +5,7 @@
   background-color: transparent;
 
   &__title {
-    display: none; // Hide title as it's not shown in the design
+    display: none;
   }
 
   &__content-section {
@@ -31,7 +31,7 @@
     cursor: pointer;
     transition: $common-transition;
     min-height: 44px;
-    
+
     &:hover {
       background-color: $button-hover;
       transform: translateY(-1px);
@@ -44,80 +44,83 @@
     }
   }
 
+  &__list-meta {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+
   &__items-list {
     list-style-type: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    max-height: 500px;
-    background-color: transparent;
-    
-    // Table header
-    &::before {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 1px;
-      background-color: #e5e7eb;
-      margin-bottom: 16px;
-    }
+    gap: 6px;
   }
 
   &__list-item {
-    display: flex;
-    padding: 0;
-    border-bottom: 1px solid #f3f4f6;
-    transition: background-color 0.15s ease;
+    display: block;
   }
 
-  // Table header
-  &__header {
+  // --------------------------
+  // Пагинация
+  // --------------------------
+  &__pagination {
     display: flex;
-    padding: 12px 0 0 0;
-    // border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 4px;
-    font-family: $base-font-family;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__pagination__btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
     font-size: 14px;
     font-weight: 500;
-    color: $text-light;
+    background: #fff;
+    color: #222;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+
+    &:hover:not(:disabled) {
+      background: #f0f2ff;
+      border-color: #c5cbff;
+      color: #4e60ff;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &_active {
+      background: #4e60ff;
+      color: #fff;
+      border-color: #4e60ff;
+      pointer-events: none;
+    }
   }
 
-  &__header-cell {
-    &:first-child {
-      width: 200px; // Наименование
-    }
-    
-    &:nth-child(2) {
-      width: 100px; // Диаметр
-      text-align: center;
-    }
-    
-    &:last-child {
-      width: 100px; // Цена за т
-      text-align: right;
-    }
+  &__pagination__dots {
+    font-size: 14px;
+    color: #aaa;
+    padding: 0 4px;
+    line-height: 36px;
   }
 
-  // Item count info
   p {
     font-family: $base-font-family;
     font-size: 14px;
     color: $text-light;
     margin: 16px 0;
-  }
-
-  // Responsive design
-  @media (max-width: $tablet) {
-    &__items-list {
-      max-height: 400px;
-    }
-  }
-
-  @media (max-width: $phone) {
-    &__items-list {
-      max-height: 350px;
-    }
   }
 }
