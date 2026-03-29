@@ -40,12 +40,21 @@ export const authSlice = createSlice({
       deleteCookie('accessToken');
       state.user = null;
       state.token = null;
-    }
+    },
+    updateUserData: (state, action: PayloadAction<Partial<TOwnUserData>>) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+        localStorage.setItem(
+          'userData',
+          JSON.stringify({ user: state.user, token: state.token }),
+        );
+      }
+    },
   },
 });
 
 export const selectAuth = (state: RootState) => state.auth;
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, logout, updateUserData } = authSlice.actions;
 
 export default authSlice.reducer;
