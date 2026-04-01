@@ -10,6 +10,7 @@ import warehouseReducer from '../features/warehouse/warehouseSlice';
 import searchReducer from '../features/search/searchSlice';
 import steelGradeReducer from '../features/filter/steelgradeSlice';
 import diameterReducer from '../features/filter/diameterSlice';
+import guestCartReducer from '../features/guestCart/guestCartSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { adminCutApi } from '../services/adminCutApi';
 import { cutitemApi } from '../services/cutitemApi';
@@ -28,6 +29,7 @@ const store = configureStore({
     search: searchReducer,
     steelGrade: steelGradeReducer,
     diameter: diameterReducer,
+    guestCart: guestCartReducer,
     [authApi.reducerPath]: authApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
