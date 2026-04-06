@@ -43,7 +43,8 @@ export class UsersController {
 
   @Post('me')
   getUser(@Req() req: RequestUser) {
-    return req.user;
+    const { password, ...safeUser } = req.user as any;
+    return safeUser;
   }
 
   // @Get('me/wishes')

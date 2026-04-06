@@ -30,6 +30,7 @@ import BilletModal from '../BilletModal/BilletModal';
 import CartPage from '../../pages/CartPage';
 import OrdersPage from '../../pages/OrdersPage';
 import ProfilePage from '../../pages/ProfilePage';
+import RequireRole from '../RequireRole/RequireRole';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -81,7 +82,7 @@ const App: FC = () => {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/admin" element={<AdminDashboard />}>
+          <Route path="/admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>}>
             <Route path="/admin/price" element={<AdminPrice />} />
             <Route path="/admin/category" element={<CategoryEditPage />} />
             <Route path="/admin/warehouse" element={<Warehouse />} />
