@@ -9,15 +9,10 @@ import {
 import Layout from '../Layout/Layout';
 // import { Page404 } from '../../pages/404/Page404';
 import './App.scss';
-import { fetchItems } from '../../features/price/priceitemsSlice';
 import { useAppDispatch } from '../../app/hooks';
-import { getCookie } from '../../utils/cookie';
-import { SigninPage } from '../../pages/SigninPage/SigninPage';
 import Auth from '../../pages/Auth';
 import Dashboard from '../../pages/Dashboard';
-// import { ToastContainer } from 'react-toastify';
 import { setUser } from '../../features/authSlice';
-import { PriceItemDetails } from '../../pages/PriceItemDetails';
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
 import AdminPrice from '../AdminPrice/AdminPrice';
 import { Markup } from '../../pages/Markup';
@@ -29,13 +24,13 @@ import CutitemEditPage from '../../pages/CutitemEditPage';
 import CategoryEditPage from '../../pages/CategoryEditPage';
 import ForgotPassword from '../../pages/ForgotPassword';
 import ResetPassword from '../../pages/ResetPassword';
-import WarehouseList from '../WarehouseList/WarehouseList';
 import WarehousePickerModal from '../WarehousePickerModal/WarehousePickerModal';
 import OptionsPickerModal from '../OptionsPickerModal/OptionsPickerModal';
 import BilletModal from '../BilletModal/BilletModal';
 import CartPage from '../../pages/CartPage';
 import OrdersPage from '../../pages/OrdersPage';
 import ProfilePage from '../../pages/ProfilePage';
+import RequireRole from '../RequireRole/RequireRole';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -75,7 +70,7 @@ const App: FC = () => {
       {/* <ToastContainer /> */}
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Navigate to="/auth" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -87,7 +82,7 @@ const App: FC = () => {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/admin" element={<AdminDashboard />}>
+          <Route path="/admin" element={<RequireRole roles={['admin']}><AdminDashboard /></RequireRole>}>
             <Route path="/admin/price" element={<AdminPrice />} />
             <Route path="/admin/category" element={<CategoryEditPage />} />
             <Route path="/admin/warehouse" element={<Warehouse />} />

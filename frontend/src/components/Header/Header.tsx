@@ -7,9 +7,10 @@ import UserIcon from "../../images/react-icons/hi/HiOutlineUser.svg";
 import CartIcon from "../../images/react-icons/hi/HiOutlineShoppingCart.svg";
 import WarehousePicker from "../WarehousePicker/WarehousePicker";
 import { useGetCartQuery } from "../../services/cartApi";
-import { useAppDispatch } from "../../app/hooks";
-import { logout } from "../../features/authSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { logout, selectAuth } from "../../features/authSlice";
 import { setSearchQuery } from "../../features/search/searchSlice";
+import { getCookie } from "../../utils/cookie";
 
 const CATEGORIES = [
   "Арматура", "Балка", "Катанка", "Квадрат", "Круг",
@@ -22,8 +23,13 @@ const cnStyles = block("header");
 const Header: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data: cartItems = [] } = useGetCartQuery();
-  const cartCount = cartItems.length;
+
+  const guest = !getCookie("accessToken");
+  const { user } = useAppSelector(selectAuth);
+  const isAdmin = user?.role === 'admin';
+  const { data: authCartItems = [] } = useGetCartQuery(undefined, { skip: guest });
+  const guestCartItems = useAppSelector((s) => s.guestCart.items);
+  const cartCount = guest ? guestCartItems.length : authCartItems.length;
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -92,14 +98,16 @@ const Header: FC = () => {
                   </ul>
                 )}
               </li>
-              <li>
-                <button
-                  className={cnStyles("burger-dropdown__item")}
-                  onClick={() => { navigate("/admin"); setBurgerOpen(false); }}
-                >
-                  ⚙️&nbsp;Админ-панель
-                </button>
-              </li>
+              {isAdmin && (
+                <li>
+                  <button
+                    className={cnStyles("burger-dropdown__item")}
+                    onClick={() => { navigate("/admin"); setBurgerOpen(false); }}
+                  >
+                    ⚙️&nbsp;Админ-панель
+                  </button>
+                </li>
+              )}
             </ul>
           )}
         </div>
@@ -122,31 +130,54 @@ const Header: FC = () => {
           </button>
           {menuOpen && (
             <ul className={cnStyles("user-dropdown")}>
-              <li>
-                <button
-                  className={cnStyles("user-dropdown__item")}
-                  onClick={() => { navigate("/profile"); setMenuOpen(false); }}
-                >
-                  Профиль
-                </button>
-              </li>
-              <li>
-                <button
-                  className={cnStyles("user-dropdown__item")}
-                  onClick={() => { navigate("/orders"); setMenuOpen(false); }}
-                >
-                  Заказы
-                </button>
-              </li>
-              <li className={cnStyles("user-dropdown__divider")} />
-              <li>
-                <button
-                  className={cnStyles("user-dropdown__item")}
-                  onClick={handleLogout}
-                >
-                  Выйти
-                </button>
-              </li>
+              {guest ? (
+                <li>
+                  <button
+                    className={cnStyles("user-dropdown__item")}
+                    onClick={() => { navigate("/auth"); setMenuOpen(false); }}
+                  >
+                    Войти
+                  </button>
+                </li>
+              ) : (
+                <>
+                  <li>
+                    <button
+                      className={cnStyles("user-dropdown__item")}
+                      onClick={() => { navigate("/profile"); setMenuOpen(false); }}
+                    >
+                      Профиль
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={cnStyles("user-dropdown__item")}
+                      onClick={() => { navigate("/orders"); setMenuOpen(false); }}
+                    >
+                      Заказы
+                    </button>
+                  </li>
+                  {isAdmin && (
+                    <li>
+                      <button
+                        className={cnStyles("user-dropdown__item")}
+                        onClick={() => { navigate("/admin"); setMenuOpen(false); }}
+                      >
+                        Админ-панель
+                      </button>
+                    </li>
+                  )}
+                  <li className={cnStyles("user-dropdown__divider")} />
+                  <li>
+                    <button
+                      className={cnStyles("user-dropdown__item")}
+                      onClick={handleLogout}
+                    >
+                      Выйти
+                    </button>
+                  </li>
+                </>
+              )}
             </ul>
           )}
         </div>

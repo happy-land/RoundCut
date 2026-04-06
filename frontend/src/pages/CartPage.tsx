@@ -8,10 +8,18 @@ import {
   useRemoveCartItemMutation,
   useClearCartMutation,
   useSendToSelfMutation,
+  useSendGuestOrderMutation,
 } from "../services/cartApi";
 import { TCartItem } from "../utils/types";
 import { CUT_CODE_LABELS } from "../utils/constants";
 import { useCreateOrderFromCartMutation } from "../services/ordersApi";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  removeGuestCartItem,
+  clearGuestCart,
+  TGuestCartItem,
+} from "../features/guestCart/guestCartSlice";
+import { getCookie } from "../utils/cookie";
 
 const cnStyles = block("cart-page");
 
@@ -22,12 +30,29 @@ const localizeDescription = (desc: string): string =>
     desc,
   );
 
+const isGuest = () => !getCookie("accessToken");
+
 const CartPage: FC = () => {
   const navigate = useNavigate();
-  const { data: items = [], isLoading } = useGetCartQuery();
+  const dispatch = useAppDispatch();
+  const guest = isGuest();
+
+  // Auth cart
+  const { data: authItems = [], isLoading } = useGetCartQuery(undefined, { skip: guest });
   const [removeItem] = useRemoveCartItemMutation();
   const [clearCart, { isLoading: isClearing }] = useClearCartMutation();
   const [sendToSelf, { isLoading: isSending }] = useSendToSelfMutation();
+
+  // Guest cart
+  const guestItems = useAppSelector((s) => s.guestCart.items);
+  const [sendGuestOrder, { isLoading: isSendingGuest }] = useSendGuestOrderMutation();
+  const [guestEmail, setGuestEmail] = useState("");
+  const [guestName, setGuestName] = useState("");
+  const [guestEmailError, setGuestEmailError] = useState("");
+  const [guestSent, setGuestSent] = useState(false);
+
+  // Unified
+  const items: (TCartItem | TGuestCartItem)[] = guest ? guestItems : authItems;
   const [createOrder, { isLoading: isSaving }] = useCreateOrderFromCartMutation();
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -51,6 +76,23 @@ const CartPage: FC = () => {
     setShowConfirm(false);
   };
 
+  const handleGuestRemove = (id: number) => dispatch(removeGuestCartItem(id));
+  const handleGuestClear = () => dispatch(clearGuestCart());
+
+  const handleGuestSend = async () => {
+    if (!guestEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) {
+      setGuestEmailError("Введите корректный email");
+      return;
+    }
+    setGuestEmailError("");
+    await sendGuestOrder({
+      email: guestEmail.trim(),
+      name: guestName.trim() || "Гость",
+      items: guestItems,
+    });
+    setGuestSent(true);
+  };
+
   const totalGoods = items.reduce((s, i) => s + Number(i.totalGoodsPrice), 0);
   const totalCutting = items.reduce(
     (s, i) => s + Number(i.totalCuttingCost),
@@ -70,26 +112,26 @@ const CartPage: FC = () => {
         {items.length > 0 && (
           <button
             className={cnStyles("danger-btn")}
-            onClick={() => clearCart()}
-            disabled={isClearing}
+            onClick={guest ? handleGuestClear : () => clearCart()}
+            disabled={!guest && isClearing}
           >
             Очистить корзину
           </button>
         )}
       </div>
 
-      {isLoading && (
+      {!guest && isLoading && (
         <p className={cnStyles("empty")}>Загрузка...</p>
       )}
 
-      {!isLoading && items.length === 0 && (
+      {items.length === 0 && (
         <p className={cnStyles("empty")}>Корзина пуста</p>
       )}
 
       {!isLoading && items.length > 0 && (
         <>
           <ul className={cnStyles("list")}>
-            {items.map((item: TCartItem) => (
+            {(items as Array<TCartItem | TGuestCartItem>).map((item) => (
               <li key={item.id} className={cnStyles("list-item")}>
                 <div className={cnStyles("list-item__view")}>
                   <span className={cnStyles("list-item__name")}>
@@ -190,7 +232,7 @@ const CartPage: FC = () => {
 
                   <button
                     className={cnStyles("list-item__btn", "delete")}
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => guest ? handleGuestRemove(item.id) : removeItem(item.id)}
                     title="Удалить"
                   >
                     ✕ Удалить
@@ -224,41 +266,92 @@ const CartPage: FC = () => {
           </div>
 
           <div className={cnStyles("order-form")}>
-            <h2 className={cnStyles("order-form__title")}>Отправить заказ</h2>
-            <p className={cnStyles("order-form__subtitle")}>
-              Выберите способ оформления заказа
-            </p>
-            <div className={cnStyles("order-form__actions")}>
-              <button
-                className={cnStyles("order-form__btn", "email")}
-                onClick={handleSendToSelf}
-                disabled={isSending}
-              >
-                <span className={cnStyles("order-form__btn-icon")}>✉</span>
-                <span className={cnStyles("order-form__btn-text")}>
-                  <span className={cnStyles("order-form__btn-label")}>{isSending ? "Отправляем..." : "Себе на почту"}</span>
-                  <span className={cnStyles("order-form__btn-hint")}>Получите список товаров на email</span>
-                </span>
-              </button>
-              <button className={cnStyles("order-form__btn", "manager")}>
-                <span className={cnStyles("order-form__btn-icon")}>📋</span>
-                <span className={cnStyles("order-form__btn-text")}>
-                  <span className={cnStyles("order-form__btn-label")}>Запросить счёт</span>
-                  <span className={cnStyles("order-form__btn-hint")}>Менеджер выставит счёт на оплату</span>
-                </span>
-              </button>
-              <button
-                className={cnStyles("order-form__btn", "save")}
-                onClick={handleSaveOrder}
-                disabled={isSaving}
-              >
-                <span className={cnStyles("order-form__btn-icon")}>💾</span>
-                <span className={cnStyles("order-form__btn-text")}>
-                  <span className={cnStyles("order-form__btn-label")}>{isSaving ? "Сохраняем..." : "Сохранить заказ"}</span>
-                  <span className={cnStyles("order-form__btn-hint")}>Записать в историю заказов</span>
-                </span>
-              </button>
-            </div>
+            {guest ? (
+              /* === Гостевая форма === */
+              guestSent ? (
+                <div className={cnStyles("order-form__sent")}>
+                  <span className={cnStyles("order-form__sent-icon")}>✅</span>
+                  <p className={cnStyles("order-form__sent-text")}>
+                    Заказ отправлен на <strong>{guestEmail}</strong>
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <h2 className={cnStyles("order-form__title")}>Отправить заказ на почту</h2>
+                  <div className={cnStyles("order-form__guest")}>
+                    <input
+                      className={cnStyles("order-form__input")}
+                      type="text"
+                      placeholder="Ваше имя (необязательно)"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                    />
+                    <input
+                      className={cnStyles("order-form__input", guestEmailError ? "error" : "")}
+                      type="email"
+                      placeholder="Ваш email *"
+                      value={guestEmail}
+                      onChange={(e) => { setGuestEmail(e.target.value); setGuestEmailError(""); }}
+                    />
+                    {guestEmailError && (
+                      <span className={cnStyles("order-form__error")}>{guestEmailError}</span>
+                    )}
+                    <button
+                      className={cnStyles("order-form__btn", "email")}
+                      onClick={handleGuestSend}
+                      disabled={isSendingGuest}
+                    >
+                      <span className={cnStyles("order-form__btn-icon")}>✉</span>
+                      <span className={cnStyles("order-form__btn-text")}>
+                        <span className={cnStyles("order-form__btn-label")}>
+                          {isSendingGuest ? "Отправляем..." : "Отправить заказ на почту"}
+                        </span>
+                        <span className={cnStyles("order-form__btn-hint")}>Получите список товаров на email</span>
+                      </span>
+                    </button>
+                  </div>
+                </>
+              )
+            ) : (
+              /* === Авторизованная форма === */
+              <>
+                <h2 className={cnStyles("order-form__title")}>Отправить заказ</h2>
+                <p className={cnStyles("order-form__subtitle")}>
+                  Выберите способ оформления заказа
+                </p>
+                <div className={cnStyles("order-form__actions")}>
+                  <button
+                    className={cnStyles("order-form__btn", "email")}
+                    onClick={handleSendToSelf}
+                    disabled={isSending}
+                  >
+                    <span className={cnStyles("order-form__btn-icon")}>✉</span>
+                    <span className={cnStyles("order-form__btn-text")}>
+                      <span className={cnStyles("order-form__btn-label")}>{isSending ? "Отправляем..." : "Себе на почту"}</span>
+                      <span className={cnStyles("order-form__btn-hint")}>Получите список товаров на email</span>
+                    </span>
+                  </button>
+                  <button className={cnStyles("order-form__btn", "manager")}>
+                    <span className={cnStyles("order-form__btn-icon")}>📋</span>
+                    <span className={cnStyles("order-form__btn-text")}>
+                      <span className={cnStyles("order-form__btn-label")}>Запросить счёт</span>
+                      <span className={cnStyles("order-form__btn-hint")}>Менеджер выставит счёт на оплату</span>
+                    </span>
+                  </button>
+                  <button
+                    className={cnStyles("order-form__btn", "save")}
+                    onClick={handleSaveOrder}
+                    disabled={isSaving}
+                  >
+                    <span className={cnStyles("order-form__btn-icon")}>💾</span>
+                    <span className={cnStyles("order-form__btn-text")}>
+                      <span className={cnStyles("order-form__btn-label")}>{isSaving ? "Сохраняем..." : "Сохранить заказ"}</span>
+                      <span className={cnStyles("order-form__btn-hint")}>Записать в историю заказов</span>
+                    </span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </>
       )}

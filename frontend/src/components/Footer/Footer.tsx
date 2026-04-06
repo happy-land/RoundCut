@@ -90,19 +90,19 @@ const Footer: FC = () => {
           <ul className={cnStyles('contacts')}>
             <li>
               <span className={cnStyles('contact-icon')}>📞</span>
-              <a className={cnStyles('link')} href="tel:+74951234567">+7 (495) 123-45-67</a>
+              <a className={cnStyles('link')} href="tel:+74951234567">+7 (495) 727-07-04</a>
             </li>
             <li>
               <span className={cnStyles('contact-icon')}>✉️</span>
-              <a className={cnStyles('link')} href="mailto:info@roundcut.ru">info@roundcut.ru</a>
+              <a className={cnStyles('link')} href="mailto:7270704@metallotorg.ru">7270704@metallotorg.ru</a>
             </li>
             <li>
               <span className={cnStyles('contact-icon')}>📍</span>
-              <span className={cnStyles('contact-text')}>г. Москва, ул. Промышленная, 12</span>
+              <span className={cnStyles('contact-text')}>г. Москва, ул. Кусковская, 20А</span>
             </li>
             <li>
               <span className={cnStyles('contact-icon')}>🕐</span>
-              <span className={cnStyles('contact-text')}>Пн–Пт: 9:00 – 18:00</span>
+              <span className={cnStyles('contact-text')}>Пн–Пт: 8:00 – 17:00</span>
             </li>
           </ul>
         </div>
