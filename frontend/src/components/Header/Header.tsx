@@ -8,7 +8,7 @@ import CartIcon from "../../images/react-icons/hi/HiOutlineShoppingCart.svg";
 import WarehousePicker from "../WarehousePicker/WarehousePicker";
 import { useGetCartQuery } from "../../services/cartApi";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { logout } from "../../features/authSlice";
+import { logout, selectAuth } from "../../features/authSlice";
 import { setSearchQuery } from "../../features/search/searchSlice";
 import { getCookie } from "../../utils/cookie";
 
@@ -25,6 +25,8 @@ const Header: FC = () => {
   const navigate = useNavigate();
 
   const guest = !getCookie("accessToken");
+  const { user } = useAppSelector(selectAuth);
+  const isAdmin = user?.role === 'admin';
   const { data: authCartItems = [] } = useGetCartQuery(undefined, { skip: guest });
   const guestCartItems = useAppSelector((s) => s.guestCart.items);
   const cartCount = guest ? guestCartItems.length : authCartItems.length;
@@ -96,14 +98,16 @@ const Header: FC = () => {
                   </ul>
                 )}
               </li>
-              <li>
-                <button
-                  className={cnStyles("burger-dropdown__item")}
-                  onClick={() => { navigate("/admin"); setBurgerOpen(false); }}
-                >
-                  ⚙️&nbsp;Админ-панель
-                </button>
-              </li>
+              {isAdmin && (
+                <li>
+                  <button
+                    className={cnStyles("burger-dropdown__item")}
+                    onClick={() => { navigate("/admin"); setBurgerOpen(false); }}
+                  >
+                    ⚙️&nbsp;Админ-панель
+                  </button>
+                </li>
+              )}
             </ul>
           )}
         </div>
@@ -153,6 +157,16 @@ const Header: FC = () => {
                       Заказы
                     </button>
                   </li>
+                  {isAdmin && (
+                    <li>
+                      <button
+                        className={cnStyles("user-dropdown__item")}
+                        onClick={() => { navigate("/admin"); setMenuOpen(false); }}
+                      >
+                        Админ-панель
+                      </button>
+                    </li>
+                  )}
                   <li className={cnStyles("user-dropdown__divider")} />
                   <li>
                     <button
