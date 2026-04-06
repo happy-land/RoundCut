@@ -13,6 +13,9 @@ import { mapWeightToLevel } from "../../utils/markupMapping";
 import { useAddCartItemMutation } from "../../services/cartApi";
 import { CUT_CODE_LABELS } from "../../utils/constants";
 import { TBilletCartData } from "../../utils/types";
+import { useAppDispatch } from "../../app/hooks";
+import { addGuestCartItem } from "../../features/guestCart/guestCartSlice";
+import { getCookie } from "../../utils/cookie";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -136,7 +139,9 @@ const formatMoney = (value: number, currency: string) => {
 /* ====================== component ====================== */
 
 const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
+  const dispatch = useAppDispatch();
   const [addCartItem] = useAddCartItemMutation();
+  const guest = !getCookie("accessToken");
   const {
     data: itemExtended,
     isLoading,
@@ -501,7 +506,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         .filter(([, qty]) => qty > 0)
         .map(([code, qty]) => `${CUT_CODE_LABELS[code] ?? code}: ${qty} шт`)
         .join(", ") || null;
-    await addCartItem({
+    const payload = {
       priceitemId: itemExtended.id,
       name: itemExtended.name,
       size: String(itemExtended.size),
@@ -511,7 +516,12 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       totalGoodsPrice,
       totalCuttingCost,
       cuttingDescription: cuttingDescription ?? undefined,
-    });
+    };
+    if (guest) {
+      dispatch(addGuestCartItem(payload));
+    } else {
+      await addCartItem(payload);
+    }
   };
 
   const handleAddBilletToCart = async () => {
@@ -546,7 +556,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         .join(", ") +
       ` | рез ${cutThickness}мм` +
       (endCut > 0 ? ` | торец ${endCut}мм` : "");
-    await addCartItem({
+    const payload = {
       priceitemId: itemExtended.id,
       name: itemExtended.name,
       size: String(itemExtended.size),
@@ -557,7 +567,12 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       totalCuttingCost: cuttingCostForBillets,
       cuttingDescription,
       billetData,
-    });
+    };
+    if (guest) {
+      dispatch(addGuestCartItem(payload));
+    } else {
+      await addCartItem(payload);
+    }
   };
 
   /* --------- UI: загрузка/ошибка --------- */

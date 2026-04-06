@@ -50,6 +50,8 @@ export type TAuthData = {
 // используется для типизации ответа сервера
 // при получении данных пользователя
 // GET /users/me
+export type UserRole = 'admin' | 'manager' | 'client';
+
 export type TOwnUserData = {
   id: number; //
   username: string; //
@@ -58,6 +60,7 @@ export type TOwnUserData = {
   email: string; //
   createdAt: string; //
   updatedAt: string; //
+  role: UserRole; //
   // isAuth: boolean;
 };
 

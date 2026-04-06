@@ -350,6 +350,54 @@
     opacity: 0.75;
   }
 
+  &__order-form__guest {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+  }
+
+  &__order-form__input {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: #4e60ff;
+    }
+
+    &_error {
+      border-color: #e11d48;
+    }
+  }
+
+  &__order-form__error {
+    font-size: 12px;
+    color: #e11d48;
+  }
+
+  &__order-form__sent {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+  }
+
+  &__order-form__sent-icon {
+    font-size: 24px;
+  }
+
+  &__order-form__sent-text {
+    font-size: 14px;
+    color: #166534;
+  }
+
   // --------------------------
   // Диалог подтверждения
   // --------------------------

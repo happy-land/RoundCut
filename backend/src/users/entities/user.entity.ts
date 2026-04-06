@@ -1,7 +1,4 @@
 import { IsDate, IsString, Length } from 'class-validator';
-// import { Offer } from 'src/offers/entities/offer.entity';
-// import { Wish } from 'src/wishes/entities/wish.entity';
-// import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+export type UserRole = 'admin' | 'manager' | 'client';
 
 @Entity()
 export class User {
@@ -53,6 +52,9 @@ export class User {
   @Column()
   @IsString()
   password: string;
+
+  @Column({ type: 'varchar', default: 'client' })
+  role: UserRole;
 
   // @OneToMany(() => Wish, (wish) => wish.owner)
   // wishes: Wish[];

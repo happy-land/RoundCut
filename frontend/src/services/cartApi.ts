@@ -3,6 +3,12 @@ import { baseUrl } from "../utils/constants";
 import { TCartItem, TCreateCartItemDto } from "../utils/types";
 import { getCookie } from "../utils/cookie";
 
+export type TSendGuestOrderDto = {
+  email: string;
+  name: string;
+  items: TCreateCartItemDto[];
+};
+
 export const cartApi = createApi({
   reducerPath: "cartApi",
   tagTypes: ["Cart"],
@@ -62,6 +68,15 @@ export const cartApi = createApi({
         },
       }),
     }),
+
+    sendGuestOrder: builder.mutation<void, TSendGuestOrderDto>({
+      query: (body) => ({
+        url: "/cart/send-guest",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+    }),
   }),
 });
 
@@ -71,4 +86,5 @@ export const {
   useRemoveCartItemMutation,
   useClearCartMutation,
   useSendToSelfMutation,
+  useSendGuestOrderMutation,
 } = cartApi;
