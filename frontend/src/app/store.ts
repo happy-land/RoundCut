@@ -11,12 +11,14 @@ import searchReducer from '../features/search/searchSlice';
 import steelGradeReducer from '../features/filter/steelgradeSlice';
 import diameterReducer from '../features/filter/diameterSlice';
 import guestCartReducer from '../features/guestCart/guestCartSlice';
+import toastReducer from '../features/toast/toastSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { adminCutApi } from '../services/adminCutApi';
 import { cutitemApi } from '../services/cutitemApi';
 import { categoryApi } from '../services/categoryApi';
 import { cartApi } from '../services/cartApi';
 import { ordersApi } from '../services/ordersApi';
+import { settingsApi } from '../services/settingsApi';
 // import priceitemsReducer from '../features/price/priceitemsSlice';
 // import usersReducer from '../features/users/usersSlice';
 
@@ -30,6 +32,7 @@ const store = configureStore({
     steelGrade: steelGradeReducer,
     diameter: diameterReducer,
     guestCart: guestCartReducer,
+    toast: toastReducer,
     [authApi.reducerPath]: authApi.reducer,
     [priceApi.reducerPath]: priceApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
@@ -39,6 +42,7 @@ const store = configureStore({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
+    [settingsApi.reducerPath]: settingsApi.reducer,
     // [csvApi.reducerPath]: csvApi.reducer,
     // priceitems: priceitemsReducer,
     // users: usersReducer,
@@ -55,6 +59,7 @@ const store = configureStore({
       .concat(categoryApi.middleware)
       .concat(cartApi.middleware)
       .concat(ordersApi.middleware)
+      .concat(settingsApi.middleware)
       // .concat(csvApi.middleware),
 });
 

@@ -195,6 +195,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    &_bump {
+      animation: cart-bump 0.6s ease;
+    }
   }
 
   &__cart-badge {
@@ -218,6 +222,13 @@
     letter-spacing: -0.2px;
     font-variant-numeric: tabular-nums;
   }
+}
+
+@keyframes cart-bump {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.35); }
+  60%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
 }
 
 @media screen and (max-width: $desktop) {

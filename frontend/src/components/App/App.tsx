@@ -31,6 +31,7 @@ import CartPage from '../../pages/CartPage';
 import OrdersPage from '../../pages/OrdersPage';
 import ProfilePage from '../../pages/ProfilePage';
 import RequireRole from '../RequireRole/RequireRole';
+import AdminSettingsPage from '../../pages/Admin/AdminSettingsPage';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -97,6 +98,7 @@ const App: FC = () => {
             <Route path="/admin/markup" element={<Markup />} />
             <Route path="/admin/cut" element={<Cut />} />
             <Route path="/admin/cutitem" element={<CutitemEditPage />} />
+            <Route path="/admin/settings" element={<AdminSettingsPage />} />
           </Route>
           {/* <Route path="/price" element={<PriceList />} /> */}
           {/* <Route path="/price/:id" element={<PriceItemDetails />} /> */}
