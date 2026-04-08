@@ -16,6 +16,9 @@ import { TBilletCartData } from "../../utils/types";
 import { useAppDispatch } from "../../app/hooks";
 import { addGuestCartItem } from "../../features/guestCart/guestCartSlice";
 import { getCookie } from "../../utils/cookie";
+import { useGetSettingsQuery } from "../../services/settingsApi";
+import { useNavigate } from "react-router-dom";
+import { showToast } from "../../features/toast/toastSlice";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -140,6 +143,7 @@ const formatMoney = (value: number, currency: string) => {
 
 const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [addCartItem] = useAddCartItemMutation();
   const guest = !getCookie("accessToken");
   const {
@@ -185,8 +189,10 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const [isCutPriceError, setIsCutPriceError] = useState(false);
   const priceCurrency = "₽";
 
-  const BILLET_MARKUP_PERCENT = 0.12; // наценка на часть круга
-  const MIN_BILLET_MARKUP_RUB = 1999; // минимальная наценка в рублях
+  // Настройки из БД (с fallback-значениями на время загрузки)
+  const { data: appSettings } = useGetSettingsQuery();
+  const BILLET_MARKUP_PERCENT = Number(appSettings?.billet_markup_percent ?? 0.12);
+  const MIN_BILLET_MARKUP_RUB = Number(appSettings?.min_billet_markup_rub ?? 1999);
   /** Диаметр от 80 мм — можно продавать часть круга; меньше — только целыми штуками */
   const MIN_DIAMETER_FOR_PARTIAL = 80;
   const canSellPartial = itemDiameter >= MIN_DIAMETER_FOR_PARTIAL;
@@ -522,6 +528,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     } else {
       await addCartItem(payload);
     }
+    dispatch(showToast({ message: 'Добавлено в корзину' }));
+    navigate(-1);
   };
 
   const handleAddBilletToCart = async () => {
@@ -573,6 +581,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     } else {
       await addCartItem(payload);
     }
+    dispatch(showToast({ message: 'Добавлено в корзину' }));
+    navigate(-1);
   };
 
   /* --------- UI: загрузка/ошибка --------- */
@@ -1063,7 +1073,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                       <strong>{partWeight.toFixed(3)} т</strong>
                     </div>
                     <div className={cnStyles("billet-price-summary__row")}>
-                      <span>Цена за тонну (с наценкой 12%, окр. до 100 ₽):</span>
+                      <span>Цена за тонну:</span>
                       <strong>
                         {partWeight > 0
                           ? (partCost / partWeight % 100 === 0

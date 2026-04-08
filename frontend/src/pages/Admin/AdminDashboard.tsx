@@ -31,6 +31,9 @@ const AdminDashboard = (props: Props) => {
         <NavLink className={cnStyles('link')} to="/admin/cutitem">
           Резка (редактирование)
         </NavLink>
+        <NavLink className={cnStyles('link')} to="/admin/settings">
+          Настройки
+        </NavLink>
       </nav>
       <Outlet />
     </div>

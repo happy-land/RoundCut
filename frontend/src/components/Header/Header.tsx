@@ -38,6 +38,18 @@ const Header: FC = () => {
   const burgerRef = useRef<HTMLDivElement>(null);
   const [catalogOpen, setCatalogOpen] = useState(false);
 
+  const [cartBump, setCartBump] = useState(false);
+  const prevCartCountRef = useRef(cartCount);
+
+  useEffect(() => {
+    if (cartCount > prevCartCountRef.current) {
+      setCartBump(true);
+      const t = setTimeout(() => setCartBump(false), 600);
+      return () => clearTimeout(t);
+    }
+    prevCartCountRef.current = cartCount;
+  }, [cartCount]);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -112,7 +124,7 @@ const Header: FC = () => {
           )}
         </div>
         <WarehousePicker />
-        <NavLink to="/cart" className={cnStyles("cart-link")}>
+        <NavLink to="/cart" className={cnStyles("cart-link", { bump: cartBump })}>
           <img src={CartIcon} alt="CartIcon" />
           {cartCount > 0 && (
             <span className={cnStyles("cart-badge")}>
