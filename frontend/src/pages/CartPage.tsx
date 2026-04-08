@@ -138,6 +138,12 @@ const CartPage: FC = () => {
                     {item.name} {item.size}
                   </span>
 
+                  {item.warehouseName && (
+                    <span className={cnStyles("list-item__badge", "warehouse")}>
+                      📦 {item.warehouseName}
+                    </span>
+                  )}
+
                   {item.billetData ? (
                     /* === Позиция из расчёта заготовок === */
                     <>
@@ -331,13 +337,6 @@ const CartPage: FC = () => {
                       <span className={cnStyles("order-form__btn-hint")}>Получите список товаров на email</span>
                     </span>
                   </button>
-                  <button className={cnStyles("order-form__btn", "manager")}>
-                    <span className={cnStyles("order-form__btn-icon")}>📋</span>
-                    <span className={cnStyles("order-form__btn-text")}>
-                      <span className={cnStyles("order-form__btn-label")}>Запросить счёт</span>
-                      <span className={cnStyles("order-form__btn-hint")}>Менеджер выставит счёт на оплату</span>
-                    </span>
-                  </button>
                   <button
                     className={cnStyles("order-form__btn", "save")}
                     onClick={handleSaveOrder}
@@ -347,6 +346,13 @@ const CartPage: FC = () => {
                     <span className={cnStyles("order-form__btn-text")}>
                       <span className={cnStyles("order-form__btn-label")}>{isSaving ? "Сохраняем..." : "Сохранить заказ"}</span>
                       <span className={cnStyles("order-form__btn-hint")}>Записать в историю заказов</span>
+                    </span>
+                  </button>
+                  <button className={cnStyles("order-form__btn", "manager")} disabled>
+                    <span className={cnStyles("order-form__btn-icon")}>📋</span>
+                    <span className={cnStyles("order-form__btn-text")}>
+                      <span className={cnStyles("order-form__btn-label")}>Запросить счёт</span>
+                      <span className={cnStyles("order-form__btn-hint")}>Скоро будет доступно</span>
                     </span>
                   </button>
                 </div>
