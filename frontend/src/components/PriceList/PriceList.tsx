@@ -19,6 +19,7 @@ import {
   normalizeCsvLine,
 } from "../../utils/utils";
 import { selectWarehouse } from "../../features/warehouse/warehouseSlice";
+import { useFetchWarehouseByIdQuery } from "../../services/warehouseApi";
 import { selectSearchQuery } from "../../features/search/searchSlice";
 import { selectActiveGrades } from "../../features/filter/steelgradeSlice";
 import { selectDiameter } from "../../features/filter/diameterSlice";
@@ -35,6 +36,8 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
   const selectedDiameters = useAppSelector(selectDiameter);
 
   const { warehouseId } = useAppSelector(selectWarehouse);
+
+  const { data: warehouse } = useFetchWarehouseByIdQuery(warehouseId);
 
   const [csvData, setCsvData] = useState<string[]>([]);
   const PAGE_SIZE = 50;
@@ -146,7 +149,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
         {pagedItems.map(
           (item: TPriceItemExtendedResponse, index: number) => (
             <li className={cnStyles("list-item")} key={index}>
-              <PriceItem item={item} />
+              <PriceItem item={item} warehouseName={warehouse?.name ?? ''} />
             </li>
           ),
         )}

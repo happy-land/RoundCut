@@ -55,6 +55,11 @@ export class OrderItem {
   @IsOptional()
   cuttingDescription: string | null;
 
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  warehouseName: string | null;
+
   @Column({ type: 'jsonb', nullable: true })
   @IsOptional()
   billetData: BilletCartData | null;

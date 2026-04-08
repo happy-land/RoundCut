@@ -5,6 +5,7 @@ import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
 import { CuttingService, BilletCalculator, CutMethod } from "../../utils/cutting";
 import { useGetCutitemsByParametersQuery } from "../../services/cutitemApi";
+import { useFetchWarehouseByIdQuery } from "../../services/warehouseApi";
 import {
   useCuttingCalculator /*, useCutMethodSelection*/,
 } from "../../hooks/useCutting";
@@ -146,6 +147,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const navigate = useNavigate();
   const [addCartItem] = useAddCartItemMutation();
   const guest = !getCookie("accessToken");
+  const { data: warehouseData } = useFetchWarehouseByIdQuery(warehouseId);
   const {
     data: itemExtended,
     isLoading,
@@ -522,6 +524,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       totalGoodsPrice,
       totalCuttingCost,
       cuttingDescription: cuttingDescription ?? undefined,
+      warehouseName: warehouseData?.name,
     };
     if (guest) {
       dispatch(addGuestCartItem(payload));
@@ -575,6 +578,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       totalCuttingCost: cuttingCostForBillets,
       cuttingDescription,
       billetData,
+      warehouseName: warehouseData?.name,
     };
     if (guest) {
       dispatch(addGuestCartItem(payload));

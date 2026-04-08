@@ -6,6 +6,7 @@ import './PriceItem.scss';
 
 interface IPriceItemProps {
   item: TPriceItemExtendedResponse;
+  warehouseName: string;
 }
 
 const cnStyles = block('price-item');
@@ -30,7 +31,7 @@ const CUT_LABELS: Record<string, string> = {
   laser:      'Лазер',
 };
 
-export const PriceItem: FC<IPriceItemProps> = ({ item }) => {
+export const PriceItem: FC<IPriceItemProps> = ({ item, warehouseName }) => {
   return (
     <Link
       to={{ pathname: `/price/${item.id}` }}
@@ -57,6 +58,19 @@ export const PriceItem: FC<IPriceItemProps> = ({ item }) => {
         {/* Средняя колонка: размер */}
         <div className={cnStyles('col-size')}>
           <span className={cnStyles('size')}>{item.size}</span>
+        </div>
+
+        {/* Колонка длины */}
+        {item.length > 0 && (
+          <div className={cnStyles('col-length')}>
+            <span className={cnStyles('length-value')}>{item.length}</span>
+            <span className={cnStyles('length-unit')}>м</span>
+          </div>
+        )}
+
+        {/* Колонка склада */}
+        <div className={cnStyles('col-warehouse')}>
+          <span className={cnStyles('warehouse-name')}>{warehouseName}</span>
         </div>
 
         {/* Колонка резки */}
