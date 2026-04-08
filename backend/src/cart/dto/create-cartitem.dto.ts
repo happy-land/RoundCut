@@ -57,6 +57,10 @@ export class CreateCartItemDto {
   @IsOptional()
   cuttingDescription?: string;
 
+  @IsString()
+  @IsOptional()
+  warehouseName?: string;
+
   @IsOptional()
   billetData?: BilletCartData;
 }

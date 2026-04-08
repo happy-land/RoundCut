@@ -89,6 +89,45 @@
     }
   }
 
+  &__col-length {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 64px;
+    flex-shrink: 0;
+  }
+
+  &__length-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &__length-unit {
+    font-size: 11px;
+    color: #888;
+    font-weight: 500;
+  }
+
+  &__col-warehouse {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+
+  &__warehouse-name {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
+  }
+
   // --------------------------
   // Колонка кг/шт
   // --------------------------

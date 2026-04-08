@@ -68,6 +68,12 @@ export class CartItem {
   @IsOptional()
   cuttingDescription: string | null;
 
+  // Название склада (сохраняется на момент добавления в корзину)
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  warehouseName: string | null;
+
   // Данные расчёта заготовок (только для позиций из вкладки "Расчёт заготовок")
   @Column({ type: 'jsonb', nullable: true })
   @IsOptional()
