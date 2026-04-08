@@ -27,6 +27,8 @@ import { OrderItem } from './orders/entities/order-item.entity';
 // import { MailerModule } from '@nestjs-modules/mailer';
 import { AppService } from './app.service';
 import { MailerModule } from './mailer/mailer.module';
+import { SettingsModule } from './settings/settings.module';
+import { Setting } from './settings/entities/setting.entity';
 
 @Module({
   imports: [
@@ -56,7 +58,7 @@ import { MailerModule } from './mailer/mailer.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       schema: process.env.POSTGRES_SCHEMA,
-      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category, CartItem, Order, OrderItem],
+      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category, CartItem, Order, OrderItem, Setting],
       synchronize: true,
     }),
     UsersModule,
@@ -71,6 +73,7 @@ import { MailerModule } from './mailer/mailer.module';
     CartModule,
     OrdersModule,
     MailerModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

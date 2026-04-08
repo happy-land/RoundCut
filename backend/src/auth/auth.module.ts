@@ -22,7 +22,7 @@ import { User } from 'src/users/entities/user.entity';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('jwt_secret'),
-        signOptions: { expiresIn: '8h' },
+        signOptions: { expiresIn: '7d' },
       }),
       inject: [ConfigService],
     }),
