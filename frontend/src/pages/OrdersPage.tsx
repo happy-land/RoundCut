@@ -104,6 +104,12 @@ const OrdersPage: FC = () => {
                             {item.name} {item.size}
                           </span>
 
+                          {item.warehouseName && (
+                            <span className={cnStyles("item__badge", "warehouse")}>
+                              📦 {item.warehouseName}
+                            </span>
+                          )}
+
                           {item.billetData ? (
                             <>
                               <span className={cnStyles("item__badge", "qty")}>

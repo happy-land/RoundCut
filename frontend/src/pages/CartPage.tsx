@@ -138,6 +138,12 @@ const CartPage: FC = () => {
                     {item.name} {item.size}
                   </span>
 
+                  {item.warehouseName && (
+                    <span className={cnStyles("list-item__badge", "warehouse")}>
+                      📦 {item.warehouseName}
+                    </span>
+                  )}
+
                   {item.billetData ? (
                     /* === Позиция из расчёта заготовок === */
                     <>

@@ -105,7 +105,7 @@ export class CartService {
 
         return `
         <tr style="background:${bg}">
-          <td style="padding:12px 14px;${bd};font-size:14px;color:#111">${item.name} ${item.size}</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#111">${item.name} ${item.size}${item.warehouseName ? `<br><span style="font-size:11px;color:#9ca3af">&#128230; ${item.warehouseName}</span>` : ''}</td>
           <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:center">${item.quantity} шт</td>
           <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:center">${Number(item.weightTons).toFixed(3)} т</td>
           <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:right">${Number(item.pricePerTon).toFixed(0)} ₽/т</td>
@@ -239,7 +239,7 @@ export class CartService {
 
         return `
         <tr style="background:${bg}">
-          <td style="padding:12px 14px;${bd};font-size:14px;color:#111">${item.name} ${item.size}</td>
+          <td style="padding:12px 14px;${bd};font-size:14px;color:#111">${item.name} ${item.size}${item.warehouseName ? `<br><span style="font-size:11px;color:#9ca3af">&#128230; ${item.warehouseName}</span>` : ''}</td>
           <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:center">${item.quantity} шт</td>
           <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:center">${Number(item.weightTons).toFixed(3)} т</td>
           <td style="padding:12px 14px;${bd};font-size:14px;color:#374151;text-align:right">${Number(item.pricePerTon).toFixed(0)} ₽/т</td>

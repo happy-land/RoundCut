@@ -47,6 +47,11 @@ const Cart: FC = () => {
               <span className={cnStyles('item-name')}>
                 {item.name} {item.size}
               </span>
+              {item.warehouseName && (
+                <span className={cnStyles('item-warehouse')}>
+                  📦 {item.warehouseName}
+                </span>
+              )}
               <span className={cnStyles('item-qty')}>
                 {item.quantity} шт · {item.weightTons} т
               </span>
