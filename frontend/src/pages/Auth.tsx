@@ -58,7 +58,7 @@ const Auth = () => {
         .then((response) => {
           if ('data' in response) {
             console.log(response.data);
-            setCookie('accessToken', response.data.access_token);
+            setCookie('accessToken', response.data.access_token, { expires: 7 * 24 * 3600 });
 
             // получеие данных о пользователе и сохранение их в сторе - сделаем на странице /dashboard
             // const user = await fetchUser({});
@@ -107,7 +107,7 @@ const Auth = () => {
               password: values.password,
             }).then((response) => {
               if ('data' in response) {
-                setCookie('accessToken', response.data.access_token);
+                setCookie('accessToken', response.data.access_token, { expires: 7 * 24 * 3600 });
                 navigate('/dashboard');
               }
             });
