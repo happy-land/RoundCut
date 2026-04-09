@@ -3,7 +3,7 @@ import block from "bem-cn";
 import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
 import { MDBInput } from "mdb-react-ui-kit";
-import { CuttingService, BilletCalculator, CutMethod } from "../../utils/cutting";
+import { CuttingService, CutMethod } from "../../utils/cutting";
 import { useGetCutitemsByParametersQuery } from "../../services/cutitemApi";
 import { useFetchWarehouseByIdQuery } from "../../services/warehouseApi";
 import {
@@ -13,7 +13,7 @@ import { useGetMarkupByWarehouseIdQuery } from "../../services/markupApi";
 import { mapWeightToLevel } from "../../utils/markupMapping";
 import { useAddCartItemMutation } from "../../services/cartApi";
 import { CUT_CODE_LABELS } from "../../utils/constants";
-import { TBilletCartData } from "../../utils/types";
+import { TBilletCartData } from '../../utils/types';
 import { useAppDispatch } from "../../app/hooks";
 import { addGuestCartItem } from "../../features/guestCart/guestCartSlice";
 import { getCookie } from "../../utils/cookie";
@@ -26,16 +26,6 @@ const cnStyles = block("billet-cell-new-container");
 interface IBilletCellNewProps {
   id: string; // id товара (product)
   warehouseId: number; // id склада для получения cutitem
-}
-
-interface ItemExtended {
-  id: number;
-  name: string;
-  size: number;
-  /** Длина ОДНОЙ штуки, метры */
-  length: number;
-  /** Масса ОДНОЙ штуки, килограммы */
-  unitWeight: number;
 }
 
 /* ====================== helpers ====================== */
@@ -152,7 +142,11 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     data: itemExtended,
     isLoading,
     isError,
-  } = useFetchItemQuery<ItemExtended | undefined>(Number(id));
+  } = useFetchItemQuery(Number(id));
+
+  // Категории, для которых поддерживается резка
+  const CUTTING_SUPPORTED_CATEGORIES = ['Арматура', 'Круг', 'Поковка'];
+  const isCuttingSupported = itemExtended ? CUTTING_SUPPORTED_CATEGORIES.includes(itemExtended.productGroup) : false;
 
   /* --- Cutting calculator --- */
   const billetLengthMm = useMemo(
@@ -187,8 +181,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   const [cutCounts, setCutCounts] = useState<Record<string, number>>({});
   // Для цены резки нужно получить из API
   const [priceByCode, setPriceByCode] = useState<Record<string, number>>({});
-  const [isCutPriceLoading, setIsCutPriceLoading] = useState(false);
-  const [isCutPriceError, setIsCutPriceError] = useState(false);
+  const [isCutPriceLoading] = useState(false);
+  const [isCutPriceError] = useState(false);
   const priceCurrency = "₽";
 
   // Настройки из БД (с fallback-значениями на время загрузки)
@@ -398,12 +392,6 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     }, 0);
   }, [cutCounts, priceByCode]);
 
-  // Рекомендуемый тип резки
-  const recommendedCutLabel = useMemo(() => {
-    const optimal = CuttingService.getOptimalCut(itemDiameter);
-    return optimal ? CuttingService.getCutMethodName(optimal.method) : null;
-  }, [itemDiameter]);
-
   // прошлое значение веса — для определения направления up/down
   const prevWeightTonsRef = useRef(0);
 
@@ -507,6 +495,9 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   // Активная вкладка
   const [activeTab, setActiveTab] = useState<'simple' | 'advanced'>('simple');
 
+  // Если резка не поддерживается, всегда используем simple
+  const effectiveActiveTab = isCuttingSupported ? activeTab : 'simple';
+
   const handleAddToCart = async () => {
     if (!isValidQuantity() || !itemExtended) return;
     const cuttingDescription =
@@ -515,7 +506,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         .map(([code, qty]) => `${CUT_CODE_LABELS[code] ?? code}: ${qty} шт`)
         .join(", ") || null;
     const payload = {
-      priceitemId: itemExtended.id,
+      priceitemId: itemExtended.id!,
       name: itemExtended.name,
       size: String(itemExtended.size),
       quantity: buyQuantity,
@@ -568,7 +559,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       ` | рез ${cutThickness}мм` +
       (endCut > 0 ? ` | торец ${endCut}мм` : "");
     const payload = {
-      priceitemId: itemExtended.id,
+      priceitemId: itemExtended.id!,
       name: itemExtended.name,
       size: String(itemExtended.size),
       quantity: billets.length,
@@ -622,25 +613,27 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       </div>
 
       {/* === Вкладки === */}
-      <div className={cnStyles("tabs")}>
-        <button
-          type="button"
-          className={cnStyles("tab", { active: activeTab === 'simple' })}
-          onClick={() => setActiveTab('simple')}
-        >
-          Покупка
-        </button>
-        <button
-          type="button"
-          className={cnStyles("tab", { active: activeTab === 'advanced' })}
-          onClick={() => setActiveTab('advanced')}
-        >
-          Расчёт заготовок
-        </button>
-      </div>
+      {isCuttingSupported && (
+        <div className={cnStyles("tabs")}>
+          <button
+            type="button"
+            className={cnStyles("tab", { active: effectiveActiveTab === 'simple' })}
+            onClick={() => setActiveTab('simple')}
+          >
+            Покупка
+          </button>
+          <button
+            type="button"
+            className={cnStyles("tab", { active: effectiveActiveTab === 'advanced' })}
+            onClick={() => setActiveTab('advanced')}
+          >
+            Расчёт заготовок
+          </button>
+        </div>
+      )}
 
       {/* === Калькулятор покупки === */}
-      {activeTab === 'simple' && (
+      {effectiveActiveTab === 'simple' && (
       <div className={cnStyles("buy-calculator")}>
         <h2 className={cnStyles("section-title")}>Калькулятор покупки</h2>
         <div className={cnStyles("buy-fields")}>
@@ -720,7 +713,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         </div>
 
         {/* 🔹 NEW: карточки видов резки с + / – и ценой из БД */}
-        {itemDiameter > 0 && availableCuts.length > 0 && (
+        {isCuttingSupported && itemDiameter > 0 && availableCuts.length > 0 && (
           <section className={cnStyles("cutting-methods")}>
             <div className={cnStyles("cutting-grid")}>
               {availableCuts
@@ -842,7 +835,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       )} {/* end simple tab */}
 
       {/* === Калькулятор резки === */}
-      {activeTab === 'advanced' && (
+      {effectiveActiveTab === 'advanced' && (
       <form
         className={cnStyles("calculator")}
         onSubmit={(e) => e.preventDefault()}
