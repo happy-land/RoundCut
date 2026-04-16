@@ -18,8 +18,10 @@ async function bootstrap() {
 
   app.use(json({ limit: '50mb' }));
 
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();

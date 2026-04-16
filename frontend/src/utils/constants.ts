@@ -1,4 +1,6 @@
-export const baseUrl: string = 'http://localhost:3000';
+export const baseUrl: string = import.meta.env.DEV
+  ? 'http://localhost:3000/api'
+  : '/api';
 export const proxyPathToCSV: string = '/import/prise_last.csv';
 
 export const remoteUrl: string = 'https://www.metallotorg.ru';
