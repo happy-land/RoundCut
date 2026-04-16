@@ -1,0 +1,8 @@
+-- Этот файл выполняется автоматически при ПЕРВОМ запуске контейнера postgres.
+-- Положи сюда свой дамп базы данных.
+--
+-- Как получить дамп локальной базы:
+--   pg_dump -U student -d metal_project -n metal_project --no-owner --no-acl > docker-entrypoint-initdb.d/01-dump.sql
+--
+-- Если schema metal_project не создаётся автоматически, раскомментируй:
+-- CREATE SCHEMA IF NOT EXISTS metal_project;

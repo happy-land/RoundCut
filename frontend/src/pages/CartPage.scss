@@ -1,0 +1,485 @@
+@import '../assets/styles/vars.scss';
+
+.cart-page {
+  max-width: $large-desktop;
+  margin: 0 auto;
+  padding: 16px 20px;
+  box-sizing: border-box;
+
+  // --------------------------
+  // Шапка страницы
+  // --------------------------
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &__header__left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    img {
+      width: 22px;
+      height: 22px;
+    }
+
+    &:hover {
+      background: #ececec;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  &__empty {
+    margin: 32px 0;
+    font-size: 16px;
+    color: #888;
+  }
+
+  // --------------------------
+  // Кнопка "Очистить корзину"
+  // --------------------------
+  &__danger-btn {
+    padding: 9px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #c0392b;
+    background: #fff0ee;
+    border: 1px solid #f5c6c2;
+    border-radius: 8px;
+    cursor: pointer;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
+
+    &:hover:not(:disabled) {
+      background: #fde0dd;
+      border-color: #e0a09a;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+
+  // --------------------------
+  // Список позиций
+  // --------------------------
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__list-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 14px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin: 8px 0;
+    transition:
+      background 0.15s,
+      border-color 0.15s;
+
+    &:hover {
+      background: #fff;
+      border-color: #d0d0d0;
+    }
+
+    &__view {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    &__name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #222;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    &__badge {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-weight: 500;
+
+      &_qty {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+
+      &_weight {
+        background: #f3e5f5;
+        color: #6a1b9a;
+      }
+
+      &_cutting {
+        background: #fff3e0;
+        color: #e65100;
+      }
+
+      &_billet-wp {
+        background: #e8f5e9;
+        color: #2e7d32;
+        font-family: monospace;
+        font-size: 11.5px;
+      }
+
+      &_warehouse {
+        background: #f5f5f5;
+        color: #666;
+        font-size: 11.5px;
+      }
+
+      &_billet-params {
+        background: #fce4ec;
+        color: #880e4f;
+        font-size: 11.5px;
+      }
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    &__prices {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    &__price-main {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111;
+    }
+
+    &__price-sub {
+      font-size: 11px;
+      color: #999;
+    }
+
+    &__btn {
+      padding: 7px 12px;
+      font-size: 13px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition:
+        background 0.15s,
+        color 0.15s;
+      white-space: nowrap;
+
+      &_delete {
+        background: #fdecea;
+        color: #c0392b;
+        border: 1px solid #f5c6c2;
+
+        &:hover {
+          background: #f5c6c2;
+        }
+      }
+    }
+  }
+
+  // --------------------------
+  // Итого
+  // --------------------------
+  &__summary {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    max-width: 360px;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    color: #444;
+
+    &_total {
+      padding-top: 10px;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #111;
+    }
+  }
+
+  &__summary__label {
+    color: #666;
+  }
+
+  &__summary__value {
+    font-weight: 600;
+    color: #222;
+  }
+
+  // --------------------------
+  // Форма отправки заказа
+  // --------------------------
+  &__order-form {
+    margin-top: 40px;
+    padding: 32px 24px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 16px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  }
+
+  &__order-form__title {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  &__order-form__subtitle {
+    margin: 0 0 28px;
+    font-size: 14px;
+    color: #888;
+  }
+
+  &__order-form__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  &__order-form__btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    height: 64px;
+    padding: 0 24px;
+    background-color: #4e60ff;
+    color: #fff;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition:
+      background-color 0.15s,
+      box-shadow 0.15s;
+
+    &:hover:not(:disabled) {
+      background-color: #4656e8;
+      box-shadow: 0 4px 16px rgba(78, 96, 255, 0.35);
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    &_save {
+      background-color: #1b8a5a;
+
+      &:hover:not(:disabled) {
+        background-color: #16754d;
+        box-shadow: 0 4px 16px rgba(27, 138, 90, 0.35);
+      }
+    }
+  }
+
+  &__order-form__btn-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  &__order-form__btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__order-form__btn-label {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  &__order-form__btn-hint {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.75;
+  }
+
+  &__order-form__guest {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+  }
+
+  &__order-form__input {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: #4e60ff;
+    }
+
+    &_error {
+      border-color: #e11d48;
+    }
+  }
+
+  &__order-form__error {
+    font-size: 12px;
+    color: #e11d48;
+  }
+
+  &__order-form__sent {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+  }
+
+  &__order-form__sent-icon {
+    font-size: 24px;
+  }
+
+  &__order-form__sent-text {
+    font-size: 14px;
+    color: #166534;
+  }
+
+  // --------------------------
+  // Диалог подтверждения
+  // --------------------------
+  &__confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  &__confirm-dialog {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+    &__icon {
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    &__title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #111;
+    }
+
+    &__text {
+      margin: 0 0 28px;
+      font-size: 15px;
+      color: #6b7280;
+    }
+
+    &__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    &__btn {
+      width: 100%;
+      height: 52px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+
+      &_danger {
+        background: #ef4444;
+        color: #fff;
+
+        &:hover {
+          background: #dc2626;
+        }
+      }
+
+      &_secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+
+        &:hover {
+          background: #e5e7eb;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+backend_express
+
+.codegpt
+
+# Docker production secrets
+.env.production
+docker-entrypoint-initdb.d/*.sql
+!docker-entrypoint-initdb.d/00-readme.sql

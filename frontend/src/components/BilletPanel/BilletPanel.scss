@@ -1,0 +1,14 @@
+.billet-panel {
+  border: 1px solid red;
+
+  &__items-list {
+    
+  }
+  &__list-item {
+    border: 1px dotted red;
+    display: flex;
+    justify-content: space-between;
+    width: 850px;
+    margin-bottom: 20px;
+  }
+}

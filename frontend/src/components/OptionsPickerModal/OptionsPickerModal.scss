@@ -1,0 +1,144 @@
+.options-picker-modal {
+  @import '../../assets/styles/vars.scss';
+  position: relative;
+  
+  // Component variables
+  $gap: 12px;
+  $option-padding: 8px 12px;
+  $option-bg: #f5f5f5;
+  $option-radius: 6px;
+  $option-hover-bg: lighten($option-bg, 4%);
+  $option-color: #222;
+  $option-focus-outline: 2px solid rgba(33, 150, 243, 0.25);
+
+  border: 1px solid violet;
+
+  &__options-list {
+    display: flex;
+    flex-direction: column;
+    gap: $gap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__options-row {
+    display: flex;
+    gap: $gap;
+  }
+
+  &__option {
+    flex: 1 1 0;
+    padding: $option-padding;
+    background: $option-bg;
+    border-radius: $option-radius;
+    color: $option-color;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background 120ms ease, transform 120ms ease;
+
+    &:hover {
+      background: $option-hover-bg;
+      transform: translateY(-1px);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: $option-focus-outline;
+    }
+
+    // make sure long option labels wrap nicely
+    word-break: break-word;
+    white-space: normal;
+
+    // support both modifier syntaxes used across project
+    &--selected,
+    &_selected {
+      background-color: #e0e0e0; // match dashboard steel grade selected bg
+      color: $option-color;
+      border: 1px solid darkgray;
+    }
+  }
+
+  // Responsive: stack options on very small screens
+  @media (max-width: 360px) {
+    &__options-row {
+      flex-direction: column;
+    }
+  }
+
+  &__diameters-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $gap;
+    margin-top: $gap;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__diameter {
+    padding: 6px 10px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 120ms ease, transform 120ms ease;
+
+    // support both modifier syntaxes used across project
+    &--selected,
+    &_selected {
+      background-color: #e0e0e0; // match dashboard selected
+      color: $option-color;
+      border: 1px solid darkgray;
+    }
+  }
+  // Make the modal layout a column: header/content/actions.
+  // Keep the actions stuck to the bottom while the body scrolls when overflow.
+  &__content {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh; // limit modal height so body can scroll
+    width: 100%;
+    overflow: hidden;
+    min-width: 320px;
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding-right: 8px; // allow space for scrollbar
+  }
+
+  &__actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 12px 16px; /* horizontal padding to match modal inner spacing */
+    /* slight shadow to separate from scrolled content */
+    box-shadow: 0 -6px 12px rgba(0,0,0,0.06);
+    z-index: 5;
+  }
+
+  &__btn {
+    width: 280px;
+    height: 60px;
+    border: 1px solid #b0adad;
+    background-color: #4e60ff;
+    border-radius: 16px;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 20px;
+    transition: $common-transition;
+  }
+
+  &__btn_outline {
+      border: 1px solid #4e60ff;
+      color: #4e60ff;
+      background-color: #ffffff;
+    }
+}

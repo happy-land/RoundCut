@@ -1,7 +1,17 @@
-// $base-font-family: Nunito Sans, Times, sans-serif;
-$base-font-family: 'Nunito Sans', Times, sans-serif;
+// @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
-$white: #fff;
+$title-font-family: 'IBM Plex Mono';
+$base-font-family: 'Open Sans', Times, sans-serif;
+
+$my-super-color: magenta;
+
+$common-transition: all 0.2s ease-in;
+
+
+// body
+$body-bg: #2a2c2f;
+
+$white: #fbfaf6;
 $text-dark: #100c34;
 $text-light: #a3a3a3;
 $input-hover: #666;
@@ -12,3 +22,14 @@ $error: #e90d41;
 $link-gray: #f0f0f0;
 $hover-gray: #bfbfbf;
 $select-gray: #f8f8f8;
+
+// buttons
+$button-bg: $neon-pink;
+$button-hover: $neon-green;
+$button-text: $white;
+
+// media queries
+$phone: 576px;
+$tablet: 768px;
+$desktop: 992px;
+$large-desktop: 1280px;
