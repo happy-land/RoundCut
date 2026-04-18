@@ -1,19 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { baseUrl } from '../utils/constants';
-import { TPriceItem } from '../utils/types';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseUrl } from "../utils/constants";
 
 export const csvApi = createApi({
-  reducerPath: 'csvApi',
-  tagTypes: ['Csv'],
+  reducerPath: "csvApi",
+  tagTypes: ["Csv"],
   baseQuery: fetchBaseQuery({ baseUrl: baseUrl }),
-  endpoints: (builder) => ({
-    // fetchCsvPrice: builder.mutation<Array<TPriceItem>, void>({
-    //   query: () => ({
-    //     url: '/csv',
-    //     method: 'POST',
-    //   }),
-    // }),
-  }),
+  endpoints: () => ({}),
 });
-
-// export const { useFetchCsvPriceMutation } = csvApi;

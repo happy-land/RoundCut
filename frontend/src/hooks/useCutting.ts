@@ -3,7 +3,6 @@ import {
   CutMethod,
   CuttingService,
   BilletCalculator,
-  BilletResult,
   Workpiece,
 } from '../utils/cutting';
 

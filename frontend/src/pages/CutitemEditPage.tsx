@@ -1,4 +1,4 @@
-import { FC, MouseEvent, DragEvent, useState, useEffect } from 'react';
+import { FC, MouseEvent, DragEvent, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { utils } from 'xlsx';
 import block from 'bem-cn';
@@ -16,9 +16,6 @@ interface ICutitemProps {}
 const cnStyles = block('cutitem-edit-page');
 
 export const CutitemEditPage: FC<ICutitemProps> = () => {
-  const [isDrop, setIsDrop] = useState<boolean>(false);
-
-  const [json, setJson] = useState<Array<Array<string | number | null>>>([]);
 
   const [cutItems, setCutItems] = useState<TGoodsCutItem[]>([]);
 
@@ -43,7 +40,6 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
   const handleDrop = async (event: DragEvent<HTMLDivElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    setIsDrop(true);
     const file = event.dataTransfer.files[0];
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data);
@@ -56,7 +52,6 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
       },
     );
 
-    setJson(json);
     rebuild(json);
   };
 
@@ -88,15 +83,13 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
     });
 
     console.log(warehousesList);
-    console.log(cutitemList);
     console.log(rowList);
 
-    populateItems(warehousesList, cutitemList, rowList);
+    populateItems(warehousesList, rowList);
   };
 
   const populateItems = (
     warehousesList: Array<string | number | null>,
-    cutitemList: Array<string | number | null>,
     rowList: Array<Array<string | number | null>>,
   ) => {
     const items: Array<TGoodsCutItem> = [];
@@ -107,7 +100,7 @@ export const CutitemEditPage: FC<ICutitemProps> = () => {
       warehousesList.forEach((warehouse, windex) => {
         warehouseName = warehouse as string;
         if (mapBaseName(warehouseName)) {
-          rowList.forEach((row, row_index) => {
+          rowList.forEach((row) => {
             const item: TGoodsCutItem = {
               warehouse: mapBaseName(warehouseName) as string,
               name: row[1] as string,

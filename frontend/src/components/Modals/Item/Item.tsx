@@ -1,4 +1,4 @@
-!import React, { FC } from 'react'
+import { FC } from 'react'
 
 interface IItemProps {
   name: string;
@@ -6,7 +6,7 @@ interface IItemProps {
   onClick: () => void;
 }
 
-const Item: FC<IItemProps> = ({ name, onClick }) => {
+const Item: FC<IItemProps> = () => {
   return (
     
     <div>Item</div>

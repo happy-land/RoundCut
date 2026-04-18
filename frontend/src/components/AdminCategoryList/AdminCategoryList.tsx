@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, MouseEvent, useState } from 'react';
+import { ChangeEvent, FC, MouseEvent, useState } from 'react';
 import block from 'bem-cn';
 import './AdminCategoryList.scss';
 import { useAddCategoryMutation, useFetchCategoriesQuery } from '../../services/categoryApi';

@@ -8,8 +8,6 @@ import {
 } from '../services/authApi';
 import { toast } from 'react-toastify';
 import { setCookie } from '../utils/cookie';
-// import { useAppDispatch } from '../app/hooks';
-// import { setUser } from '../features/authSlice';
 import './Auth.scss';
 import block from 'bem-cn';
 import { useForm } from '../hooks/useForm';
@@ -52,7 +50,7 @@ const Auth = () => {
       values.password
     ) {
       await fetchToken({
-        username: (values as TLoginForm).email,
+        email: (values as TLoginForm).email,
         password: values.password,
       })
         .then((response) => {
@@ -103,7 +101,7 @@ const Auth = () => {
           if ('data' in response) {
             console.log(response.data);
             fetchToken({
-              username: (values as TLoginForm).email,
+              email: (values as TLoginForm).email,
               password: values.password,
             }).then((response) => {
               if ('data' in response) {

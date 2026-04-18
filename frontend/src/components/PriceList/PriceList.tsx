@@ -214,7 +214,7 @@ export const PriceList: FC<IPriceListListProps> = ({ type }) => {
     event: MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
-    await extractData()
+    await extractData(undefined)
       .unwrap()
       .then((res) => {
         // Нормализуем каждую строку CSV

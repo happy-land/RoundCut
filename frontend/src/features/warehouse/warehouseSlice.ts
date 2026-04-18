@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { getWarehouseId } from '../../utils/warehouse';
 
 export interface WarehouseState {
   isOpenModal: boolean;

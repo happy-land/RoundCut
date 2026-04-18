@@ -1,10 +1,6 @@
-// !import React from 'react'
-
 import WarehouseList from '../components/WarehouseList/WarehouseList'
 
-type Props = {}
-
-const Warehouse = (props: Props) => {
+const Warehouse = () => {
   return (
     <>
     <div>Warehouse</div>

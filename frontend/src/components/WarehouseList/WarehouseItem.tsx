@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import block from 'bem-cn';
 import './WarehouseItem.scss';
 import { TWarehouse } from '../../utils/types';

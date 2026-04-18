@@ -15,7 +15,7 @@ export const convertToPriceItem = (arr: string[]): TPriceItemResponse => {
     pricePer1tn: parsePotentiallyGroupedFloat(arr[3] as string),
     pricePer5tn: parsePotentiallyGroupedFloat(arr[4] as string),
     pricePer15tn: parsePotentiallyGroupedFloat(arr[5] as string),
-    baseName: mapBaseName(arr[6] as string),
+    baseName: mapBaseName(arr[6] as string) ?? '',
     name: arr[7] as string,
     size: arr[8] as string,
     surface: arr[9] as string,

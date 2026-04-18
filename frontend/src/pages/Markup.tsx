@@ -35,9 +35,6 @@ export const Markup: FC<IMarkupProps> = () => {
 
   const [isDrop, setIsDrop] = useState<boolean>(false);
 
-  // склады, которых нет в БД но есть в списке наценок
-  const [warehousesToAdd, setWarehousesToAdd] = useState<TWarehouse[]>([]);
-
   // список складов (только названия!), которые пришли из файла
   const [incomingWH, setIncomingWH] = useState<string[]>([]);
 
@@ -113,7 +110,7 @@ export const Markup: FC<IMarkupProps> = () => {
       // Rows
       if (index > 3) {
         // console.log(row);
-        row[1] = mapBaseName(row[1]);
+        row[1] = mapBaseName(row[1] as string);
         if (row[1]) {
           // то есть row[1] !== null
           rowsArr.push(arrToObject(row, index - 3));
