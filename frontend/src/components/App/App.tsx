@@ -7,7 +7,6 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import Layout from '../Layout/Layout';
-// import { Page404 } from '../../pages/404/Page404';
 import './App.scss';
 import { useAppDispatch } from '../../app/hooks';
 import Auth from '../../pages/Auth';
@@ -42,18 +41,10 @@ const App: FC = () => {
 
   console.log(state?.backgroundLocation);
 
-  // const background = location.state && location.state.background;
-  // console.log(`location:`);
-  // console.log(location);
-  // console.log(`background:`);
-  // console.log(background);
-
   const user = JSON.parse(localStorage.getItem('userData') || '{}');
 
   useEffect(() => {
-    // console.log('useEffect from App.tsx, ', user);
     dispatch(setUser(user));
-    // записать наценки в стор
   }, []);
 
   const closeAllModals = () => {

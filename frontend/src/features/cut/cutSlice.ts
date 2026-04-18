@@ -21,9 +21,11 @@ export const cutSlice = createSlice({
     addItem: (state, action: PayloadAction<{ item: TPriceItemExtendedResponse }>) => {
       state.items.push(action.payload.item);
     },
-    removeItem: (state, action: PayloadAction<{ id: string }>) => {
+    removeItem: (state, action: PayloadAction<{ id: number | undefined }>) => {
       const idx = state.items.findIndex((item) => item.id === action.payload.id);
-      state.items.splice(idx, 1);
+      if (idx !== -1) {
+        state.items.splice(idx, 1);
+      }
     }
   }
 });

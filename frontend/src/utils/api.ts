@@ -1,4 +1,4 @@
-import { baseUrl, remoteUrl } from './constants';
+import { baseUrl } from './constants';
 import { getCookie } from './cookie';
 import { TOwnUserData, TPriceItem } from './types';
 

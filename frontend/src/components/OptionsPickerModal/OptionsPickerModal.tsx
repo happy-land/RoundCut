@@ -35,10 +35,6 @@ const OptionsPickerModal: React.FC = () => {
     setLocalSelectedDiameters(selectedDiameters || []);
   }, [selectedDiameters]);
 
-  const handleCloseModal = () => {
-    navigate(-1); // Close modal when the close icon is clicked
-  };
-
   // Разбить массив марок на строки по 3 элемента
   const rows: string[][] = [];
   for (let i = 0; i < options.length; i += 3) {

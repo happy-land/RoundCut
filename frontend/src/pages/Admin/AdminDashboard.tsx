@@ -1,13 +1,10 @@
-import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import block from 'bem-cn';
 import './AdminDashboard.scss';
 
-type Props = {};
-
 const cnStyles = block('admin-dashboard');
 
-const AdminDashboard = (props: Props) => {
+const AdminDashboard = () => {
   return (
     <div className={cnStyles()}>
       <h1>AdminDashboard</h1>

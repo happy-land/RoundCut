@@ -1,9 +1,9 @@
-import { FC, useEffect, FormEvent, useCallback } from 'react';
+import { FC, FormEvent, ChangeEvent, useState, useCallback } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import block from 'bem-cn';
-import { useForm } from '../../hooks/useForm';
-import { useDispatch, useSelector } from '../../hooks';
-import { authUserThunk, getUserDataThunk } from '../../services/actions/user';
+import { useAppSelector } from '../../app/hooks';
+import { useFetchTokenMutation } from '../../services/authApi';
+import { selectAuth } from '../../features/authSlice';
 import './SigninForm.scss';
 
 const cnStyles = block('signin-form');
@@ -11,51 +11,45 @@ const cnStyles = block('signin-form');
 type TSigninCallback = (evt: FormEvent<HTMLFormElement>) => void;
 
 export const SigninForm: FC = () => {
-  const dispatch = useDispatch();
-  const { isAuth } = useSelector((store) => store.user);
-
+  const [login] = useFetchTokenMutation();
+  const { user } = useAppSelector(selectAuth);
   const location = useLocation();
 
-  const { values, handleChange } = useForm({
-    username: '',
-    password: '',
-  });
+  const [values, setValues] = useState({ email: '', password: '' });
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const { value, name } = event.target;
+    setValues({ ...values, [name]: value });
+  };
 
   const signin = useCallback<TSigninCallback>(
     (evt) => {
       evt.preventDefault();
-      console.log('values ', values);
-      dispatch(authUserThunk(values));
+      login({ email: values.email, password: values.password });
     },
-    [values, dispatch],
+    [values.email, values.password, login],
   );
 
-  useEffect(() => {
-    if (isAuth) {
-      dispatch(getUserDataThunk());
-    }
-  }, [isAuth, dispatch]);
-
-  if (isAuth) {
+  if (user) {
     return (
       <Navigate
-        // // Если объект state не является undefined, вернём пользователя назад.
-        to={location.state?.from || '/'}
+        to={location.state?.from || '/dashboard'}
       />
     );
   }
 
   return (
     <form className={cnStyles()} onSubmit={signin}>
-      <label htmlFor="username" className={cnStyles('label')}>
-        <p className={cnStyles('label-title')}>Имя пользователя</p>
+      <label htmlFor="email" className={cnStyles('label')}>
+        <p className={cnStyles('label-title')}>Email</p>
       </label>
       <input
         className={cnStyles('input')}
-        type="text"
-        name="username"
-        placeholder="Имя пользователя"
-        id="username"
+        type="email"
+        name="email"
+        placeholder="Email"
+        id="email"
+        value={values.email}
         onChange={handleChange}
       />
 
@@ -68,6 +62,7 @@ export const SigninForm: FC = () => {
         name="password"
         placeholder="Пароль"
         id="password"
+        value={values.password}
         onChange={handleChange}
       />
 

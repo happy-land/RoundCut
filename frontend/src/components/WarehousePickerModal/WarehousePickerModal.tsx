@@ -4,7 +4,7 @@ import { useFetchWarehousesQuery } from '../../services/warehouseApi';
 import { setWarehouse } from '../../features/warehouse/warehouseSlice';
 import './WarehousePickerModal.scss';
 import { useNavigate } from 'react-router-dom';
-import SearchFilter from '../SearchFilter/SearchFilter';
+// import SearchFilter from '../SearchFilter/SearchFilter';
 
 const WarehousePickerModal: React.FC = () => {
   const dispatch = useAppDispatch();

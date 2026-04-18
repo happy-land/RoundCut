@@ -1,9 +1,6 @@
-import React from 'react';
 import { PriceList } from '../PriceList/PriceList';
 
-type Props = {};
-
-const AdminPrice = (props: Props) => {
+const AdminPrice = () => {
   return (
     <>
       <div>AdminPrice!!</div>

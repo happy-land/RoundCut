@@ -12,11 +12,7 @@ interface OptionsPickerProps {
 
 const cnStyles = block('options-picker');
 
-const OptionsPicker: React.FC<OptionsPickerProps> = ({
-  options,
-  selectedOption,
-  onChange,
-}) => {
+const OptionsPicker: React.FC<OptionsPickerProps> = () => {
   return (
     <Link
       to={{

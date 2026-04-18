@@ -14,10 +14,10 @@ export const markupApi = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'Warehouses' as const, id })),
-              { type: 'Warehouses', id: 'LIST' },
+              ...result.map(() => ({ type: 'Markups' as const })),
+              { type: 'Markups', id: 'LIST' },
             ]
-          : [{ type: 'Warehouses', id: 'LIST' }],
+          : [{ type: 'Markups', id: 'LIST' }],
     }),
 
     addMarkup: builder.mutation({

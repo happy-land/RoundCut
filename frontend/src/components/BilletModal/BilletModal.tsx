@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import block from 'bem-cn';
+import { FC } from 'react';
 import './BilletModal.scss';
 import BilletCellNew from '../BilletCellNew/BilletCellNew';
 import { useParams } from 'react-router-dom';
@@ -9,8 +8,6 @@ import { selectWarehouseId } from '../../features/warehouse/warehouseSlice';
 interface BilletModalProps {
 
 }
-
-const cnStyles = block('billet-modal');
 
 const BilletModal: FC<BilletModalProps> = () => {
   const { id } = useParams<{  id: string }>();

@@ -1,12 +1,4 @@
-import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-// import { useFetchUserQuery } from '../services/authApi';
-// import { deleteCookie, getCookie } from '../utils/cookie';
-import { logout, selectAuth, setUser } from '../features/authSlice';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { PriceList } from '../components/PriceList/PriceList';
-import BilletPanel from '../components/BilletPanel/BilletPanel';
 import block from 'bem-cn';
 import './Dashboard.scss';
 import SearchFilter from '../components/SearchFilter/SearchFilter';
@@ -16,15 +8,6 @@ import DiameterSelector from '../components/DiameterSelector/DiameterSelector';
 const cnStyles = block('dashboard-container');
 
 const Dashboard = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector(selectAuth);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    dispatch(logout());
-    toast.success('User logout');
-    navigate('/auth');
-  };
 
   return (
     <div className={cnStyles()}>

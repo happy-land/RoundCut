@@ -16,7 +16,7 @@ export const authApi = createApi({
       }),
     }),
     fetchToken: builder.mutation({
-      query: (body: { username: string; password: string }) => ({
+      query: (body: { email: string; password: string }) => ({
         url: '/auth/signin',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

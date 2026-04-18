@@ -64,7 +64,7 @@ const CutMethodSelector: FC<ICutMethodSelectorProps> = ({
                 Рекомендуется
               </span>
             )}
-            {CuttingService.getCutMethodInfo(availableCuts[0].method).displayName}
+            {CuttingService.getCutMethodName(availableCuts[0].method)}
           </p>
         </div>
       </div>
@@ -92,7 +92,7 @@ const CutMethodSelector: FC<ICutMethodSelectorProps> = ({
               />
               <span className={cnStyles('option-label')}>
                 <span className={cnStyles('method-name')}>
-                  {CuttingService.getCutMethodInfo(cut.method).displayName}
+                  {CuttingService.getCutMethodName(cut.method)}
                 </span>
                 {cut.isOptimal && (
                   <span className={cnStyles('badge', 'optimal')}>

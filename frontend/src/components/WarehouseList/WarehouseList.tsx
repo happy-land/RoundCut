@@ -1,5 +1,4 @@
-import { ChangeEvent, FC, MouseEvent, useRef, useState } from 'react';
-import { useAppDispatch } from '../../app/hooks';
+import { ChangeEvent, FC, MouseEvent, useState } from 'react';
 import block from 'bem-cn';
 import './WarehouseList.scss';
 import {
@@ -9,7 +8,6 @@ import {
 } from '../../services/warehouseApi';
 import { TWarehouse } from '../../utils/types';
 import WarehouseItem from './WarehouseItem';
-import { openModal } from '../../features/warehouse/warehouseSlice';
 
 interface IWarehouseListProps {
   type: 'user' | 'admin';
@@ -18,11 +16,6 @@ interface IWarehouseListProps {
 const cnStyles = block('warehouse');
 
 const WarehouseList: FC<IWarehouseListProps> = ({ type }) => {
-  const dispatch = useAppDispatch();
-
-  const [valid, setValid] = useState(false);
-  const formRef = useRef(null);
-
   const [warehouseName, setWarehouseName] = useState<string>('');
 
   // queries
