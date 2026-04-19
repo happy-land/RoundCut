@@ -124,6 +124,52 @@
   }
 
   // --------------------------
+  // Редактирование имени
+  // --------------------------
+  &__username-view {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  &__username-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+
+    &__error {
+      margin: 0;
+      font-size: 13px;
+      color: #c0392b;
+    }
+
+    &__actions {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  &__username-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 7px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    border: 1px solid #c5cbff;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    color: #222;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: #4e60ff;
+    }
+  }
+
+  // --------------------------
   // О себе
   // --------------------------
   &__about-text {

@@ -64,6 +64,40 @@ const ProfilePage: FC = () => {
   const [aboutDraft, setAboutDraft] = useState(user?.about ?? "");
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [usernameDraft, setUsernameDraft] = useState(user?.username ?? "");
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+
+  const handleEditUsername = () => {
+    setUsernameDraft(user?.username ?? "");
+    setUsernameError(null);
+    setEditingUsername(true);
+  };
+
+  const handleCancelUsername = () => {
+    setEditingUsername(false);
+    setUsernameError(null);
+  };
+
+  const handleSaveUsername = async () => {
+    if (usernameDraft.trim().length < 2) {
+      setUsernameError("Имя не может быть короче 2 символов");
+      return;
+    }
+    if (usernameDraft.trim().length > 30) {
+      setUsernameError("Имя не может быть длиннее 30 символов");
+      return;
+    }
+    try {
+      const updated = await updateMe({ username: usernameDraft.trim() }).unwrap();
+      dispatch(updateUserData({ username: (updated as { username?: string }).username ?? usernameDraft.trim() }));
+      setEditingUsername(false);
+      setUsernameError(null);
+    } catch {
+      setUsernameError("Не удалось сохранить. Попробуйте ещё раз.");
+    }
+  };
+
   const handleEditAbout = () => {
     setAboutDraft(user?.about ?? "");
     setSaveError(null);
@@ -114,7 +148,52 @@ const ProfilePage: FC = () => {
         </div>
         <div className={cnStyles("info-row")}>
           <span className={cnStyles("info-label")}>Имя</span>
-          <span className={cnStyles("info-value")}>{user.username || "—"}</span>
+          {editingUsername ? (
+            <div className={cnStyles("username-edit")}>
+              <input
+                className={cnStyles("username-input")}
+                type="text"
+                value={usernameDraft}
+                onChange={(e) => setUsernameDraft(e.target.value)}
+                maxLength={30}
+                placeholder="Введите имя..."
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSaveUsername();
+                  if (e.key === "Escape") handleCancelUsername();
+                }}
+              />
+              {usernameError && (
+                <p className={cnStyles("username-edit__error")}>{usernameError}</p>
+              )}
+              <div className={cnStyles("username-edit__actions")}>
+                <button
+                  className={cnStyles("save-btn")}
+                  onClick={handleSaveUsername}
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Сохраняем..." : "Сохранить"}
+                </button>
+                <button
+                  className={cnStyles("cancel-btn")}
+                  onClick={handleCancelUsername}
+                  disabled={isSaving}
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={cnStyles("username-view")}>
+              <span className={cnStyles("info-value")}>{user.username || "—"}</span>
+              <button
+                className={cnStyles("edit-btn")}
+                onClick={handleEditUsername}
+              >
+                Изменить
+              </button>
+            </div>
+          )}
         </div>
         <div className={cnStyles("info-row")}>
           <span className={cnStyles("info-label")}>Дата регистрации</span>

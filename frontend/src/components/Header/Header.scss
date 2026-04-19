@@ -10,9 +10,11 @@
   &__wrapper {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 800px;
     height: 48px;
     padding: 12px;
+    gap: 8px;
   }
 
   &__burger-menu {
@@ -130,9 +132,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
+    gap: 6px;
+    width: auto;
+    padding: 0 8px;
     height: 36px;
-    padding: 0;
     background: none;
     border: none;
     border-radius: 8px;
@@ -147,6 +150,23 @@
       width: 24px;
       height: 24px;
     }
+  }
+
+  &__user-icon-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__user-label {
+    display: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    white-space: nowrap;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__user-dropdown {
@@ -195,10 +215,27 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
 
     &_bump {
       animation: cart-bump 0.6s ease;
     }
+  }
+
+  &__cart-icon-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__cart-label {
+    display: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    white-space: nowrap;
   }
 
   &__cart-badge {
@@ -243,6 +280,18 @@
       box-shadow:
         0 0 0 2px rgb(242, 213, 175),
         0 2px 6px rgba(239, 68, 68, 0.45);
+    }
+  }
+}
+
+@media screen and (min-width: $desktop) {
+  .header {
+    &__cart-label {
+      display: inline;
+    }
+
+    &__user-label {
+      display: inline;
     }
   }
 }
