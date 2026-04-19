@@ -39,12 +39,12 @@ const App: FC = () => {
   const location = useLocation();
   const state = location.state as { backgroundLocation?: Location };
 
-  console.log(state?.backgroundLocation);
-
-  const user = JSON.parse(localStorage.getItem('userData') || '{}');
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
   useEffect(() => {
-    dispatch(setUser(user));
+    if (userData?.user && userData?.token) {
+      dispatch(setUser(userData));
+    }
   }, []);
 
   const closeAllModals = () => {
