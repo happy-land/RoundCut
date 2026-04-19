@@ -125,7 +125,10 @@ const Header: FC = () => {
         </div>
         <WarehousePicker />
         <NavLink to="/cart" className={cnStyles("cart-link", { bump: cartBump })}>
-          <img src={CartIcon} alt="CartIcon" />
+          <span className={cnStyles("cart-icon-wrapper")}>
+            <img src={CartIcon} alt="CartIcon" />
+            <span className={cnStyles("cart-label")}>Корзина</span>
+          </span>
           {cartCount > 0 && (
             <span className={cnStyles("cart-badge")}>
               {cartCount > 99 ? "99+" : cartCount}
@@ -138,7 +141,12 @@ const Header: FC = () => {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Меню пользователя"
           >
-            <img src={UserIcon} alt="UserIcon" />
+            <span className={cnStyles("user-icon-wrapper")}>
+              <img src={UserIcon} alt="UserIcon" />
+              <span className={cnStyles("user-label")}>
+                {guest ? "Вход" : user?.username || "Профиль"}
+              </span>
+            </span>
           </button>
           {menuOpen && (
             <ul className={cnStyles("user-dropdown")}>
