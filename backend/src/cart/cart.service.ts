@@ -43,17 +43,18 @@ export class CartService {
 
   async sendOrderToSelf(user: User): Promise<void> {
     const items = await this.getCart(user);
-    if (!items.length) return;
+    if (!items.length) throw new Error('Корзина пуста');
 
-    const totalGoods = items.reduce(
-      (s, i) => s + Number(i.totalGoodsPrice),
-      0,
-    );
-    const totalCutting = items.reduce(
-      (s, i) => s + Number(i.totalCuttingCost),
-      0,
-    );
-    const totalAll = totalGoods + totalCutting;
+    try {
+      const totalGoods = items.reduce(
+        (s, i) => s + Number(i.totalGoodsPrice),
+        0,
+      );
+      const totalCutting = items.reduce(
+        (s, i) => s + Number(i.totalCuttingCost),
+        0,
+      );
+      const totalAll = totalGoods + totalCutting;
 
     const rows = items
       .map((item, idx) => {
@@ -195,15 +196,20 @@ export class CartService {
       subject: `Заказ RoundCut — ${new Date().toLocaleDateString('ru-RU')}`,
       html,
     });
+    } catch (error) {
+      console.error('[CART] Error in sendOrderToSelf:', error);
+      throw error;
+    }
   }
 
   async sendGuestOrder(dto: SendGuestOrderDto): Promise<void> {
     const { email, name, items } = dto;
-    if (!items.length) return;
+    if (!items.length) throw new Error('Корзина пуста');
 
-    const totalGoods = items.reduce((s, i) => s + Number(i.totalGoodsPrice), 0);
-    const totalCutting = items.reduce((s, i) => s + Number(i.totalCuttingCost), 0);
-    const totalAll = totalGoods + totalCutting;
+    try {
+      const totalGoods = items.reduce((s, i) => s + Number(i.totalGoodsPrice), 0);
+      const totalCutting = items.reduce((s, i) => s + Number(i.totalCuttingCost), 0);
+      const totalAll = totalGoods + totalCutting;
 
     const rows = items
       .map((item, idx) => {
@@ -319,6 +325,10 @@ export class CartService {
       subject: `Заказ RoundCut — ${new Date().toLocaleDateString('ru-RU')}`,
       html,
     });
+    } catch (error) {
+      console.error('[CART] Error in sendGuestOrder:', error);
+      throw error;
+    }
   }
 }
 

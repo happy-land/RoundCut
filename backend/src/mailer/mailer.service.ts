@@ -17,11 +17,14 @@ export class MailerService {
   mailTransport() {
     const transporter = nodemailer.createTransport({
       host: this.configService.get<string>('MAIL_HOST'),
-      port: this.configService.get<number>('MAIL_PORT'),
+      port: Number(this.configService.get<string>('MAIL_PORT')),
       secure: true,
       auth: {
         user: this.configService.get<string>('MAIL_USER'),
         pass: this.configService.get<string>('MAIL_PASSWORD'),
+      },
+      tls: {
+        rejectUnauthorized: false,
       },
     });
 
@@ -44,7 +47,13 @@ export class MailerService {
       : dto.html;
 
     const transport = this.mailTransport();
-    console.log(process.env.NODE_EXTRA_CA_CERTS);
+    
+    console.log('[MAILER] Attempting to send email to:', recipients);
+    console.log('[MAILER] SMTP config:', {
+      host: this.configService.get<string>('MAIL_HOST'),
+      port: this.configService.get<number>('MAIL_PORT'),
+      user: this.configService.get<string>('MAIL_USER'),
+    });
 
     const options: Mail.Options = {
       from: from ?? {
@@ -59,11 +68,19 @@ export class MailerService {
     try {
       const result = await transport.sendMail(options);
       
-      console.log(result);
-
+      console.log('[MAILER] ✅ Email sent successfully:');
+      console.log('  - MessageId:', result.messageId);
+      console.log('  - To:', recipients);
       return result;
     } catch (error) {
-      console.log(error);
+      console.error('[MAILER] ❌ Error sending email:');
+      console.error('  - Error message:', error instanceof Error ? error.message : String(error));
+      console.error('  - Recipients:', recipients);
+      console.error('  - Subject:', subject);
+      if (error instanceof Error && 'code' in error) {
+        console.error('  - Error code:', (error as any).code);
+      }
+      throw new Error(`Email send failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
