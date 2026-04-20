@@ -333,6 +333,13 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     return partPricePerTon * partWeight;
   }, [partWeight, partPricePerTon, itemExtended, markup]);
 
+  // Эффективная цена за тонну части — та, что реально использована в partCost
+  // (может отличаться от partPricePerTon, если сработал минимальный порог надбавки)
+  const effectivePartPricePerTon = useMemo(() => {
+    if (partWeight === 0) return 0;
+    return Math.round(partCost / partWeight);
+  }, [partCost, partWeight]);
+
   // Итоговая стоимость товара (целые круги + часть)
   const billetGoodsCost = useMemo(() => {
     return wholeCirclesCost + partCost;
@@ -546,7 +553,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         ? Math.round(wholeCirclesCost / wholeCirclesWeight)
         : 0,
       partWeight,
-      partPricePerTon,
+      partPricePerTon: effectivePartPricePerTon,
       billetGoodsCost,
       cuttingCostForBillets,
       totalCuts: totalCutsOverall,
