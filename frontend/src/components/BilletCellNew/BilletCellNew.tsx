@@ -278,7 +278,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     const consumedLast =
       lastBillet.usedLength +
       lastBillet.endCut +
-      Math.max(0, nPiecesLast - 1) * cutThickness;
+      nPiecesLast * cutThickness;
     const clampedConsumed = Math.min(consumedLast, billetLengthMm);
     return round3((clampedConsumed / billetLengthMm) * (singleWeightKg / 1000));
   }, [billets, numCompleteCircles, billetLengthMm, singleWeightKg, cutThickness]);
