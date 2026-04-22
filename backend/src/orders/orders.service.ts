@@ -65,6 +65,8 @@ export class OrdersService {
       totalCuttingCost: ci.totalCuttingCost,
       cuttingDescription: ci.cuttingDescription,
       warehouseName: ci.warehouseName,
+      surface: ci.surface,
+      other: ci.other,
       billetData: ci.billetData,
     }));
 

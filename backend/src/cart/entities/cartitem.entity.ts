@@ -74,6 +74,18 @@ export class CartItem {
   @IsOptional()
   warehouseName: string | null;
 
+  // Длина / Раскрой (из прайса, поле surface)
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  surface: string | null;
+
+  // Прочее / ГОСТ (из прайса, поле other)
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  other: string | null;
+
   // Данные расчёта заготовок (только для позиций из вкладки "Расчёт заготовок")
   @Column({ type: 'jsonb', nullable: true })
   @IsOptional()

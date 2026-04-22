@@ -93,6 +93,17 @@ const OrdersPage: FC = () => {
                   <span className={cnStyles("card__toggle")}>
                     {isExpanded ? "▲" : "▼"}
                   </span>
+
+                  <button
+                    className={cnStyles("card__invoice-btn")}
+                    title="Сформировать счёт"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(`/invoice/${order.id}`, "_blank");
+                    }}
+                  >
+                    📄 Счёт
+                  </button>
                 </div>
 
                 {isExpanded && (
@@ -102,6 +113,8 @@ const OrdersPage: FC = () => {
                         <div className={cnStyles("item__view")}>
                           <span className={cnStyles("item__name")}>
                             {item.name} {item.size}
+                            {item.surface ? ` ${item.surface}` : ""}
+                            {item.other ? ` ${item.other}` : ""}
                           </span>
 
                           {item.warehouseName && (

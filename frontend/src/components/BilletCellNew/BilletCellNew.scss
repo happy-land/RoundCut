@@ -67,17 +67,18 @@
     display: flex;
     gap: 0;
     margin-bottom: 16px;
-    background: #f1f3f5;
+    background: #e8eaff;
     border-radius: 12px;
     padding: 4px;
+    border: 2px solid #c5cbff;
   }
 
   &__tab {
     flex: 1;
-    padding: 9px 16px;
+    padding: 10px 16px;
     font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
+    font-weight: 600;
+    color: #4e60ff;
     background: transparent;
     border: none;
     border-radius: 9px;
@@ -87,17 +88,18 @@
       color 0.18s,
       box-shadow 0.18s;
     white-space: nowrap;
+    letter-spacing: 0.01em;
 
     &:hover:not(&_active) {
-      color: #374151;
-      background: rgba(0, 0, 0, 0.04);
+      color: #2d3fc7;
+      background: rgba(78, 96, 255, 0.1);
     }
 
     &_active {
-      background: #fff;
-      color: #111;
-      font-weight: 600;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+      background: #4e60ff;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(78, 96, 255, 0.35);
     }
   }
 
@@ -248,6 +250,10 @@
   &__form-input {
     &.input-small {
       font-size: 14px;
+
+      input {
+        text-align: center;
+      }
     }
 
     &.input-parameter {
@@ -467,6 +473,10 @@
     color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+  }
+
+  &__qty-input {
+    text-align: center;
   }
 
   &__grand-total__amount {

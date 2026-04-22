@@ -31,6 +31,7 @@ import OrdersPage from '../../pages/OrdersPage';
 import ProfilePage from '../../pages/ProfilePage';
 import RequireRole from '../RequireRole/RequireRole';
 import AdminSettingsPage from '../../pages/Admin/AdminSettingsPage';
+import InvoicePage from '../../pages/InvoicePage';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -125,6 +126,8 @@ const App: FC = () => {
           }
         />
         {/* <Route path="*" element={<Page404 />} /> */}
+        {/* Счёт — без обёртки Layout (чистая страница для печати) */}
+        <Route path="/invoice/:id" element={<InvoicePage />} />
       </Routes>
 
       {state?.backgroundLocation && (

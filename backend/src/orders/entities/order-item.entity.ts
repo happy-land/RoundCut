@@ -55,6 +55,18 @@ export class OrderItem {
   @IsOptional()
   cuttingDescription: string | null;
 
+  // Длина / Раскрой (из прайса, поле surface)
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  surface: string | null;
+
+  // Прочее / ГОСТ (из прайса, поле other)
+  @Column({ nullable: true })
+  @IsString()
+  @IsOptional()
+  other: string | null;
+
   @Column({ nullable: true })
   @IsString()
   @IsOptional()

@@ -135,6 +135,24 @@
       color: #aaa;
       flex-shrink: 0;
     }
+
+    &__invoice-btn {
+      flex-shrink: 0;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #4e60ff;
+      color: #4e60ff;
+      background: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+
+      &:hover {
+        background: #4e60ff;
+        color: #fff;
+      }
+    }
   }
 
   // --------------------------

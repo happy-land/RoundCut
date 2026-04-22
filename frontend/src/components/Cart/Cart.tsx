@@ -46,6 +46,8 @@ const Cart: FC = () => {
             <div className={cnStyles('item-info')}>
               <span className={cnStyles('item-name')}>
                 {item.name} {item.size}
+                {item.surface ? ` · ${item.surface}` : ''}
+                {item.other ? ` · ${item.other}` : ''}
               </span>
               {item.warehouseName && (
                 <span className={cnStyles('item-warehouse')}>

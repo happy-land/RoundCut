@@ -136,6 +136,8 @@ const CartPage: FC = () => {
                 <div className={cnStyles("list-item__view")}>
                   <span className={cnStyles("list-item__name")}>
                     {item.name} {item.size}
+                    {item.surface ? ` ${item.surface}` : ""}
+                    {item.other ? ` ${item.other}` : ""}
                   </span>
 
                   {item.warehouseName && (

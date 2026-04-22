@@ -61,6 +61,14 @@ export class CreateCartItemDto {
   @IsOptional()
   warehouseName?: string;
 
+  @IsString()
+  @IsOptional()
+  surface?: string;
+
+  @IsString()
+  @IsOptional()
+  other?: string;
+
   @IsOptional()
   billetData?: BilletCartData;
 }

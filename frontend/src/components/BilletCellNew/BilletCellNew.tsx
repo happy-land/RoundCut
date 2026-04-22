@@ -523,6 +523,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       totalCuttingCost,
       cuttingDescription: cuttingDescription ?? undefined,
       warehouseName: warehouseData?.name,
+      surface: itemExtended.surface || undefined,
+      other: itemExtended.other || undefined,
     };
     if (guest) {
       dispatch(addGuestCartItem(payload));
@@ -577,6 +579,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       cuttingDescription,
       billetData,
       warehouseName: warehouseData?.name,
+      surface: itemExtended.surface || undefined,
+      other: itemExtended.other || undefined,
     };
     if (guest) {
       dispatch(addGuestCartItem(payload));
@@ -627,14 +631,14 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
             className={cnStyles("tab", { active: effectiveActiveTab === 'simple' })}
             onClick={() => setActiveTab('simple')}
           >
-            Покупка
+            Купить целиком (1 шт+)
           </button>
           <button
             type="button"
             className={cnStyles("tab", { active: effectiveActiveTab === 'advanced' })}
             onClick={() => setActiveTab('advanced')}
           >
-            Расчёт заготовок
+            Нарезать заготовки
           </button>
         </div>
       )}
@@ -642,7 +646,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       {/* === Калькулятор покупки === */}
       {effectiveActiveTab === 'simple' && (
       <div className={cnStyles("buy-calculator")}>
-        <h2 className={cnStyles("section-title")}>Калькулятор покупки</h2>
+        <h2 className={cnStyles("section-title")}>Количество должно быть кратно 1шт</h2>
         <div className={cnStyles("buy-fields")}>
           {/* Кол-во, шт */}
           <label className={cnStyles("form-field")}>

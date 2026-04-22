@@ -225,6 +225,8 @@ export type TCartItem = {
   cuttingDescription: string | null;
   billetData: TBilletCartData | null;
   warehouseName: string | null;
+  surface: string | null;
+  other: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -241,6 +243,8 @@ export type TCreateCartItemDto = {
   cuttingDescription?: string;
   billetData?: TBilletCartData;
   warehouseName?: string;
+  surface?: string;
+  other?: string;
 };
 
 /** Позиция сохранённого заказа — зеркало OrderItem */
@@ -256,6 +260,8 @@ export type TOrderItem = {
   totalCuttingCost: number;
   cuttingDescription: string | null;
   warehouseName: string | null;
+  surface: string | null;
+  other: string | null;
   billetData: TBilletCartData | null;
   createdAt: string;
 };
