@@ -22,8 +22,20 @@ import { settingsApi } from '../services/settingsApi';
 // import priceitemsReducer from '../features/price/priceitemsSlice';
 // import usersReducer from '../features/users/usersSlice';
 
+const loadAuthFromStorage = () => {
+  try {
+    const raw = localStorage.getItem('userData');
+    if (!raw) return undefined;
+    const { user, token } = JSON.parse(raw);
+    if (!user || !token) return undefined;
+    return { auth: { user, token } };
+  } catch {
+    return undefined;
+  }
+};
 
 const store = configureStore({
+  preloadedState: loadAuthFromStorage(),
   reducer: {
     auth: authReducer,
     cut: cutReducer,

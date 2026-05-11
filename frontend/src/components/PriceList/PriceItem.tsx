@@ -32,6 +32,7 @@ const CUT_LABELS: Record<string, string> = {
 };
 
 export const PriceItem: FC<IPriceItemProps> = ({ item, warehouseName }) => {
+  const cuts = item.availableCuts ?? [];
   return (
     <Link
       to={{ pathname: `/price/${item.id}` }}
@@ -55,12 +56,12 @@ export const PriceItem: FC<IPriceItemProps> = ({ item, warehouseName }) => {
           </div>
         </div>
 
-        {/* Средняя колонка: размер */}
+        {/* Средняя колонка: размер (только планшет+) */}
         <div className={cnStyles('col-size')}>
           <span className={cnStyles('size')}>{item.size}</span>
         </div>
 
-        {/* Колонка длины */}
+        {/* Колонка длины (только планшет+) */}
         {item.length > 0 && (
           <div className={cnStyles('col-length')}>
             <span className={cnStyles('length-value')}>{item.length}</span>
@@ -68,14 +69,14 @@ export const PriceItem: FC<IPriceItemProps> = ({ item, warehouseName }) => {
           </div>
         )}
 
-        {/* Колонка склада */}
+        {/* Колонка склада (только планшет+) */}
         <div className={cnStyles('col-warehouse')}>
           <span className={cnStyles('warehouse-name')}>{warehouseName}</span>
         </div>
 
-        {/* Колонка резки */}
+        {/* Колонка резки (только планшет+) */}
         <div className={cnStyles('col-cuts')}>
-          {item.availableCuts && item.availableCuts.map((code) => (
+          {cuts.map((code) => (
             <span key={code} className={cnStyles('badge', 'cut')} title={CUT_LABELS[code] ?? code}>
               {CUT_ICONS[code] ?? code}
             </span>
@@ -105,6 +106,32 @@ export const PriceItem: FC<IPriceItemProps> = ({ item, warehouseName }) => {
               </span>
             )}
           </div>
+        </div>
+
+        {/* Footer-строка с деталями (только мобилка) */}
+        <div className={cnStyles('mobile-footer')}>
+          <div className={cnStyles('mobile-footer__item')}>
+            <span className={cnStyles('mobile-footer__label')}>диаметр</span>
+            <span className={cnStyles('mobile-footer__value')}>{item.size}</span>
+          </div>
+          {item.length > 0 && (
+            <div className={cnStyles('mobile-footer__item')}>
+              <span className={cnStyles('mobile-footer__label')}>длина</span>
+              <span className={cnStyles('mobile-footer__value')}>{item.length} м</span>
+            </div>
+          )}
+          <div className={cnStyles('mobile-footer__item')}>
+            <span className={cnStyles('mobile-footer__label')}>📦</span>
+            <span className={cnStyles('mobile-footer__value')}>{warehouseName}</span>
+          </div>
+          {cuts.length > 0 && (
+            <div className={cnStyles('mobile-footer__item')}>
+              <span className={cnStyles('mobile-footer__label')}>резка</span>
+              <span className={cnStyles('mobile-footer__value')}>
+                {cuts.map((code) => CUT_ICONS[code] ?? code).join(' ')}
+              </span>
+            </div>
+          )}
         </div>
       </article>
     </Link>

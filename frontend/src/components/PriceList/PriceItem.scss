@@ -6,10 +6,12 @@
   color: inherit;
 
   &__card {
-    // MOBILE-FIRST: вертикальный лэйаут
+    // MOBILE-FIRST: горизонтальный лэйаут с переносом для footer
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
     padding: 12px;
     background: #fff;
     border: 1px solid #ebebeb;
@@ -22,9 +24,9 @@
       box-shadow: 0 2px 10px rgba(78, 96, 255, 0.07);
     }
 
-    // TABLET: горизонтальный лэйаут начинается
+    // TABLET: убираем wrap, возвращаем space-between
     @media (min-width: $tablet) {
-      flex-direction: row;
+      flex-wrap: nowrap;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
@@ -184,23 +186,19 @@
     }
   }
 
-  // MOBILE: показана в左 части; TABLET+: рядом с правой частью
+  // MOBILE: скрыт, данные резки показываются в mobile-footer
   &__col-cuts {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
-    width: 100%;
-    order: 3; // После имени, бейджей, веса
+    display: none;
 
     @media (min-width: $tablet) {
       display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
       min-width: 80px;
       max-width: 160px;
       flex-shrink: 0;
-      width: auto;
-      order: 0;
     }
   }
 
@@ -241,17 +239,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    justify-content: space-between;
-    width: 100%;
-    order: 2;
+    flex-shrink: 0;
+    margin-left: auto;
 
     @media (min-width: $tablet) {
-      flex-direction: row;
       gap: 14px;
       justify-content: flex-end;
-      flex-shrink: 0;
-      width: auto;
-      order: 0;
+      margin-left: 0;
     }
   }
 
@@ -302,5 +296,46 @@
       color: #aaa;
       white-space: nowrap;
     }
+  }
+
+  // --------------------------
+  // Footer-строка (только мобилка)
+  // --------------------------
+  &__mobile-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-basis: 100%;  // занимает всю ширину → переносится на новую строку
+    border-top: 1px solid #f0f0f0;
+    padding-top: 8px;
+
+    // Скрываем на планшете+ — там данные уже видны в колонках
+    @media (min-width: $tablet) {
+      display: none;
+    }
+  }
+
+  &__mobile-footer__item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fafafa;
+    border: 1px solid #ebebeb;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333;
+  }
+
+  &__mobile-footer__label {
+    font-size: 11px;
+    color: #999;
+    font-weight: 500;
+  }
+
+  &__mobile-footer__value {
+    font-size: 12px;
+    color: #333;
+    font-weight: 500;
   }
 }

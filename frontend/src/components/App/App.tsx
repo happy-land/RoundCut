@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import {
   Navigate,
   Route,
@@ -8,10 +8,8 @@ import {
 } from 'react-router-dom';
 import Layout from '../Layout/Layout';
 import './App.scss';
-import { useAppDispatch } from '../../app/hooks';
 import Auth from '../../pages/Auth';
 import Dashboard from '../../pages/Dashboard';
-import { setUser } from '../../features/authSlice';
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
 import AdminPrice from '../AdminPrice/AdminPrice';
 import { Markup } from '../../pages/Markup';
@@ -34,19 +32,10 @@ import AdminSettingsPage from '../../pages/Admin/AdminSettingsPage';
 import InvoicePage from '../../pages/InvoicePage';
 
 const App: FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate(); // useHistory deprecated
 
   const location = useLocation();
   const state = location.state as { backgroundLocation?: Location };
-
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-
-  useEffect(() => {
-    if (userData?.user && userData?.token) {
-      dispatch(setUser(userData));
-    }
-  }, []);
 
   const closeAllModals = () => {
     console.log('Закрыть модалку');
