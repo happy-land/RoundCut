@@ -123,7 +123,10 @@ const Header: FC = () => {
             </ul>
           )}
         </div>
-        <WarehousePicker />
+        <div className={cnStyles("warehouse-wrap")}>
+          <WarehousePicker />
+        </div>
+        <div className={cnStyles("right-group")}>
         <NavLink to="/cart" className={cnStyles("cart-link", { bump: cartBump })}>
           <span className={cnStyles("cart-icon-wrapper")}>
             <img src={CartIcon} alt="CartIcon" />
@@ -201,6 +204,7 @@ const Header: FC = () => {
             </ul>
           )}
         </div>
+        </div>{/* right-group */}
       </div>
     </header>
   );
