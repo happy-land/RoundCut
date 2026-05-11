@@ -6,20 +6,29 @@
   color: inherit;
 
   &__card {
+    // MOBILE-FIRST: вертикальный лэйаут
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 11px 14px;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
     background: #fff;
     border: 1px solid #ebebeb;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: background 0.13s, border-color 0.13s, box-shadow 0.13s;
 
     &:hover {
       background: #f6f7ff;
       border-color: #c5cbff;
       box-shadow: 0 2px 10px rgba(78, 96, 255, 0.07);
+    }
+
+    // TABLET: горизонтальный лэйаут начинается
+    @media (min-width: $tablet) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
     }
   }
 
@@ -29,18 +38,27 @@
   &__left {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
     flex: 1;
     min-width: 0;
   }
 
   &__name {
-    font-size: 14px;
-    font-weight: 600;
+    // MOBILE: больший шрифт для удобства
+    font-size: 15px;
+    font-weight: 700;
     color: #111;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.3;
+    word-break: break-word;
+
+    @media (min-width: $tablet) {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
   }
 
   &__name-size {
@@ -56,11 +74,16 @@
   }
 
   &__badge {
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: 3px;
     white-space: nowrap;
+
+    @media (min-width: $tablet) {
+      font-size: 11.5px;
+      padding: 2px 8px;
+    }
 
     &_other {
       background: #fff3e0;
@@ -76,27 +99,40 @@
       background: #e0f7fa;
       color: #00695c;
       border: 1px solid #b2dfdb;
-      font-size: 14px;
+      font-size: 12px;
       padding: 2px 6px;
       line-height: 1;
+
+      @media (min-width: $tablet) {
+        font-size: 14px;
+      }
     }
 
     &_weight {
       background: #e8f5e9;
       color: #2e7d32;
       font-family: $title-font-family, monospace;
-      font-size: 11px;
+      font-size: 10px;
+
+      @media (min-width: $tablet) {
+        font-size: 11px;
+      }
     }
   }
 
+  // MOBILE: скрыты, показываются на планшете+
   &__col-length {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    min-width: 64px;
-    flex-shrink: 0;
+    display: none;
+
+    @media (min-width: $tablet) {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-width: 64px;
+      flex-shrink: 0;
+    }
   }
 
   &__length-value {
@@ -111,12 +147,17 @@
     font-weight: 500;
   }
 
+  // MOBILE: скрыт, показывается на планшете+
   &__col-warehouse {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 90px;
-    flex-shrink: 0;
+    display: none;
+
+    @media (min-width: $tablet) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 90px;
+      flex-shrink: 0;
+    }
   }
 
   &__warehouse-name {
@@ -132,22 +173,35 @@
   // Колонка кг/шт
   // --------------------------
   &__col-size {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 80px;
-    flex-shrink: 0;
+    display: none;
+
+    @media (min-width: $tablet) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
   }
 
+  // MOBILE: показана в左 части; TABLET+: рядом с правой частью
   &__col-cuts {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     gap: 4px;
-    min-width: 80px;
-    max-width: 160px;
-    flex-shrink: 0;
+    width: 100%;
+    order: 3; // После имени, бейджей, веса
+
+    @media (min-width: $tablet) {
+      display: flex;
+      min-width: 80px;
+      max-width: 160px;
+      flex-shrink: 0;
+      width: auto;
+      order: 0;
+    }
   }
 
   &__col-weight {
@@ -158,10 +212,19 @@
     min-width: 64px;
     gap: 1px;
 
+    @media (min-width: $tablet) {
+      align-items: center;
+      justify-content: center;
+    }
+
     &__value {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       color: #2e7d32;
+
+      @media (min-width: $tablet) {
+        font-size: 13px;
+      }
     }
 
     &__unit {
@@ -177,8 +240,19 @@
   &__right {
     display: flex;
     align-items: center;
-    gap: 14px;
-    flex-shrink: 0;
+    gap: 12px;
+    justify-content: space-between;
+    width: 100%;
+    order: 2;
+
+    @media (min-width: $tablet) {
+      flex-direction: row;
+      gap: 14px;
+      justify-content: flex-end;
+      flex-shrink: 0;
+      width: auto;
+      order: 0;
+    }
   }
 
   &__size {
@@ -195,20 +269,38 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 1px;
-    min-width: 110px;
+    gap: 2px;
+    min-width: auto;
+
+    @media (min-width: $tablet) {
+      gap: 1px;
+      min-width: 110px;
+    }
   }
 
   &__price-main {
-    font-size: 15px;
+    // MOBILE: крупнее для читаемости
+    font-size: 16px;
     font-weight: 700;
     color: #111;
-    white-space: nowrap;
+    line-height: 1.2;
+
+    @media (min-width: $tablet) {
+      font-size: 15px;
+      white-space: nowrap;
+    }
   }
 
   &__price-sub {
-    font-size: 11px;
-    color: #aaa;
-    white-space: nowrap;
+    // MOBILE: больше видимости
+    font-size: 12px;
+    color: #666;
+    line-height: 1.2;
+
+    @media (min-width: $tablet) {
+      font-size: 11px;
+      color: #aaa;
+      white-space: nowrap;
+    }
   }
 }

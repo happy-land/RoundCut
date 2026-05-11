@@ -7,41 +7,65 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    @media (min-width: $tablet) {
+      margin-bottom: 8px;
+      gap: 8px;
+    }
   }
 
   &__label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: #333;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+
+    @media (min-width: $tablet) {
+      font-size: 13px;
+      gap: 6px;
+    }
   }
 
   &__count {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 5px;
-    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
     background: #4e60ff;
     color: #fff;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     line-height: 1;
+
+    @media (min-width: $tablet) {
+      min-width: 20px;
+      height: 20px;
+      font-size: 11px;
+      padding: 0 5px;
+      border-radius: 10px;
+    }
   }
 
   &__clear-btn {
     background: none;
     border: none;
     color: #999;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
     padding: 2px 6px;
     border-radius: 4px;
+
+    @media (min-width: $tablet) {
+      font-size: 12px;
+    }
 
     &:hover {
       color: #e53935;
@@ -52,23 +76,35 @@
   &__items {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 4px 0 8px;
+    gap: 6px;
+    padding: 4px 0 6px;
     margin: 0;
     list-style: none;
     user-select: none;
+
+    @media (min-width: $tablet) {
+      gap: 8px;
+      padding: 4px 0 8px;
+    }
   }
 
   &__item {
-    padding: 5px 14px;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 18px;
     background: #f0f0f2;
     color: #444;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     border: 1px solid transparent;
     transition: background 0.15s, color 0.15s;
     white-space: nowrap;
+    flex-shrink: 0;
+
+    @media (min-width: $tablet) {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
 
     &:hover {
       background: #e0e1ff;
@@ -88,16 +124,23 @@
   }
 
   &__more-btn {
-    padding: 5px 14px;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 18px;
     background: none;
     color: #888;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     border: 1px dashed #bbb;
     white-space: nowrap;
     list-style: none;
     transition: color 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+
+    @media (min-width: $tablet) {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
 
     &:hover {
       color: #4e60ff;
