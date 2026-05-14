@@ -11,6 +11,11 @@
   background-color: #f9f9f9;
   transition: box-shadow 0.3s ease;
 
+  @media (max-width: $phone) {
+    padding: 6px;
+    margin: 4px;
+  }
+
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
@@ -19,13 +24,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
     margin-bottom: 16px;
-
-    @media (max-width: 480px) {
-      flex-direction: column;
-      align-items: flex-start;
-    }
   }
 
   &__title {
@@ -34,6 +34,16 @@
     font-weight: 600;
     margin: 0;
     color: #333;
+    min-width: 0;
+    flex: 1;
+
+    @media (max-width: $phone) {
+      font-size: 19px;
+    }
+
+    @media (max-width: 400px) {
+      font-size: 15px;
+    }
   }
 
   &__title-length {
@@ -45,11 +55,7 @@
     font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
-
-    @media (max-width: 480px) {
-      width: 100%;
-      text-align: right;
-    }
+    flex-shrink: 0;
   }
 
   &__buy-calculator {
@@ -90,6 +96,13 @@
     white-space: nowrap;
     letter-spacing: 0.01em;
 
+    @media (max-width: $phone) {
+      white-space: normal;
+      font-size: 13px;
+      padding: 8px 8px;
+      line-height: 1.2;
+    }
+
     &:hover:not(&_active) {
       color: #2d3fc7;
       background: rgba(78, 96, 255, 0.1);
@@ -104,23 +117,123 @@
   }
 
   &__buy-fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr 1fr;
+  &__buy-stepper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    &__label {
+      width: 38px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
     }
 
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr;
-      gap: 8px;
+    &__sublabel {
+      font-size: 10px;
+      color: #aaa;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    &__controls {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      border: 1.5px solid #d0d0d0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+  }
+
+  &__qty-stepper-input {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #222;
+    background: #fff;
+    outline: none;
+    padding: 0;
+    border: none;
+    border-left: 1.5px solid #d0d0d0;
+    border-right: 1.5px solid #d0d0d0;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    appearance: textfield;
+    -moz-appearance: textfield;
+
+    // Default size (used in cutting methods stepper)
+    width: 44px;
+    height: 36px;
+
+    // Wider variant for шт/т/м buy-fields steppers
+    &_buy {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      height: 40px;
+    }
+  }
+
+  &__btn-qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #f5f5f5;
+    border: none;
+    font-size: 20px;
+    font-weight: 400;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    line-height: 1;
+    padding: 0;
+
+    &:hover:not(:disabled) {
+      background: #e8e8e8;
+    }
+
+    &:disabled {
+      color: #ccc;
+      cursor: default;
+    }
+
+    // Taller variant inside buy-stepper
+    .billet-cell-new__buy-stepper__controls & {
+      width: 38px;
+      height: 40px;
+      font-size: 20px;
+    }
+  }
+
+  &__qty-stepper-input_buy {
+    @media (max-width: $phone) {
+      height: 40px;
+      font-size: 14px;
     }
   }
 
   &__cart-button-container {
-    // border: 1px solid #e0e0e0;
-    width: 360px;
+    width: 100%;
+    max-width: 360px;
     margin: 0 auto;
     padding: 16px 16px 16px;
   }
@@ -485,6 +598,81 @@
     color: #2c3e50;
     letter-spacing: -1px;
   }
+
+  // --------------------------
+  // Cutting methods grid
+  // --------------------------
+  &__cutting-methods {
+    margin-top: 12px;
+  }
+
+  &__cutting-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__cutting-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+
+    &__header {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    &__label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    &__price {
+      font-size: 13px;
+      color: #888;
+    }
+
+    &__unit {
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    &__controls {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #d0d0d0;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+  }
+
+  &__cutting-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #555;
+
+    strong {
+      font-weight: 700;
+      color: #222;
+    }
+  }
+
   &__billet-price-summary {
     margin-top: 16px;
     padding: 16px;

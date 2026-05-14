@@ -649,57 +649,103 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
         <h2 className={cnStyles("section-title")}>Количество должно быть кратно 1шт</h2>
         <div className={cnStyles("buy-fields")}>
           {/* Кол-во, шт */}
-          <label className={cnStyles("form-field")}>
-            <MDBInput
-              type="number"
-              name="buy-quantity"
-              label="Кол-во, шт"
-              placeholder="0"
-              className={cnStyles("form-input", "input-buy")}
-              value={showEmptyIfZero(buyQuantity)}
-              onChange={(e) => handleBuyQuantityChange(e.target.value)}
-              onBlur={(e) => {
-                if (e.target.value.trim() === "") handleBuyQuantityChange("0");
-              }}
-              step="1"
-              min="0"
-            />
-          </label>
+          <div className={cnStyles("buy-stepper")}>
+            <span className={cnStyles("buy-stepper__label")}>шт</span>
+            <div className={cnStyles("buy-stepper__controls")}>
+              <button
+                type="button"
+                className={cnStyles("btn-qty", { minus: true })}
+                onClick={() => handleBuyQuantityChange(String(Math.max(0, buyQuantity - 1)))}
+                disabled={buyQuantity <= 0}
+                aria-label="Уменьшить количество"
+              >–</button>
+              <input
+                type="number"
+                inputMode="numeric"
+                name="buy-quantity"
+                min={0}
+                step={1}
+                className={cnStyles("qty-stepper-input", { buy: true })}
+                value={showEmptyIfZero(buyQuantity)}
+                onChange={(e) => handleBuyQuantityChange(e.target.value)}
+                onBlur={(e) => { if (e.target.value.trim() === "") handleBuyQuantityChange("0"); }}
+              />
+              <button
+                type="button"
+                className={cnStyles("btn-qty", { plus: true })}
+                onClick={() => handleBuyQuantityChange(String(buyQuantity + 1))}
+                aria-label="Увеличить количество"
+              >+</button>
+            </div>
+          </div>
 
-          {/* Кол-во, т — number со step=0.001. Кратность весу 1 шт обеспечиваем логикой снэпа. */}
-          <label className={cnStyles("form-field")}>
-            <MDBInput
-              type="number"
-              name="buy-weight"
-              label="Кол-во, т"
-              placeholder="0"
-              className={cnStyles("form-input", "input-buy")}
-              value={buyWeightTons === 0 ? "" : buyWeightTons.toFixed(3)} // ровно 3 знака
-              onChange={(e) => handleBuyWeightChange(e.target.value)}
-              onBlur={(e) => handleBuyWeightBlur(e.target.value)}
-              step={0.001}
-              min="0"
-              inputMode="decimal"
-            />
-          </label>
+          {/* Кол-во, т */}
+          <div className={cnStyles("buy-stepper")}>
+            <span className={cnStyles("buy-stepper__label")}>
+              т
+              <span className={cnStyles("buy-stepper__sublabel")}>{(singleWeightKg / 1000).toFixed(3)}/шт</span>
+            </span>
+            <div className={cnStyles("buy-stepper__controls")}>
+              <button
+                type="button"
+                className={cnStyles("btn-qty", { minus: true })}
+                onClick={() => handleBuyQuantityChange(String(Math.max(0, buyQuantity - 1)))}
+                disabled={buyQuantity <= 0}
+                aria-label="Уменьшить количество"
+              >–</button>
+              <input
+                type="number"
+                inputMode="decimal"
+                name="buy-weight"
+                min={0}
+                step={0.001}
+                className={cnStyles("qty-stepper-input", { buy: true })}
+                value={buyWeightTons === 0 ? "" : buyWeightTons.toFixed(3)}
+                onChange={(e) => handleBuyWeightChange(e.target.value)}
+                onBlur={(e) => handleBuyWeightBlur(e.target.value)}
+              />
+              <button
+                type="button"
+                className={cnStyles("btn-qty", { plus: true })}
+                onClick={() => handleBuyQuantityChange(String(buyQuantity + 1))}
+                aria-label="Увеличить количество"
+              >+</button>
+            </div>
+          </div>
 
           {/* Кол-во, м */}
-          <label className={cnStyles("form-field")}>
-            <MDBInput
-              type="number"
-              name="buy-length"
-              label="Кол-во, м"
-              placeholder="0"
-              className={cnStyles("form-input", "input-buy")}
-              value={buyLengthMeters === 0 ? "" : buyLengthMeters.toFixed(3)} // ⬅️ всегда 3 знака
-              onChange={(e) => handleBuyLengthChange(e.target.value)}
-              onBlur={(e) => {
-                if (e.target.value.trim() === "") handleBuyLengthChange("0");
-              }}
-              step="0.001"
-              min="0"
-            />
-          </label>
+          <div className={cnStyles("buy-stepper")}>
+            <span className={cnStyles("buy-stepper__label")}>
+              м
+              <span className={cnStyles("buy-stepper__sublabel")}>{singleLengthM}м/шт</span>
+            </span>
+            <div className={cnStyles("buy-stepper__controls")}>
+              <button
+                type="button"
+                className={cnStyles("btn-qty", { minus: true })}
+                onClick={() => handleBuyQuantityChange(String(Math.max(0, buyQuantity - 1)))}
+                disabled={buyQuantity <= 0}
+                aria-label="Уменьшить количество"
+              >–</button>
+              <input
+                type="number"
+                inputMode="decimal"
+                name="buy-length"
+                min={0}
+                step={0.001}
+                className={cnStyles("qty-stepper-input", { buy: true })}
+                value={buyLengthMeters === 0 ? "" : buyLengthMeters.toFixed(3)}
+                onChange={(e) => handleBuyLengthChange(e.target.value)}
+                onBlur={(e) => { if (e.target.value.trim() === "") handleBuyLengthChange("0"); }}
+              />
+              <button
+                type="button"
+                className={cnStyles("btn-qty", { plus: true })}
+                onClick={() => handleBuyQuantityChange(String(buyQuantity + 1))}
+                aria-label="Увеличить количество"
+              >+</button>
+            </div>
+          </div>
         </div>
 
         {/* === Расчёт цены за товар === */}
@@ -774,7 +820,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                           inputMode="numeric"
                           min={0}
                           max={999}
-                          className={cnStyles("qty-input")}
+                          className={cnStyles("qty-stepper-input")}
                           value={qty}
                           onChange={(e) =>
                             setCutDirect(m.code, Number(e.target.value || 0))
