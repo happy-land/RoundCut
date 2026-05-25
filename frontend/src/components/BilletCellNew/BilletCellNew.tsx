@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useMemo, useRef } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 import block from "bem-cn";
 import "./BilletCellNew.scss";
 import { useFetchItemQuery } from "../../services/priceApi";
@@ -37,6 +37,13 @@ const showEmptyIfZero = (v: number | null | undefined) =>
 /** Нормализовать пустую строку из инпута в 0 */
 const normalizeEmptyToZero = (raw: string) =>
   raw.trim() === "" ? 0 : Number(raw);
+
+/** Показ количества в поле "шт": не более 3 знаков после запятой */
+const formatQuantityForInput = (v: number | null | undefined) => {
+  if (v == null || v === 0) return "";
+  if (Number.isInteger(v)) return String(v);
+  return (Math.round(v * 1000) / 1000).toFixed(3);
+};
 
 /** Парсим десятичный ввод (поддержка запятой), допускаем пустую строку */
 const parseDecimalMaybe = (raw: string): number | null => {
@@ -110,6 +117,22 @@ function deriveByWeightTonsDirected(
   return { quantity, weightTons, lengthMeters };
 }
 
+/** Пересчёт из тонн без притягивания к целым штукам (свободный ввод) */
+function deriveByWeightTonsFree(
+  weightTonsIn: number,
+  singleWeightKg: number,
+  singleLengthM: number,
+) {
+  const weightTons = round3(Math.max(0, weightTonsIn));
+  if (singleWeightKg === 0) {
+    return { quantity: 0, weightTons, lengthMeters: 0 };
+  }
+
+  const quantity = weightTons / tonsPerPiece(singleWeightKg);
+  const lengthMeters = round3m(singleLengthM * quantity);
+  return { quantity, weightTons, lengthMeters };
+}
+
 /** Пересчёт из метров (здесь допускаем дробные штуки, т.к. ввод произвольный) */
 function deriveByLengthMeters(
   lengthMetersIn: number,
@@ -177,7 +200,10 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
 
   const [buyQuantity, setBuyQuantity] = useState<number>(1);
   const [buyWeightTons, setBuyWeightTons] = useState<number>(0);
+  const [buyWeightInput, setBuyWeightInput] = useState<string>("");
   const [buyLengthMeters, setBuyLengthMeters] = useState<number>(0);
+  const [buyLengthInput, setBuyLengthInput] = useState<string>("");
+  const [needsQuantityRounding, setNeedsQuantityRounding] = useState(false);
   const [cutCounts, setCutCounts] = useState<Record<string, number>>({});
   // Для цены резки нужно получить из API
   const [priceByCode, setPriceByCode] = useState<Record<string, number>>({});
@@ -399,17 +425,16 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     }, 0);
   }, [cutCounts, priceByCode]);
 
-  // прошлое значение веса — для определения направления up/down
-  const prevWeightTonsRef = useRef(0);
-
   // Инициализация значений после загрузки itemExtended
   useEffect(() => {
     if (!itemExtended) return;
     const init = deriveByQuantity(1, singleWeightKg, singleLengthM);
     setBuyQuantity(init.quantity); // 1
     setBuyWeightTons(init.weightTons); // вес 1 шт (т), round3
+    setBuyWeightInput(init.weightTons === 0 ? "" : init.weightTons.toFixed(3));
     setBuyLengthMeters(init.lengthMeters); // длина 1 шт (м), round3m
-    prevWeightTonsRef.current = init.weightTons;
+    setBuyLengthInput(init.lengthMeters === 0 ? "" : init.lengthMeters.toFixed(3));
+    setNeedsQuantityRounding(false);
   }, [itemExtended, singleWeightKg, singleLengthM]);
 
   // Handlers
@@ -422,64 +447,121 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
     );
     setBuyQuantity(quantity);
     setBuyWeightTons(weightTons);
+    setBuyWeightInput(weightTons === 0 ? "" : weightTons.toFixed(3));
     setBuyLengthMeters(lengthMeters);
-    prevWeightTonsRef.current = weightTons; // зафиксируем для направления
+    setBuyLengthInput(lengthMeters === 0 ? "" : lengthMeters.toFixed(3));
+    setNeedsQuantityRounding(false);
   };
 
   const handleBuyWeightChange = (raw: string) => {
+    setBuyWeightInput(raw);
     const parsed = parseDecimalMaybe(raw);
     if (parsed === null) {
-      // Пустой ввод — считаем 0 внутрь и показываем '' через showEmptyIfZero
-      setBuyWeightTons(0);
-      setBuyQuantity(0);
-      setBuyLengthMeters(0);
-      prevWeightTonsRef.current = 0;
+      if (raw.trim() === "") {
+        setBuyWeightTons(0);
+        setBuyQuantity(0);
+        setBuyLengthMeters(0);
+        setBuyLengthInput("");
+        setNeedsQuantityRounding(false);
+      }
       return;
     }
 
-    const prev = prevWeightTonsRef.current;
-    const dir: Dir = parsed > prev ? "up" : parsed < prev ? "down" : "auto";
-
-    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsDirected(
+    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsFree(
       parsed,
+      singleWeightKg,
+      singleLengthM,
+    );
+
+    setBuyQuantity(quantity);
+    setBuyWeightTons(weightTons);
+    setBuyLengthMeters(lengthMeters);
+    setBuyLengthInput(lengthMeters === 0 ? "" : lengthMeters.toFixed(3));
+    setNeedsQuantityRounding(!Number.isInteger(quantity));
+  };
+
+  const handleBuyWeightBlur = (raw: string) => {
+    const parsed = parseDecimalMaybe(raw);
+    if (parsed == null) {
+      setBuyWeightInput(buyWeightTons === 0 ? "" : buyWeightTons.toFixed(3));
+      return;
+    }
+
+    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsFree(
+      parsed,
+      singleWeightKg,
+      singleLengthM,
+    );
+    setBuyQuantity(quantity);
+    setBuyWeightTons(weightTons);
+    setBuyLengthMeters(lengthMeters);
+    setBuyWeightInput(weightTons === 0 ? "" : weightTons.toFixed(3));
+    setBuyLengthInput(lengthMeters === 0 ? "" : lengthMeters.toFixed(3));
+    setNeedsQuantityRounding(!Number.isInteger(quantity));
+  };
+
+  const applyWeightRounding = (dir: Dir) => {
+    const parsed = parseDecimalMaybe(buyWeightInput);
+    const safeWeight = parsed == null ? buyWeightTons : parsed;
+    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsDirected(
+      safeWeight,
       singleWeightKg,
       singleLengthM,
       dir,
     );
 
-    setBuyQuantity(quantity); // СТРОГО ЦЕЛОЕ (k)
-    setBuyWeightTons(weightTons); // выровненный и round3
-    setBuyLengthMeters(lengthMeters); // round3m
-    prevWeightTonsRef.current = weightTons;
-  };
-
-  const handleBuyWeightBlur = (raw: string) => {
-    // На blur — доводим до ближайшего кратного (auto) и 3 знаков
-    const parsed = parseDecimalMaybe(raw);
-    const safe = parsed == null ? 0 : parsed;
-    const { quantity, weightTons, lengthMeters } = deriveByWeightTonsDirected(
-      safe,
-      singleWeightKg,
-      singleLengthM,
-      "auto",
-    );
     setBuyQuantity(quantity);
     setBuyWeightTons(weightTons);
     setBuyLengthMeters(lengthMeters);
-    prevWeightTonsRef.current = weightTons;
+    setBuyWeightInput(weightTons === 0 ? "" : weightTons.toFixed(3));
+    setBuyLengthInput(lengthMeters === 0 ? "" : lengthMeters.toFixed(3));
+    setNeedsQuantityRounding(false);
   };
 
   const handleBuyLengthChange = (raw: string) => {
-    const m = normalizeEmptyToZero(raw);
+    setBuyLengthInput(raw);
+    const parsed = parseDecimalMaybe(raw);
+    if (parsed === null) {
+      if (raw.trim() === "") {
+        setBuyWeightTons(0);
+        setBuyWeightInput("");
+        setBuyQuantity(0);
+        setBuyLengthMeters(0);
+        setNeedsQuantityRounding(false);
+      }
+      return;
+    }
+
     const { quantity, weightTons, lengthMeters } = deriveByLengthMeters(
-      Number.isFinite(m) ? m : 0,
+      parsed,
       singleWeightKg,
       singleLengthM,
     );
     setBuyQuantity(quantity);
     setBuyWeightTons(weightTons);
+    setBuyWeightInput(weightTons === 0 ? "" : weightTons.toFixed(3));
     setBuyLengthMeters(lengthMeters);
-    prevWeightTonsRef.current = weightTons;
+    setNeedsQuantityRounding(!Number.isInteger(quantity));
+  };
+
+  const handleBuyLengthBlur = (raw: string) => {
+    const parsed = parseDecimalMaybe(raw);
+    if (parsed == null) {
+      setBuyLengthInput(buyLengthMeters === 0 ? "" : buyLengthMeters.toFixed(3));
+      return;
+    }
+
+    const { quantity, weightTons, lengthMeters } = deriveByLengthMeters(
+      parsed,
+      singleWeightKg,
+      singleLengthM,
+    );
+    setBuyQuantity(quantity);
+    setBuyWeightTons(weightTons);
+    setBuyWeightInput(weightTons === 0 ? "" : weightTons.toFixed(3));
+    setBuyLengthMeters(lengthMeters);
+    setBuyLengthInput(lengthMeters === 0 ? "" : lengthMeters.toFixed(3));
+    setNeedsQuantityRounding(!Number.isInteger(quantity));
   };
 
   // Cuts total
@@ -498,6 +580,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   // Корзина: только целые и > 0
   const isValidQuantity = () =>
     Number.isInteger(buyQuantity) && buyQuantity > 0;
+  const hasFractionalQuantity = buyQuantity > 0 && !Number.isInteger(buyQuantity);
 
   // Активная вкладка
   const [activeTab, setActiveTab] = useState<'simple' | 'advanced'>('simple');
@@ -646,7 +729,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       {/* === Калькулятор покупки === */}
       {effectiveActiveTab === 'simple' && (
       <div className={cnStyles("buy-calculator")}>
-        <h2 className={cnStyles("section-title")}>Количество должно быть кратно 1шт</h2>
+        <h2 className={cnStyles("section-title")}>Введите нужный вес в тоннах или длину в метрах, затем при необходимости округлите до целых штук</h2>
         <div className={cnStyles("buy-fields")}>
           {/* Кол-во, шт */}
           <div className={cnStyles("buy-stepper")}>
@@ -665,8 +748,8 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                 name="buy-quantity"
                 min={0}
                 step={1}
-                className={cnStyles("qty-stepper-input", { buy: true })}
-                value={showEmptyIfZero(buyQuantity)}
+                className={cnStyles("qty-stepper-input", { buy: true, invalid: hasFractionalQuantity })}
+                value={formatQuantityForInput(buyQuantity)}
                 onChange={(e) => handleBuyQuantityChange(e.target.value)}
                 onBlur={(e) => { if (e.target.value.trim() === "") handleBuyQuantityChange("0"); }}
               />
@@ -694,13 +777,11 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                 aria-label="Уменьшить количество"
               >–</button>
               <input
-                type="number"
+                type="text"
                 inputMode="decimal"
                 name="buy-weight"
-                min={0}
-                step={0.001}
                 className={cnStyles("qty-stepper-input", { buy: true })}
-                value={buyWeightTons === 0 ? "" : buyWeightTons.toFixed(3)}
+                value={buyWeightInput}
                 onChange={(e) => handleBuyWeightChange(e.target.value)}
                 onBlur={(e) => handleBuyWeightBlur(e.target.value)}
               />
@@ -728,15 +809,13 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                 aria-label="Уменьшить количество"
               >–</button>
               <input
-                type="number"
+                type="text"
                 inputMode="decimal"
                 name="buy-length"
-                min={0}
-                step={0.001}
                 className={cnStyles("qty-stepper-input", { buy: true })}
-                value={buyLengthMeters === 0 ? "" : buyLengthMeters.toFixed(3)}
+                value={buyLengthInput}
                 onChange={(e) => handleBuyLengthChange(e.target.value)}
-                onBlur={(e) => { if (e.target.value.trim() === "") handleBuyLengthChange("0"); }}
+                onBlur={(e) => handleBuyLengthBlur(e.target.value)}
               />
               <button
                 type="button"
@@ -746,6 +825,30 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
               >+</button>
             </div>
           </div>
+
+          {needsQuantityRounding && (
+            <div className={cnStyles("rounding-panel")}>
+              <div className={cnStyles("rounding-panel__text")}>
+                Введено дробное количество: {buyQuantity.toFixed(3)} шт. Для добавления в корзину нужно целое количество.
+              </div>
+              <div className={cnStyles("rounding-panel__actions")}>
+                <button
+                  type="button"
+                  className={cnStyles("round-btn", { down: true })}
+                  onClick={() => applyWeightRounding("down")}
+                >
+                  Округлить вниз ({Math.floor(buyQuantity)} шт)
+                </button>
+                <button
+                  type="button"
+                  className={cnStyles("round-btn", { up: true })}
+                  onClick={() => applyWeightRounding("up")}
+                >
+                  Округлить вверх ({Math.ceil(buyQuantity)} шт)
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* === Расчёт цены за товар === */}
