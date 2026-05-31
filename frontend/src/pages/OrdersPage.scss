@@ -255,4 +255,189 @@
       color: #999;
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 12px 10px;
+
+    &__header {
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    &__title {
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    &__empty {
+      margin: 24px 0;
+      font-size: 15px;
+    }
+
+    &__list {
+      gap: 10px;
+    }
+
+    &__card {
+      border-radius: 12px;
+
+      &__header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px 10px;
+        padding: 12px;
+        align-items: start;
+      }
+
+      &__meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+        align-items: start;
+        min-width: 0;
+      }
+
+      &__number {
+        font-size: 16px;
+      }
+
+      &__date {
+        font-size: 13px;
+      }
+
+      &__count {
+        justify-self: start;
+      }
+
+      &__totals {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+        align-items: start;
+        grid-column: 1 / -1;
+        min-width: 0;
+      }
+
+      &__total-goods,
+      &__total-cutting,
+      &__total-all {
+        font-size: 14px;
+        line-height: 1.25;
+      }
+
+      &__total-all {
+        font-size: 16px;
+      }
+
+      &__toggle {
+        justify-self: end;
+        align-self: start;
+        padding-top: 3px;
+      }
+
+      &__invoice-btn {
+        justify-self: start;
+        grid-column: 1 / -1;
+        padding: 8px 12px;
+        min-height: 36px;
+        font-size: 13px;
+        width: fit-content;
+      }
+    }
+
+    &__items {
+      background: #f8f9fb;
+    }
+
+    &__item {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 10px 12px;
+
+      &__view {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;
+        align-items: start;
+      }
+
+      &__name {
+        min-width: 0;
+        font-size: 14px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      &__badge {
+        white-space: normal;
+        width: fit-content;
+        max-width: 100%;
+
+        &_warehouse,
+        &_billet-wp,
+        &_billet-params {
+          overflow-wrap: anywhere;
+        }
+      }
+
+      &__right {
+        width: 100%;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      &__price-main {
+        font-size: 16px;
+      }
+
+      &__price-sub {
+        font-size: 12px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 8px;
+
+    &__header {
+      margin-bottom: 16px;
+    }
+
+    &__card {
+      &__header {
+        padding: 10px;
+      }
+
+      &__number {
+        font-size: 15px;
+      }
+
+      &__date {
+        font-size: 12px;
+      }
+
+      &__total-goods,
+      &__total-cutting,
+      &__total-all {
+        font-size: 13px;
+      }
+
+      &__total-all {
+        font-size: 15px;
+      }
+    }
+
+    &__item {
+      padding: 10px;
+
+      &__name {
+        font-size: 13px;
+      }
+
+      &__price-main {
+        font-size: 15px;
+      }
+    }
+  }
 }

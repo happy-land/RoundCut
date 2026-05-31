@@ -101,7 +101,8 @@
     font-size: 14px;
     font-weight: 500;
     color: #222;
-    word-break: break-all;
+    word-break: normal;
+    overflow-wrap: anywhere;
   }
 
   // --------------------------
@@ -351,6 +352,142 @@
       font-weight: 700;
       color: #111;
       flex-shrink: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 10px;
+
+    &__header {
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    &__title {
+      font-size: 18px;
+    }
+
+    &__section {
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    &__section-header {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    &__section-title {
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    &__info-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid #eef2fa;
+      border-radius: 10px;
+      background: #fcfdff;
+      margin-bottom: 8px;
+    }
+
+    &__info-row:last-child {
+      border-bottom: 1px solid #eef2fa;
+      margin-bottom: 0;
+    }
+
+    &__info-label {
+      width: auto;
+      min-width: 0;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    &__info-value {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    &__username-view {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      justify-items: start;
+    }
+
+    &__username-input {
+      max-width: 100%;
+    }
+
+    &__username-edit {
+      width: 100%;
+
+      &__actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    }
+
+    &__about-edit {
+      &__actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    }
+
+    &__edit-btn,
+    &__orders-link,
+    &__save-btn,
+    &__cancel-btn {
+      min-height: 38px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    &__orders-list {
+      gap: 8px;
+    }
+
+    &__order-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 10px;
+
+      &__meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+        align-items: start;
+      }
+
+      &__number {
+        font-size: 16px;
+      }
+
+      &__date {
+        font-size: 14px;
+      }
+
+      &__count {
+        justify-self: start;
+        font-size: 14px;
+      }
+
+      &__total {
+        justify-self: end;
+        font-size: 18px;
+      }
     }
   }
 }
