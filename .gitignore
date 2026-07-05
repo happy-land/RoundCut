@@ -12,3 +12,4 @@ docker-entrypoint-initdb.d/*.sql
 *.sql
 *.custom
 DB_DUMP_GUIDE.md
+pull-prod-db.sh
