@@ -20,6 +20,7 @@ import { getCookie } from "../../utils/cookie";
 import { useGetSettingsQuery } from "../../services/settingsApi";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../features/toast/toastSlice";
+import { isProductGroup } from "../../utils/normalization";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -168,8 +169,11 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
   } = useFetchItemQuery(Number(id));
 
   // Категории, для которых поддерживается резка
-  const CUTTING_SUPPORTED_CATEGORIES = ['Арматура', 'Круг', 'Поковка'];
-  const isCuttingSupported = itemExtended ? CUTTING_SUPPORTED_CATEGORIES.includes(itemExtended.productGroup) : false;
+  const isCuttingSupported =
+    isProductGroup(itemExtended?.productGroup, "Арматура") ||
+    isProductGroup(itemExtended?.productGroup, "Круг") ||
+    isProductGroup(itemExtended?.productGroup, "Поковка") ||
+    (itemExtended?.name ?? "").toLowerCase().startsWith("круг");
 
   /* --- Cutting calculator --- */
   const billetLengthMm = useMemo(
