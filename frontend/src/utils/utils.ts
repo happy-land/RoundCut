@@ -1,5 +1,6 @@
 import { mapBaseName } from "./mapping";
 import { TPriceItemResponse } from "./types";
+import { normalizeProductGroup } from "./normalization";
 
 export const extractFirstWord = (input: string): string => {
   // Split the string by spaces and return the first element
@@ -20,7 +21,7 @@ export const convertToPriceItem = (arr: string[]): TPriceItemResponse => {
     size: arr[8] as string,
     surface: arr[9] as string,
     other: arr[10] as string,
-    productGroup: arr[11] as string,
+    productGroup: normalizeProductGroup(arr[11] as string),
     length: parsePotentiallyGroupedFloat(arr[12] as string),
     catName: arr[14],
   };
