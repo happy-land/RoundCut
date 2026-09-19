@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Mobile Variants</title>
+  <style>
+    :root {
+      --bg: #edf1f7;
+      --card: #ffffff;
+      --text: #101522;
+      --muted: #6f788b;
+      --line: #e6eaf2;
+      --primary: #3554ff;
+      --primary-soft: #edf1ff;
+      --chip-bg: #e8f2ff;
+      --chip-text: #1d5bbf;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", sans-serif;
+      background: radial-gradient(circle at top, #f5f8ff 0%, var(--bg) 55%, #e7edf8 100%);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      align-items: start;
+    }
+
+    .phone {
+      width: 390px;
+      max-width: 100%;
+      border: 1px solid #cad4e8;
+      border-radius: 18px;
+      background: #f9fbff;
+      overflow: hidden;
+      box-shadow: 0 16px 34px rgba(40, 61, 112, 0.14);
+      margin: 0 auto;
+    }
+
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #dde5f4;
+      background: #fff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .bar small {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .content {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-head h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .btn {
+      font-size: 15px;
+      line-height: 1;
+      border: 1px solid #c8d1ff;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 10px;
+      padding: 10px 12px;
+      white-space: nowrap;
+    }
+
+    .row {
+      display: grid;
+      gap: 4px;
+      padding: 10px 0;
+      border-top: 1px solid #eef2fa;
+    }
+
+    .row:first-of-type { border-top: 0; padding-top: 0; }
+
+    .label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .value {
+      font-size: 28px;
+      line-height: 1.35;
+      font-size: 16px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .about {
+      font-size: 16px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .orders {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .order {
+      border: 1px solid #edf1f7;
+      border-radius: 10px;
+      background: #fafcff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .order-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .number { font-weight: 700; font-size: 21px; font-size: 15px; }
+    .date { color: var(--muted); font-size: 13px; }
+
+    .order-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip {
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 14px;
+      font-size: 13px;
+    }
+
+    .total {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .variant-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      color: #516189;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    /* Variant 1: only quick fixes */
+    .v1 .row {
+      grid-template-columns: 1fr;
+    }
+
+    .v1 .split {
+      grid-template-columns: 1fr;
+      justify-items: start;
+    }
+
+    /* Variant 2: recommended balance */
+    .v2 .row {
+      border: 1px solid #eef2fa;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #fcfdff;
+    }
+
+    .v2 .row:last-child { margin-bottom: 0; }
+
+    .v2 .section-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    /* Variant 3: deep card redesign */
+    .v3 .card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .v3 .card-head {
+      padding: 12px 14px;
+      margin: 0;
+      border-bottom: 1px solid #edf2ff;
+      background: linear-gradient(180deg, #ffffff 0%, #f7f9ff 100%);
+    }
+
+    .v3 .section-body {
+      padding: 12px 14px;
+    }
+
+    .v3 .row {
+      border-top: 0;
+      border-left: 3px solid #eef2ff;
+      padding-left: 10px;
+    }
+
+    .v3 .action-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 10px 14px 14px;
+    }
+
+    .v3 .action-bar .btn {
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Мобильные варианты ProfilePage (390px)</h1>
+  <div class="grid">
+    <section>
+      <p class="variant-title">Вариант 1 · быстрый фикс</p>
+      <div class="phone v1">
+        <div class="bar">← Профиль <small>минимум изменений</small></div>
+        <div class="content">
+          <article class="card">
+            <div class="row">
+              <span class="label">Email</span>
+              <span class="value">ruslan.s.kulish@gmail.com</span>
+            </div>
+            <div class="row split">
+              <div>
+                <div class="label">Имя</div>
+                <div class="value">Руслан Локалхост</div>
+              </div>
+              <button class="btn">Изменить</button>
+            </div>
+            <div class="row">
+              <span class="label">Дата регистрации</span>
+              <span class="value">18 ноября 2024 г.</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h3>О себе</h3>
+              <button class="btn">Редактировать</button>
+            </div>
+            <p class="about">Что-то уже рассказал о себе</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="variant-title">Вариант 2 · рекомендованный</p>
+      <div class="phone v2">
+        <div class="bar">← Профиль <small>лучший баланс</small></div>
+        <div class="content">
+          <article class="card section-stack">
+            <div class="row">
+              <span class="label">Email</span>
+              <span class="value">ruslan.s.kulish@gmail.com</span>
+            </div>
+            <div class="row split">
+              <div>
+                <div class="label">Имя</div>
+                <div class="value">Руслан Локалхост</div>
+              </div>
+              <button class="btn">Изменить</button>
+            </div>
+            <div class="row">
+              <span class="label">Дата регистрации</span>
+              <span class="value">18 ноября 2024 г.</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h3>Последние заказы</h3>
+              <button class="btn">Все заказы →</button>
+            </div>
+            <ul class="orders">
+              <li class="order">
+                <div class="order-top">
+                  <span class="number">Заказ #23</span>
+                  <span class="date">25.05.2026, 20:45</span>
+                </div>
+                <div class="order-bottom">
+                  <span class="chip">1 поз.</span>
+                  <span class="total">37143 ₽</span>
+                </div>
+              </li>
+              <li class="order">
+                <div class="order-top">
+                  <span class="number">Заказ #22</span>
+                  <span class="date">25.05.2026, 20:20</span>
+                </div>
+                <div class="order-bottom">
+                  <span class="chip">5 поз.</span>
+                  <span class="total">173157 ₽</span>
+                </div>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="variant-title">Вариант 3 · глубокий mobile-first</p>
+      <div class="phone v3">
+        <div class="bar">← Профиль <small>больше изменений</small></div>
+        <div class="content">
+          <article class="card">
+            <div class="card-head">
+              <h3>Основная информация</h3>
+            </div>
+            <div class="section-body">
+              <div class="row">
+                <span class="label">Email</span>
+                <span class="value">ruslan.s.kulish@gmail.com</span>
+              </div>
+              <div class="row">
+                <span class="label">Имя</span>
+                <span class="value">Руслан Локалхост</span>
+              </div>
+              <div class="row">
+                <span class="label">Дата регистрации</span>
+                <span class="value">18 ноября 2024 г.</span>
+              </div>
+            </div>
+            <div class="action-bar">
+              <button class="btn">Изменить имя</button>
+              <button class="btn">Редактировать о себе</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+@import '../../assets/styles/vars.scss';
+
+.warehouse-picker {
+  // border: 1px solid red;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  font-family: $title-font-family;
+  font-size: 14px;
+  color: #000000;
+  cursor: pointer;
+  &__chevron-down {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    
+  }
+}

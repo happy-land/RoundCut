@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Макеты инпутов шт/т/м</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; padding: 24px 16px; }
+
+  h1 { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 24px; text-align: center; }
+
+  .page-row {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Симуляция модалки */
+  .modal-sim {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    width: 340px;
+    padding: 16px;
+  }
+  .modal-sim__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  .variant-label {
+    display: inline-block;
+    background: #4e60ff;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .desc {
+    font-size: 12px;
+    color: #888;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .desc b { color: #333; }
+
+  /* === ОБЩИЕ СТИЛИ СТЕППЕРА === */
+  .stepper-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
+  }
+  .stepper-controls {
+    display: flex;
+    align-items: stretch;
+    border: 1.5px solid #d0d0d0;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+  }
+  .btn-qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border: none;
+    font-size: 22px;
+    font-weight: 400;
+    color: #333;
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 1;
+    padding: 0;
+    user-select: none;
+  }
+  .btn-qty:hover { background: #e8e8e8; }
+  .stepper-input {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #222;
+    background: #fff;
+    outline: none;
+    padding: 0;
+    border: none;
+    border-left: 1.5px solid #d0d0d0;
+    border-right: 1.5px solid #d0d0d0;
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .stepper-input::-webkit-inner-spin-button,
+  .stepper-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  /* Кнопка корзины */
+  .cart-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px;
+    background: #4e60ff;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+
+  /* =========================================
+     ВАРИАНТ 1 — 3 колонки, одна строка
+     Стало тесно на 340px — уменьшаем кнопки
+  ========================================= */
+  .v1 .buy-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .v1 .btn-qty { width: 28px; height: 40px; font-size: 18px; }
+  .v1 .stepper-input { height: 40px; font-size: 13px; }
+
+
+  /* =========================================
+     ВАРИАНТ 2 — шт отдельно сверху, т+м снизу
+  ========================================= */
+  .v2 .buy-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .v2 .row-tm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  /* шт — главный, крупный */
+  .v2 .stepper-main .btn-qty { width: 44px; height: 52px; font-size: 24px; }
+  .v2 .stepper-main .stepper-input { height: 52px; font-size: 18px; font-weight: 700; }
+  .v2 .stepper-main .stepper-label { font-size: 12px; }
+  /* т и м — вторичные */
+  .v2 .stepper-secondary .btn-qty { width: 34px; height: 42px; font-size: 20px; }
+  .v2 .stepper-secondary .stepper-input { height: 42px; font-size: 14px; }
+
+
+  /* =========================================
+     ВАРИАНТ 3 — горизонтальные строки
+     Метка слева, степпер справа
+  ========================================= */
+  .v3 .buy-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .v3 .field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .v3 .field-row-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #555;
+    width: 28px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .v3 .field-row-sublabel {
+    font-size: 10px;
+    color: #aaa;
+    font-weight: 400;
+    display: block;
+  }
+  .v3 .stepper-controls { border-radius: 8px; }
+  .v3 .btn-qty { width: 38px; height: 40px; font-size: 20px; }
+  .v3 .stepper-input { height: 40px; font-size: 15px; }
+</style>
+</head>
+<body>
+<h1>Макеты: инпуты шт / т / м</h1>
+
+<div class="page-row">
+
+  <!-- ===== ВАРИАНТ 1 ===== -->
+  <div class="modal-sim">
+    <div class="variant-label">Вариант 1</div>
+    <div class="modal-sim__title">Купить металл</div>
+    <div class="v1">
+      <div class="buy-fields">
+
+        <div class="stepper">
+          <span class="stepper-label">шт</span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="1">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+        <div class="stepper">
+          <span class="stepper-label">т</span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="0.032">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+        <div class="stepper">
+          <span class="stepper-label">м</span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="6.000">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <button class="cart-btn">В корзину — 12 400 ₽</button>
+    <p class="desc">
+      <b>3 колонки в одну строку.</b><br>
+      Кнопки ±28px, чтобы влезть. Компактно, но на узком экране цифры мелкие.
+    </p>
+  </div>
+
+  <!-- ===== ВАРИАНТ 2 ===== -->
+  <div class="modal-sim">
+    <div class="variant-label">Вариант 2 ★ рекомендую</div>
+    <div class="modal-sim__title">Купить металл</div>
+    <div class="v2">
+      <div class="buy-fields">
+
+        <!-- шт — полная ширина, крупный -->
+        <div class="stepper stepper-main">
+          <span class="stepper-label">количество, шт</span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="1">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+        <!-- т и м — 2 колонки -->
+        <div class="row-tm">
+
+          <div class="stepper stepper-secondary">
+            <span class="stepper-label">т</span>
+            <div class="stepper-controls">
+              <button class="btn-qty">–</button>
+              <input class="stepper-input" type="number" value="0.032">
+              <button class="btn-qty">+</button>
+            </div>
+          </div>
+
+          <div class="stepper stepper-secondary">
+            <span class="stepper-label">м</span>
+            <div class="stepper-controls">
+              <button class="btn-qty">–</button>
+              <input class="stepper-input" type="number" value="6.000">
+              <button class="btn-qty">+</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <button class="cart-btn">В корзину — 12 400 ₽</button>
+    <p class="desc">
+      <b>шт на всю ширину (главное поле), т+м в 2 колонки.</b><br>
+      Акцент на количество штук, т и м — вторичные справочные поля. Удобно на мобильном.
+    </p>
+  </div>
+
+  <!-- ===== ВАРИАНТ 3 ===== -->
+  <div class="modal-sim">
+    <div class="variant-label">Вариант 3</div>
+    <div class="modal-sim__title">Купить металл</div>
+    <div class="v3">
+      <div class="buy-fields">
+
+        <div class="field-row">
+          <span class="field-row-label">шт</span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="1">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <span class="field-row-label">
+            т
+            <span class="field-row-sublabel">0.032/шт</span>
+          </span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="0.032">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <span class="field-row-label">
+            м
+            <span class="field-row-sublabel">6м/шт</span>
+          </span>
+          <div class="stepper-controls">
+            <button class="btn-qty">–</button>
+            <input class="stepper-input" type="number" value="6.000">
+            <button class="btn-qty">+</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <button class="cart-btn">В корзину — 12 400 ₽</button>
+    <p class="desc">
+      <b>Стопка строк: метка слева — степпер справа.</b><br>
+      Занимает больше высоты, зато степпер всегда полная ширина. Очень читаемо.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>

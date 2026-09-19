@@ -1,0 +1,15 @@
+backend_express
+
+.codegpt
+
+# Docker production secrets
+.env
+.env.production
+docker-entrypoint-initdb.d/*.sql
+!docker-entrypoint-initdb.d/00-readme.sql
+
+# Database dumps
+*.sql
+*.custom
+DB_DUMP_GUIDE.md
+pull-prod-db.sh

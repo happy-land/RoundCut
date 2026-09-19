@@ -1,0 +1,126 @@
+@import '../../assets/styles/vars.scss';
+
+.price {
+  padding: 0;
+  background-color: transparent;
+
+  &__title {
+    display: none;
+  }
+
+  &__content-section {
+    margin-top: 0;
+  }
+
+  &__price-buttons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__button {
+    background-color: $button-bg;
+    color: $button-text;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-family: $base-font-family;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $common-transition;
+    min-height: 44px;
+
+    &:hover {
+      background-color: $button-hover;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background-color: $text-light;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  &__list-meta {
+    font-size: 12px;
+    color: #aaa;
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+
+  &__items-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__list-item {
+    display: block;
+  }
+
+  // --------------------------
+  // Пагинация
+  // --------------------------
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__pagination__btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #fff;
+    color: #222;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+
+    &:hover:not(:disabled) {
+      background: #f0f2ff;
+      border-color: #c5cbff;
+      color: #4e60ff;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &_active {
+      background: #4e60ff;
+      color: #fff;
+      border-color: #4e60ff;
+      pointer-events: none;
+    }
+  }
+
+  &__pagination__dots {
+    font-size: 14px;
+    color: #aaa;
+    padding: 0 4px;
+    line-height: 36px;
+  }
+
+  p {
+    font-family: $base-font-family;
+    font-size: 14px;
+    color: $text-light;
+    margin: 16px 0;
+  }
+}

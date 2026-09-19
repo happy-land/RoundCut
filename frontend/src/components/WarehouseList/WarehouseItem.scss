@@ -1,0 +1,30 @@
+.warehouse-item-container {
+  &__warehouseitem {
+    // border: 1px solid rebeccapurple;
+    padding: 10px;
+  }
+
+  &__name {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    color: black;
+  }
+
+  &__markup {
+    margin: 10px 0 0 0;
+  }
+
+  &__items-list {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__level {
+    margin-right: 10px;
+    color: grey;
+  }
+}

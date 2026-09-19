@@ -1,0 +1,71 @@
+﻿@import '../assets/styles/vars.scss';
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: $large-desktop;
+  padding: 16px;
+
+  &__search-filter {
+    width: 100%;
+  }
+
+  &__steelgrades-wrapper {
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  &__diameters-wrapper {
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  &__pricelist-wrapper {
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  &__user {
+    font-family: $base-font-family;
+    font-weight: 400;
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: $desktop) {
+  .dashboard-container {
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
+
+    &__diameters-wrapper {
+      width: 100%;
+    }
+
+    &__pricelist-wrapper {
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: $tablet) {
+  .dashboard-container {
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: $phone) {
+  .dashboard-container {
+    &__steelgrades-wrapper {
+      width: 100%;
+    }
+  }
+}

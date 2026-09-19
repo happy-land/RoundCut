@@ -1,0 +1,79 @@
+.admin-settings {
+  padding: 24px 0;
+  max-width: 520px;
+
+  &__title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1c1f;
+  }
+
+  &__description {
+    font-size: 12px;
+    color: #888;
+    margin: 0 0 8px;
+  }
+
+  &__row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  &__input {
+    width: 160px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+
+    &:focus {
+      border-color: #1a73e8;
+    }
+  }
+
+  &__btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #1a73e8;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #1558b0;
+    }
+
+    &_saved {
+      background: #34a853;
+      &:hover {
+        background: #2e8c47;
+      }
+    }
+  }
+}

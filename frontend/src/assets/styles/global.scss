@@ -1,14 +1,17 @@
 @import 'vars';
-@import 'fonts';
+@import '../fonts/fonts.scss';
 
 body {
   font-family: $base-font-family;
+  background-color: $body-bg;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 p {
   margin: 0;
+  padding: 0;
 }
