@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Price Card Variant 3</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: #f7f9fc;
+      color: #0f172a;
+      padding: 40px 20px;
+    }
+
+    .wrap {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .pill {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3748c6;
+      font-weight: 700;
+    }
+
+    .price-inline {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .price-inline .label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .price-inline .value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .price-inline.total {
+      margin-top: 8px;
+      padding-top: 10px;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .price-inline.total .value {
+      font-size: 22px;
+      color: #111827;
+    }
+
+    .meta {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .meta span {
+      background: #f8fafc;
+      color: #475569;
+      border: 1px solid #edf2f7;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="product-card">
+      <div class="top">
+        <div class="title">Круг Ст45</div>
+        <div class="pill">Ø 6 мм</div>
+      </div>
+
+      <div class="price-inline">
+        <span class="label">Цена / т</span>
+        <span class="value">12 450 ₽</span>
+      </div>
+
+      <div class="price-inline total">
+        <span class="label">Итого</span>
+        <span class="value">48 000 ₽</span>
+      </div>
+
+      <div class="meta">
+        <span>9360.36 м</span>
+        <span>Электроугли</span>
+        <span>2 вида резки</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

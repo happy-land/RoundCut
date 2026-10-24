@@ -733,7 +733,7 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
       {/* === Калькулятор покупки === */}
       {effectiveActiveTab === 'simple' && (
       <div className={cnStyles("buy-calculator")}>
-        <h2 className={cnStyles("section-title")}>Введите нужный вес в тоннах или длину в метрах, затем при необходимости округлите до целых штук</h2>
+        <h2 className={cnStyles("section-title")}>Укажите количество — шт, т или м</h2>
         <div className={cnStyles("buy-fields")}>
           {/* Кол-во, шт */}
           <div className={cnStyles("buy-stepper")}>
@@ -855,20 +855,17 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
           )}
         </div>
 
-        {/* === Расчёт цены за товар === */}
+        {/* === Сводка цены === */}
         <div className={cnStyles("price-calculation")}>
-          <h3 className={cnStyles("price-title")}>Расчёт цены</h3>
-          <div className={cnStyles("price-rows")}>
+          <div className={cnStyles("price-summary-box")}>
             <div className={cnStyles("price-row")}>
-              <span className={cnStyles("price-label")}>
-                Цена за тонну (с наценкой):
-              </span>
+              <span className={cnStyles("price-label")}>Цена / т</span>
               <span className={cnStyles("price-value")}>
-                {pricePerTon.toFixed(0)} ₽/тн
+                {pricePerTon.toFixed(0)} ₽
               </span>
             </div>
-            <div className={cnStyles("price-row")}>
-              <span className={cnStyles("price-label")}>Сумма за товар:</span>
+            <div className={cnStyles("price-row", { total: true })}>
+              <span className={cnStyles("price-label", { total: true })}>Итого</span>
               <span className={cnStyles("price-value", { total: true })}>
                 {totalGoodsPrice.toFixed(0)} ₽
               </span>
