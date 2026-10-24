@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Price Card Variant 2</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: #f5f7fb;
+      color: #0f172a;
+      padding: 40px 20px;
+    }
+
+    .wrap {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      border: 1px solid #dfe7ff;
+      color: #3652d9;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 9px;
+      border-radius: 999px;
+    }
+
+    .price-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .chip {
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .chip span {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+    }
+
+    .chip strong {
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .chip.accent {
+      background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #bfdbfe;
+    }
+
+    .chip.accent strong {
+      color: #1d4ed8;
+    }
+
+    .meta {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .meta span {
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="product-card">
+      <div class="header">
+        <div class="title">Круг Ст45</div>
+        <div class="badge">Ø 6 мм</div>
+      </div>
+
+      <div class="price-grid">
+        <div class="chip">
+          <span>Цена / т</span>
+          <strong>12 450 ₽</strong>
+        </div>
+
+        <div class="chip accent">
+          <span>Итого</span>
+          <strong>48 000 ₽</strong>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span>9360.36 м</span>
+        <span>Электроугли</span>
+        <span>2 вида резки</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
