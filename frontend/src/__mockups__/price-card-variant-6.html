@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Price Card Variant 6</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: #f8fafc;
+      padding: 40px 20px;
+      color: #0f172a;
+    }
+
+    .wrap {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.04);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .size {
+      font-size: 12px;
+      color: #475569;
+      background: #f1f5f9;
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+
+    .price-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 0;
+    }
+
+    .row .label {
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .row .value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .row.total {
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 4px;
+    }
+
+    .row.total .value {
+      font-size: 22px;
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title-row">
+        <div class="title">Круг Ст45</div>
+        <div class="size">Ø 6 мм</div>
+      </div>
+
+      <div class="price-block">
+        <div class="row">
+          <span class="label">Цена / т</span>
+          <span class="value">12 450 ₽</span>
+        </div>
+
+        <div class="row total">
+          <span class="label">Итого</span>
+          <span class="value">48 000 ₽</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

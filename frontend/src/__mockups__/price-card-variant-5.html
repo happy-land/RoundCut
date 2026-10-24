@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Price Card Variant 5</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: #f4f5f7;
+      padding: 40px 20px;
+      color: #0f172a;
+    }
+
+    .wrap {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #eceff4;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+
+    .amounts {
+      display: grid;
+      gap: 8px;
+    }
+
+    .amount {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #fafbfc;
+      border: 1px solid #f1f5f9;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .amount strong {
+      font-size: 15px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .amount.primary {
+      background: #111827;
+      border-color: #111827;
+    }
+
+    .amount.primary strong,
+    .amount.primary span {
+      color: #ffffff;
+    }
+
+    .amount span {
+      color: #64748b;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="meta">
+        <span>Круг Ст45</span>
+        <span class="mini">Ø 6 мм</span>
+      </div>
+
+      <div class="amounts">
+        <div class="amount">
+          <span>Цена / т</span>
+          <strong>12 450 ₽</strong>
+        </div>
+
+        <div class="amount primary">
+          <span>Итого</span>
+          <strong>48 000 ₽</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

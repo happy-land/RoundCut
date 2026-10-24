@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Price Card Variant 1</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: #f4f7fb;
+      color: #111827;
+      padding: 40px 20px;
+    }
+
+    .wrap {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 18px 16px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+    }
+
+    .heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #4b5563;
+      background: #f3f4f6;
+      border-radius: 999px;
+      padding: 6px 9px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    .meta span {
+      background: #f9fafb;
+      border: 1px solid #edf2f7;
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+
+    .price-summary {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 0 2px;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .price-row strong {
+      font-size: 15px;
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .price-row.total {
+      padding-top: 10px;
+      border-top: 1px solid #eef2f7;
+    }
+
+    .price-row.total span {
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .price-row.total strong {
+      font-size: 18px;
+      color: #0f172a;
+    }
+
+    .caption {
+      font-size: 11px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="product-card">
+      <div class="heading">
+        <div class="title">Круг Ст45</div>
+        <div class="tag">Ø 6 мм</div>
+      </div>
+
+      <div class="meta">
+        <span>Длина: 9360.36 м</span>
+        <span>Склад: Электроугли</span>
+        <span>Резка: 2 вида</span>
+      </div>
+
+      <div class="price-summary">
+        <div class="price-row">
+          <span>Цена / т</span>
+          <strong>12 450 ₽</strong>
+        </div>
+
+        <div class="price-row total">
+          <span>Итого</span>
+          <strong>48 000 ₽</strong>
+        </div>
+      </div>
+
+      <div class="caption">Компактная сводка без заголовка</div>
+    </div>
+  </div>
+</body>
+</html>
