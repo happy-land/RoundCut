@@ -29,6 +29,9 @@ import { AppService } from './app.service';
 import { MailerModule } from './mailer/mailer.module';
 import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
+import { SchemesModule } from './schemes/schemes.module';
+import { Scheme } from './schemes/entities/scheme.entity';
+import { SchemeItem } from './schemes/entities/scheme-item.entity';
 
 @Module({
   imports: [
@@ -58,7 +61,7 @@ import { Setting } from './settings/entities/setting.entity';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       schema: process.env.POSTGRES_SCHEMA,
-      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category, CartItem, Order, OrderItem, Setting],
+      entities: [User, Priceitem, Warehouse, Markup, Cut, Cutitem, Category, CartItem, Order, OrderItem, Setting, Scheme, SchemeItem],
       synchronize: true,
     }),
     UsersModule,
@@ -74,6 +77,7 @@ import { Setting } from './settings/entities/setting.entity';
     OrdersModule,
     MailerModule,
     SettingsModule,
+    SchemesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

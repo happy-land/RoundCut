@@ -21,6 +21,7 @@ import { useGetSettingsQuery } from "../../services/settingsApi";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../features/toast/toastSlice";
 import { isProductGroup } from "../../utils/normalization";
+import CuttingBarDiagram from "../CuttingBarDiagram/CuttingBarDiagram";
 
 const cnStyles = block("billet-cell-new-container");
 
@@ -1175,6 +1176,16 @@ const BilletCellNew: FC<IBilletCellNewProps> = ({ id, warehouseId }) => {
                       </span>
                     )}
                   </div>
+                  <CuttingBarDiagram
+                    compact
+                    barLengthMm={billet.billetLength}
+                    piecesMm={billet.items.flatMap((item) =>
+                      Array<number>(item.workpieces).fill(item.length),
+                    )}
+                    kerfMm={cutThickness}
+                    endCutMm={billet.endCut}
+                    remainderMm={wasteLength}
+                  />
                   <div className={cnStyles("billet-content")}>
                     {billet.endCut > 0 && (
                       <span className={cnStyles("billet-endcut")}>

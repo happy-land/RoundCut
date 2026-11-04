@@ -1,0 +1,162 @@
+.scheme-page {
+  min-height: 100vh;
+  background: #e8e8e8;
+  padding: 20px 12px;
+  font-family: Arial, sans-serif;
+  color: #111;
+
+  &__sheet {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px 24px 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &__doc-header {
+    display: flex;
+    border: 1.5px solid #111;
+
+    span {
+      flex: 1;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 14px;
+      text-align: center;
+
+      & + span {
+        border-left: 1.5px solid #111;
+      }
+    }
+  }
+
+  &__doc-title {
+    margin: 10px 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__doc-meta {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    p {
+      margin: 0 0 2px;
+    }
+  }
+
+  &__status-row {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+  }
+
+  &__status-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.65;
+    }
+
+    &--active {
+      background: #4e60ff;
+      border-color: #4e60ff;
+      color: #fff;
+      opacity: 1;
+    }
+  }
+
+  &__disclaimer {
+    margin: 10px 0 18px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    font-weight: 600;
+  }
+
+  &__item {
+    padding: 12px 0 16px;
+    border-top: 6px solid #d0d0d0;
+
+    &__name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1b7a4b;
+    }
+
+    &__meta {
+      margin: 2px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1b7a4b;
+    }
+
+    &__pieces {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: #333;
+    }
+  }
+
+  &__bar {
+    margin-top: 12px;
+
+    &__label {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+
+  &__actions {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  &__print-btn {
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: #4e60ff;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      background: #4656e8;
+    }
+  }
+}
+
+@media print {
+  .scheme-page {
+    background: #fff;
+    padding: 0;
+
+    &__sheet {
+      box-shadow: none;
+      max-width: none;
+      padding: 0;
+    }
+
+    &__actions,
+    &__status-row {
+      display: none;
+    }
+
+    &__item {
+      break-inside: avoid;
+    }
+  }
+}

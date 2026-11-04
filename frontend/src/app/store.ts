@@ -19,6 +19,7 @@ import { categoryApi } from '../services/categoryApi';
 import { cartApi } from '../services/cartApi';
 import { ordersApi } from '../services/ordersApi';
 import { settingsApi } from '../services/settingsApi';
+import { schemesApi } from '../services/schemesApi';
 // import priceitemsReducer from '../features/price/priceitemsSlice';
 // import usersReducer from '../features/users/usersSlice';
 
@@ -55,6 +56,7 @@ const store = configureStore({
     [cartApi.reducerPath]: cartApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
+    [schemesApi.reducerPath]: schemesApi.reducer,
     // [csvApi.reducerPath]: csvApi.reducer,
     // priceitems: priceitemsReducer,
     // users: usersReducer,
@@ -72,6 +74,7 @@ const store = configureStore({
       .concat(cartApi.middleware)
       .concat(ordersApi.middleware)
       .concat(settingsApi.middleware)
+      .concat(schemesApi.middleware)
       // .concat(csvApi.middleware),
 });
 
