@@ -30,6 +30,7 @@ import ProfilePage from '../../pages/ProfilePage';
 import RequireRole from '../RequireRole/RequireRole';
 import AdminSettingsPage from '../../pages/Admin/AdminSettingsPage';
 import InvoicePage from '../../pages/InvoicePage';
+import SchemePage from '../../pages/SchemePage';
 
 const App: FC = () => {
   const navigate = useNavigate(); // useHistory deprecated
@@ -117,6 +118,8 @@ const App: FC = () => {
         {/* <Route path="*" element={<Page404 />} /> */}
         {/* Счёт — без обёртки Layout (чистая страница для печати) */}
         <Route path="/invoice/:id" element={<InvoicePage />} />
+        {/* Схема резки — чистая страница для печати */}
+        <Route path="/schemes/:id" element={<SchemePage />} />
       </Routes>
 
       {state?.backgroundLocation && (

@@ -1,0 +1,44 @@
+.cutting-bar-diagram {
+  margin: 8px 0 4px;
+
+  &_compact {
+    margin: 4px 0 2px;
+  }
+
+  &__svg {
+    display: block;
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+  }
+
+  &__edge-label {
+    font-size: 12px;
+    font-weight: 700;
+    fill: #111;
+  }
+
+  &__piece-label {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #1565c0;
+  }
+
+  &__dims {
+    margin-top: 6px;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #111;
+
+    div:first-child {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media print {
+  .cutting-bar-diagram__svg {
+    max-width: 100%;
+  }
+}

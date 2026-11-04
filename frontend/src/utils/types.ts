@@ -275,3 +275,47 @@ export type TOrder = {
   totalAll: number;
   items: TOrderItem[];
 };
+
+/* --- Схема резки (зеркало Scheme / SchemeItem) --- */
+
+export type TSchemeStatus = "draft" | "accepted" | "completed";
+
+export type TSchemePiece = {
+  lengthMm: number;
+  qty: number;
+};
+
+export type TSchemeBar = {
+  index: number;
+  piecesMm: number[];
+  remainderMm: number;
+};
+
+export type TSchemeItem = {
+  id: number;
+  productName: string;
+  gost: string | null;
+  weightTons: number;
+  totalQty: number;
+  cutQty: number;
+  machine: string | null;
+  barLengthMm: number;
+  kerfMm: number;
+  endCutMm: number;
+  remainderMm: number;
+  pieces: TSchemePiece[];
+  bars: TSchemeBar[];
+  sortOrder: number;
+};
+
+export type TScheme = {
+  id: number;
+  number: string;
+  status: TSchemeStatus;
+  warehouseName: string | null;
+  clientName: string | null;
+  managerName: string | null;
+  createdAt: string;
+  updatedAt: string;
+  items: TSchemeItem[];
+};

@@ -4,8 +4,11 @@ import block from "bem-cn";
 import "./OrdersPage.scss";
 import ArrowLeftIcon from "../images/react-icons/hi/HiOutlineArrowLeft.svg";
 import { useGetOrdersQuery } from "../services/ordersApi";
+import { useGenerateSchemeMutation } from "../services/schemesApi";
 import { TOrder, TOrderItem } from "../utils/types";
 import { CUT_CODE_LABELS } from "../utils/constants";
+import { useAppDispatch } from "../app/hooks";
+import { showToast } from "../features/toast/toastSlice";
 
 const cnStyles = block("orders-page");
 
@@ -28,7 +31,21 @@ const formatDate = (iso: string): string => {
 
 const OrdersPage: FC = () => {
   const { data: orders = [], isLoading } = useGetOrdersQuery();
+  const [generateScheme, { isLoading: isSchemeLoading }] =
+    useGenerateSchemeMutation();
+  const dispatch = useAppDispatch();
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
+
+  const handleOpenScheme = async (orderId: number) => {
+    try {
+      const scheme = await generateScheme(orderId).unwrap();
+      window.open(`/schemes/${scheme.id}`, "_blank");
+    } catch {
+      dispatch(
+        showToast({ message: "В заказе нет позиций с расчётом заготовок" }),
+      );
+    }
+  };
 
   const toggleExpand = (id: number) => {
     setExpandedIds((prev) => {
@@ -104,6 +121,20 @@ const OrdersPage: FC = () => {
                   >
                     📄 Счёт
                   </button>
+
+                  {order.items.some((item) => item.billetData) && (
+                    <button
+                      className={cnStyles("card__invoice-btn")}
+                      title="Схема резки"
+                      disabled={isSchemeLoading}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenScheme(order.id);
+                      }}
+                    >
+                      ✂️ Схема
+                    </button>
+                  )}
                 </div>
 
                 {isExpanded && (
